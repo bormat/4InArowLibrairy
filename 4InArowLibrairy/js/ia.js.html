@@ -1,0 +1,2917 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for C:/xampp/htdocs/wordpress/htmlPerso/tactilework/p4Project/4InArowLibrairy/js/ia.js</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="../prettify.css">
+
+    <style>
+        body, html {
+            margin:0; padding: 0;
+        }
+        body {
+            font-family: Helvetica Neue, Helvetica,Arial;
+            font-size: 10pt;
+        }
+        div.header, div.footer {
+            background: #eee;
+            padding: 1em;
+        }
+        div.header {
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            border-bottom: 1px solid #666;
+            width: 100%;
+        }
+        div.footer {
+            border-top: 1px solid #666;
+        }
+        div.body {
+            margin-top: 10em;
+        }
+        div.meta {
+            font-size: 90%;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            font-weight: normal;
+        }
+        h1 {
+            font-size: 12pt;
+        }
+        h2 {
+            font-size: 10pt;
+        }
+        pre {
+            font-family: Consolas, Menlo, Monaco, monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 14px;
+            font-size: 14px;
+            -moz-tab-size: 2;
+            -o-tab-size:  2;
+            tab-size: 2;
+        }
+
+        div.path { font-size: 110%; }
+        div.path a:link, div.path a:visited { color: #000; }
+        table.coverage { border-collapse: collapse; margin:0; padding: 0 }
+
+        table.coverage td {
+            margin: 0;
+            padding: 0;
+            color: #111;
+            vertical-align: top;
+        }
+        table.coverage td.line-count {
+            width: 50px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        table.coverage td.line-coverage {
+            color: #777 !important;
+            text-align: right;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+        }
+
+        table.coverage td.text {
+        }
+
+        table.coverage td span.cline-any {
+            display: inline-block;
+            padding: 0 5px;
+            width: 40px;
+        }
+        table.coverage td span.cline-neutral {
+            background: #eee;
+        }
+        table.coverage td span.cline-yes {
+            background: #b5d592;
+            color: #999;
+        }
+        table.coverage td span.cline-no {
+            background: #fc8c84;
+        }
+
+        .cstat-yes { color: #111; }
+        .cstat-no { background: #fc8c84; color: #111; }
+        .fstat-no { background: #ffc520; color: #111 !important; }
+        .cbranch-no { background:  yellow !important; color: #111; }
+
+        .cstat-skip { background: #ddd; color: #111; }
+        .fstat-skip { background: #ddd; color: #111 !important; }
+        .cbranch-skip { background: #ddd !important; color: #111; }
+
+        .missing-if-branch {
+            display: inline-block;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: black;
+            color: yellow;
+        }
+
+        .skip-if-branch {
+            display: none;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: #ccc;
+            color: white;
+        }
+
+        .missing-if-branch .typ, .skip-if-branch .typ {
+            color: inherit !important;
+        }
+
+        .entity, .metric { font-weight: bold; }
+        .metric { display: inline-block; border: 1px solid #333; padding: 0.3em; background: white; }
+        .metric small { font-size: 80%; font-weight: normal; color: #666; }
+
+        div.coverage-summary table { border-collapse: collapse; margin: 3em; font-size: 110%; }
+        div.coverage-summary td, div.coverage-summary table  th { margin: 0; padding: 0.25em 1em; border-top: 1px solid #666; border-bottom: 1px solid #666; }
+        div.coverage-summary th { text-align: left; border: 1px solid #666; background: #eee; font-weight: normal; }
+        div.coverage-summary th.file { border-right: none !important; }
+        div.coverage-summary th.pic { border-left: none !important; text-align: right; }
+        div.coverage-summary th.pct { border-right: none !important; }
+        div.coverage-summary th.abs { border-left: none !important; text-align: right; }
+        div.coverage-summary td.pct { text-align: right; border-left: 1px solid #666; }
+        div.coverage-summary td.abs { text-align: right; font-size: 90%; color: #444; border-right: 1px solid #666; }
+        div.coverage-summary td.file { text-align: right; border-left: 1px solid #666; white-space: nowrap;  }
+        div.coverage-summary td.pic { min-width: 120px !important;  }
+        div.coverage-summary a:link { text-decoration: none; color: #000; }
+        div.coverage-summary a:visited { text-decoration: none; color: #333; }
+        div.coverage-summary a:hover { text-decoration: underline; }
+        div.coverage-summary tfoot td { border-top: 1px solid #666; }
+
+        div.coverage-summary .yui3-datatable-sort-indicator, div.coverage-summary .dummy-sort-indicator {
+            height: 10px;
+            width: 7px;
+            display: inline-block;
+            margin-left: 0.5em;
+        }
+        div.coverage-summary .yui3-datatable-sort-indicator {
+            background: url("http://yui.yahooapis.com/3.6.0/build/datatable-sort/assets/skins/sam/sort-arrow-sprite.png") no-repeat scroll 0 0 transparent;
+        }
+        div.coverage-summary .yui3-datatable-sorted .yui3-datatable-sort-indicator {
+            background-position: 0 -20px;
+        }
+        div.coverage-summary .yui3-datatable-sorted-desc .yui3-datatable-sort-indicator {
+            background-position: 0 -10px;
+        }
+
+        .high { background: #b5d592 !important; }
+        .medium { background: #ffe87c !important; }
+        .low { background: #fc8c84 !important; }
+
+        span.cover-fill, span.cover-empty {
+            display:inline-block;
+            border:1px solid #444;
+            background: white;
+            height: 12px;
+        }
+        span.cover-fill {
+            background: #ccc;
+            border-right: 1px solid #444;
+        }
+        span.cover-empty {
+            background: white;
+            border-left: none;
+        }
+        span.cover-full {
+            border-right: none !important;
+        }
+        pre.prettyprint {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .com { color: #999 !important; }
+        .ignore-none { color: #999; font-weight: normal; }
+
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">C:/xampp/htdocs/wordpress/htmlPerso/tactilework/p4Project/4InArowLibrairy/js/ia.js</span></h1>
+    <h2>
+        
+        Statements: <span class="metric">97.43% <small>(379 / 389)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class="metric">94.29% <small>(231 / 245)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class="metric">96.67% <small>(29 / 30)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class="metric">97.86% <small>(366 / 374)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">C:/xampp/htdocs/wordpress/htmlPerso/tactilework/p4Project/4InArowLibrairy/js\</a> &#187; ia.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">621</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">117</span>
+<span class="cline-any cline-yes">117</span>
+<span class="cline-any cline-yes">117</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">426</span>
+<span class="cline-any cline-yes">426</span>
+<span class="cline-any cline-yes">426</span>
+<span class="cline-any cline-yes">488</span>
+<span class="cline-any cline-yes">488</span>
+<span class="cline-any cline-yes">146</span>
+<span class="cline-any cline-yes">146</span>
+<span class="cline-any cline-yes">84</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">62</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">342</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">108</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">952</span>
+<span class="cline-any cline-yes">952</span>
+<span class="cline-any cline-yes">6370</span>
+<span class="cline-any cline-yes">6370</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6370</span>
+<span class="cline-any cline-yes">6370</span>
+<span class="cline-any cline-yes">6370</span>
+<span class="cline-any cline-yes">5920</span>
+<span class="cline-any cline-yes">5920</span>
+<span class="cline-any cline-yes">5920</span>
+<span class="cline-any cline-yes">5920</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41208</span>
+<span class="cline-any cline-yes">41208</span>
+<span class="cline-any cline-yes">33235</span>
+<span class="cline-any cline-yes">950</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">950</span>
+<span class="cline-any cline-yes">950</span>
+<span class="cline-any cline-yes">950</span>
+<span class="cline-any cline-yes">110</span>
+<span class="cline-any cline-yes">110</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5810</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1265</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">749</span>
+<span class="cline-any cline-yes">749</span>
+<span class="cline-any cline-yes">749</span>
+<span class="cline-any cline-yes">749</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27277</span>
+<span class="cline-any cline-yes">27277</span>
+<span class="cline-any cline-yes">27277</span>
+<span class="cline-any cline-yes">27277</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174</span>
+<span class="cline-any cline-yes">52</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">122</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">174</span>
+<span class="cline-any cline-yes">174</span>
+<span class="cline-any cline-yes">174</span>
+<span class="cline-any cline-yes">174</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27103</span>
+<span class="cline-any cline-yes">27103</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">575</span>
+<span class="cline-any cline-yes">575</span>
+<span class="cline-any cline-yes">575</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10948</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11157</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11157</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">229</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">260</span>
+<span class="cline-any cline-yes">260</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">177</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">260</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">194</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11157</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10948</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">144</span>
+<span class="cline-any cline-yes">144</span>
+<span class="cline-any cline-yes">144</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38434</span>
+<span class="cline-any cline-yes">38434</span>
+<span class="cline-any cline-yes">54818</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38434</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38434</span>
+<span class="cline-any cline-yes">38434</span>
+<span class="cline-any cline-yes">38434</span>
+<span class="cline-any cline-yes">38434</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">246097</span>
+<span class="cline-any cline-yes">246097</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">234075</span>
+<span class="cline-any cline-yes">234075</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">62133</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">518114</span>
+<span class="cline-any cline-yes">518114</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">403</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">479769</span>
+<span class="cline-any cline-yes">479769</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">245814</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">233955</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38031</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-yes">1509655</span>
+<span class="cline-any cline-yes">1509655</span>
+<span class="cline-any cline-yes">1509655</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">480172</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2097191</span>
+<span class="cline-any cline-yes">1848076</span>
+<span class="cline-any cline-yes">1848076</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5056864</span>
+<span class="cline-any cline-yes">5056864</span>
+<span class="cline-any cline-yes">5056864</span>
+<span class="cline-any cline-yes">5056864</span>
+<span class="cline-any cline-yes">5056864</span>
+<span class="cline-any cline-yes">2574941</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2481923</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5056864</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2572135</span>
+<span class="cline-any cline-yes">2572135</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3437</span>
+<span class="cline-any cline-yes">3437</span>
+<span class="cline-any cline-yes">3437</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18819</span>
+<span class="cline-any cline-yes">18819</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18819</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29741</span>
+<span class="cline-any cline-yes">29741</span>
+<span class="cline-any cline-yes">29741</span>
+<span class="cline-any cline-yes">29741</span>
+<span class="cline-any cline-yes">25528</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13622</span>
+<span class="cline-any cline-yes">13622</span>
+<span class="cline-any cline-yes">13622</span>
+<span class="cline-any cline-yes">13622</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">796</span>
+<span class="cline-any cline-yes">796</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2510559</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2572135</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5056864</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4995288</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5056864</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">482510</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4995288</span>
+<span class="cline-any cline-yes">4995288</span>
+<span class="cline-any cline-yes">4995288</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2991283</span>
+<span class="cline-any cline-yes">2991283</span>
+<span class="cline-any cline-yes">2627732</span>
+<span class="cline-any cline-yes">2627732</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16696</span>
+<span class="cline-any cline-yes">16696</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26775</span>
+<span class="cline-any cline-yes">26775</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7160</span>
+<span class="cline-any cline-yes">7160</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19624</span>
+<span class="cline-any cline-yes">19624</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">203499</span>
+<span class="cline-any cline-yes">203499</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4385</span>
+<span class="cline-any cline-yes">4385</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3974</span>
+<span class="cline-any cline-yes">3974</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">111425</span>
+<span class="cline-any cline-yes">111425</span>
+<span class="cline-any cline-yes">1610467</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4995288</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">842</span>
+<span class="cline-any cline-yes">842</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-yes">120</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">840</span>
+<span class="cline-any cline-yes">840</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">119</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-yes">833</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54</span>
+<span class="cline-any cline-yes">54</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">278</span>
+<span class="cline-any cline-yes">278</span>
+<span class="cline-any cline-yes">278</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">59</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">219</span>
+<span class="cline-any cline-yes">219</span>
+<span class="cline-any cline-yes">219</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">105</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">135</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">135</span>
+<span class="cline-any cline-yes">135</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">270</span>
+<span class="cline-any cline-yes">135</span>
+<span class="cline-any cline-yes">135</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">847</span>
+<span class="cline-any cline-yes">847</span>
+<span class="cline-any cline-yes">847</span>
+<span class="cline-any cline-yes">847</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5082</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">52</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2772</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">55</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">42</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2782</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">39</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2824</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6843364</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">62182</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2627732</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18118</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10013628</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38434</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">132</span>
+<span class="cline-any cline-yes">132</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">102</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">814322</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">517795</span>
+<span class="cline-any cline-yes">517795</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">296527</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37</span>
+<span class="cline-any cline-yes">37</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+var IA=new function()
+{
+	var self=this;
+	this.dif=100;
+	this.setDif=<span class="fstat-no" title="function not covered" >function(dif){</span>
+<span class="cstat-no" title="statement not covered" >		self.dif=dif;</span>
+	}
+	
+	
+	
+	
+	
+	var tabPosGananteRougePaire=[];
+	var tabPosGananteJauneImpaire=[];
+	var tabPosGananteRougeImpaire=[];
+	var tabPosGananteJaunePaire=[];	
+	var posInterdite=[];
+	var posDeconseille=[];
+	var	tabDiagoRight=[];//demis diagonnale vers la droite de haut en bas 
+	var	tabDiagoLeft=[];//demis diagonnale vers la gauche de haut en bas 
+	this.boolSmart=[];
+&nbsp;
+	//posJoueur derniere position Modele.play 
+	//si retournerPosition on ne joue pas dans la Modele.grille mais retoune la position ou Modele.play parametre parfait pour les tests TDD
+	this.p4BlockEasy=function(posJoueur,retournerPosition)
+	{
+		var botSmart = parseInt(self.dif)/100+Math.random() &gt; 1 //dif is choose by player with slider
+		<span class="missing-if-branch" title="if path not taken" >I</span>if (Modele.partieFini){
+<span class="cstat-no" title="statement not covered" >				return(false);</span>
+		};
+		<span class="missing-if-branch" title="else path not taken" >E</span>if (botSmart){
+			this.boolSmart.push("true")
+			Modele.joueur="j1";
+			fillsWinningPos();	
+			pos = -1;
+			for(var step=0;step&lt;6 &amp;&amp; (pos &gt;41 || pos&lt;0 || !pos);step++){
+				switch(step){
+				case 0:
+						pos=gagnerDirect();break;
+				case 1: 
+						pos=bloquerDirect(true);break;
+				case 2: 
+						findForbiddenAndNotRecommandedPosition();
+						pos=gagneEn2Coup("j1");
+						break;
+				case 3: 
+						numeroMod=[0,41];
+						pos=modeledetectorAndAnswer(perfectModele,numeroMod);
+						break;
+				case 4:	
+						var findAt={};
+						pos=playAvecModele(findAt);
+						break;
+				case 5: 
+						pos=playSansModele(posJoueur);
+						break;
+				}
+			}
+		}
+		else{
+<span class="cstat-no" title="statement not covered" >			this.boolSmart.push("false");</span>
+<span class="cstat-no" title="statement not covered" >			var pos=Math.floor(Math.random()*7);</span>
+		};	
+		pos=Modele.play(pos,retournerPosition);
+		return pos;
+	}
+	
+	
+	function playAvecModele(findAt)
+	{
+		var TabOfTab=[attaque,defense,miniDef,mesModele]
+		var pos=false;
+		for(var o=0;o &lt; TabOfTab.length &amp;&amp; !pos;o++){
+			numeroMod=[0,41];
+			var length=TabOfTab[o].length;
+			while (numeroMod[0] &lt; length){
+				var position=modeledetectorAndAnswer(TabOfTab[o],numeroMod);
+				if (position &lt; 42){	
+					var pos=playHereOrNot(position);
+					if (pos){
+						break;
+					}
+					numeroMod[1]--;
+				}else{
+					numeroMod[0]++;
+				}
+			}
+		}
+		findAt.nameOfTab=o;
+		findAt.modeleNumber=numeroMod[0];
+		findAt.positionInGrille=(numeroMod[1]&lt;99999)? numeroMod[1]: "notFound";
+		return pos;
+	}	
+&nbsp;
+//push where don't play without modele
+function detectBadPositionAlgorythme(){
+	for (var i=0;i&lt;7;i++){
+		Modele.joueur="j1";
+		var pos=Modele.play(i,true);
+		Modele.grille[pos]="1";
+		var j2Win=gagneEn2Coup("j2");
+		if (j2Win){
+			posDeconseille.push(pos);
+		}
+		Modele.grille[pos]=0;
+	}
+	Modele.joueur="j1";
+}
+	
+//compte les positions gagnantes crées si on joue dans les 7 poositions possibles et joue là ou il faut pour gagner en 2 coups
+//ne fonctionne pas pour toutes les grilles de jeu
+function gagneEn2Coup(playerTurn){
+	var playerTurn2=playerTurn.substring(1)*1;
+	for(var i=0;i&lt;7;i++){
+		Modele.joueur=playerTurn;
+		var cond = false;
+		//
+		var pos=Modele.play(i,true);
+		cond = (playerTurn2==1)	? positionInterdite(pos,posInterdite) : comparerLigne("g",pos-7);
+		if (!cond){
+			var position2=pos;
+			Modele.grille[pos]=playerTurn2;
+			var cptGagnerDirect=0;
+			for(var o=0;o&lt;7;o++){
+				//
+				var pos = Modele.play(o,true);
+				if (pos &lt;0) continue;
+					if (Modele.partieFini){
+					cptGagnerDirect++;
+					//si il y a une position gagnante au dessus d'une autre 
+					var WinnerPos=(Modele.joueur == "j1") ? "g" : "i";
+					var otherPlayerWinOnMe=(Modele.joueur == "j1") ? false: comparerLigne("g",pos);
+					if ( (cptGagnerDirect ==1 &amp;&amp; comparerLigne(WinnerPos,pos-7) )|| (cptGagnerDirect &gt;1 &amp;&amp; !otherPlayerWinOnMe) ){	
+						Modele.grille[position2]=0;
+						return(""+i)
+					}
+				}
+			}
+			Modele.grille[position2]=0;
+		}
+	}
+}
+	this.positionOfSym=positionOfSym;
+&nbsp;
+	//retourne si la position est interdite ou non 
+	function positionInterdite(position,posInterdite){
+		return ( posInterdite.indexOf(position) &gt;= 0 ) ;
+	}
+this.modeledetectorAndAnswer =modeledetectorAndAnswer;
+	//fmodeledetectorAndAnswer
+	//renvoie la position ou jouer ou 99999 sinon 
+	function modeledetectorAndAnswer(modele,numeroMod){
+		var i=numeroMod[0];
+		var posMod=numeroMod[1]
+		var positionAndSym=0;
+		while(i&lt;modele.length){
+			//position du début du modele détécté et parmametre de symetrie
+			positionAndSym = modeleDetector3(modele[i][0],posMod);
+			var position=positionAndSym.pos;
+			positionGlobal=position;
+			if ( valide(position)){
+				//cas ou on trouve le modele en mode symétrie 
+				if (positionAndSym.sym){			
+					position+=positionOfSym(modele[i][1],modele[i][0][0].length);
+				}
+				//cas normal sans symétrie
+				else{
+					position+=modele[i][1];
+				}			
+				numeroMod[0]=i;
+				numeroMod[1]=positionAndSym.pos;
+				<span class="missing-if-branch" title="if path not taken" >I</span>if (position&lt;0) <span class="cstat-no" title="statement not covered" >alert("help 140 modele detector and anwer")</span>
+				return ""+position;
+			}			
+			posMod=41;
+			i++;
+		}	
+		numeroMod[0]=i-1;
+		numeroMod[1]=positionAndSym.pos;
+		return 99999;
+	}
+&nbsp;
+	function findForbiddenAndNotRecommandedPosition()
+	{
+		posDeconseille=[];
+		posInterdite=[];
+		dontHelpJ2(posInterdite);
+		detectBadPositionAlgorythme();
+		var modele=modPosDeconseille;
+		var next=true;
+		for(var i=0;i&lt;modele.length;i++)
+		{
+			//tant que le modele est trouvé on continue de le chercher et de pusher les positions interdites 
+			for(var positionmodele=42;positionmodele&gt;0 &amp;&amp; positionmodele &lt;= 42;positionmodele--)
+			{
+					var modeleDetecte=modeleDetector3(modele[i][0],positionmodele-1);
+					//si modele trouvé rajouter les déconseillés
+					
+					
+					if ( valide(modeleDetecte.pos))
+					{
+						//il y a peut être plusieurs positions déconseillés donc on boucle 
+						for (var u=0;u&lt;modele[i][1].length ;u++)
+						{	
+							positionmodele = modeleDetecte.pos;				
+							if (modeleDetecte.sym)
+							{			
+								positionmodele+=positionOfSym(modele[i][1][u],modele[i][0][0].length);
+							}
+							else
+							{
+								positionmodele+=modele[i][1][u];
+							}
+							//don t repush an element that has just  been pushed 
+							if (positionmodele !=posDeconseille[posDeconseille.length-1])	
+							{
+								posDeconseille.push(positionmodele);
+							}	
+						}
+					}
+					positionmodele=modeleDetecte.pos;
+			}
+			if (i==modele.length - 1  &amp;&amp; next)
+			{
+				modele=interditUnPeu;
+				i=-1;
+				next=false;
+			}
+		}
+		//var tttt=2;
+		notUnderMe(posDeconseille);
+		DeleteException();	
+	}
+&nbsp;
+&nbsp;
+	function DeleteException()
+	{
+&nbsp;
+		numeroMod=[0,41];
+		while( numeroMod[0] &lt; mesModele.length)
+		{
+			var position=modeledetectorAndAnswer(tabException,numeroMod);
+			position=parseInt(position);
+			if (position &lt; 42)
+			{	
+				<span class="missing-if-branch" title="if path not taken" >I</span>if (position&lt;0)
+				{<span class="cstat-no" title="statement not covered" >alert("plus petit que 0");}</span>
+				var pos= posDeconseille.indexOf(position)
+				while ( pos&gt;=0 )
+				{
+					posDeconseille.splice(pos,1);
+					pos= posDeconseille.indexOf(position)
+				}			
+				numeroMod[1]--;
+			}
+			else
+			{
+				break;
+			}
+		}	
+	}
+&nbsp;
+&nbsp;
+/*
+	//fmodeleDetector2
+	function modeleDetector2(modeles,position)
+	{	
+		var posModelePasSym;
+		var posModeleSym=posModelePasSym=position;
+		var sym=true;
+		while( posModeleSym&lt; 42 || posModelePasSym &lt;42)
+		{
+				var continuerBoucle=true;
+				sym=!sym;
+				if (!(sym)){positionModele=posModelePasSym;	var modele=modeles[0];}
+				else{positionModele=posModeleSym;var modele=symetrique2(modeles[0],true)}
+				
+				positionModele=testerSiContenu(modele,positionModele);	
+				if ( positionModele &lt;42 )
+				{
+						for (var i = 1 ; i&lt; modeles.length &amp;&amp; continuerBoucle ; i++ )
+						{
+							modele=symetrique2(modeles[i],sym);
+							continuerBoucle=comparerLigne(modele,positionModele+7*i);
+							
+						}
+						if (i == modeles.length &amp;&amp; continuerBoucle)
+						{
+							return { pos:positionModele,sym:sym};
+						}
+						
+				}
+				//sinon on passe au symétrique ou au suivant 					
+				//si pas symetrique on y  passe 		
+				if (sym==false)
+				{
+					posModelePasSym=positionModele+1;
+				}
+				else
+				{	
+					progression=0;
+					posModeleSym=positionModele+1;
+				}					
+		}
+		return {pos:99999};
+	}
+*/
+	this.modeleDetector3=modeleDetector3;
+	function modeleDetector3(oneModele,position)
+	{	
+		line=oneModele.at(-1);
+		for ( var i=0; i&lt;line.length ; i++ ){
+			if (line[i]!='a' &amp;&amp; line[i]!='9') break;
+		}
+		var flat = (i&lt;line.length) ? 0 : 1 ;
+		
+		var posOneModeleNotSym;
+		var posOneModeleSym=posOneModeleNotSym=position;
+		var sym=true;
+		while( (posOneModeleSym&lt; 42 &amp;&amp; posOneModeleSym &gt; 0) ||  ( posOneModeleNotSym &gt;0 &amp;&amp; posOneModeleNotSym &lt;42))
+		{
+				var continuerBoucle=true;
+				sym=!sym;
+				if (!(sym)){
+					var posOneModele=posOneModeleNotSym;	
+					var line=oneModele.at(-1-flat);
+				}
+				else{
+					posOneModele=posOneModeleSym;
+					var line=symetrique2(oneModele.at(-1-flat),true)
+				}
+			
+				
+				posOneModele=testerSiContenu3(line,posOneModele);
+				<span class="missing-if-branch" title="else path not taken" >E</span>if ( posOneModele &lt;42 ){
+					if (flat &amp;&amp; posOneModele&lt;35){
+							continuerBoucle=comparerLigne(symetrique2(oneModele.at(-1),sym),posOneModele+7);			
+					}
+					for (var i = 1 ; i&lt; oneModele.length - flat &amp;&amp; continuerBoucle ; i++ ){
+						line=symetrique2(oneModele.at(-i-1-flat),sym);
+						continuerBoucle=comparerLigne(line,posOneModele-7*i);
+					}
+					if (i == oneModele.length - flat &amp;&amp; continuerBoucle){
+						return { pos:posOneModele-7*(oneModele.length-1-flat),sym:sym};
+					}
+				}
+				
+				//sinon on passe au symétrique ou au suivant 					
+				//si pas symetrique on y  passe 	
+				posOneModele--;				
+				if (sym==false)
+				{
+					posOneModeleNotSym=posOneModele;
+				}
+				else
+				{	
+					posOneModeleSym=posOneModele;
+				}					
+		}
+		return {pos:99999};
+	}
+	
+	
+	
+&nbsp;
+	function testerSiContenu3(partOfLine,posInGrille)
+	{
+		var stopLoop=(posInGrille &gt; 41 &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >posInGrille &gt;= 0)</span>;
+		posInGrille=(stopLoop) ? <span class="branch-0 cbranch-no" title="branch not covered" >99999 </span>: posInGrille+1;
+		while ( !stopLoop ){
+			var modeleTooLongForThisPosition=(posInGrille-1+partOfLine.length)%7&lt;=(posInGrille-1)%7;
+			posInGrille -= modeleTooLongForThisPosition ? partOfLine.length : 1;
+			stopLoop=comparerLigne(partOfLine,posInGrille) || posInGrille&lt; 0;
+		}
+		return (posInGrille);
+	}
+&nbsp;
+	
+	//fcomparerLigne
+	// compare le modele avec une ligne de même longueur que le modele dans Modele.grille commençant à  l'indice o 
+	//h rouge ne gagne pas a cette ligne 
+	//g jaune gagne à cette ligne 
+	//e si il n'y a pas de paire gagnant rouge j2 sur cette colonne et valeur vaut 0 
+	//p iil n'y a pas de impaire jaune gagnant 
+	//q il y a un impaire jaune gagnant 
+	//i les rouges gagne à cette ligne contraire de h
+	//j jaune ne gagne pas à cette ligne inverse de g
+	//. combiner de  j et i ouais  ils ont un point en commun haha ok je sort
+	//r combiner de e et g jaune gagne à cette ligne et pas de rouge pair gagnant en dessous
+	// t position déconseillé/interdite
+	/*
+	"205",
+	"505",
+	"502"
+	*/
+	this.comparerLigne=comparerLigne;
+	function comparerLigne(modligne,o) 
+	{
+		if (o &lt;0) return 0;
+		var continuerBoucle= new bol(true)
+		for (var i=o;i&lt; modligne.length + o  &amp;&amp; continuerBoucle.b;i++)
+		{
+				var a=modligne.charAt(i - o);
+				var a=""+a;
+				var b=Modele.grille[i];		<span class="missing-if-branch" title="if path not taken" >I</span>if (o &lt;0) <span class="cstat-no" title="statement not covered" >return 0;</span>
+				var impaire=Math.floor(i/7);
+				if (impaire%2==0)
+					impaire=false;
+				else
+					impaire=true;
+						
+				if (Modele.grille[i]==0 )
+				{	
+					var gotonextif=false;
+					switch(a)
+					{
+						case 'q':case 'p':						
+								continuerBoucle.cond(tabPosGananteRougePaire[i%7] &lt; tabPosGananteJauneImpaire[i%7]);
+								if (a =='p') continuerBoucle.inv();
+								break;
+						case 'e': case 'r':
+								continuerBoucle.cond(tabPosGananteRougePaire[i%7] &lt;= tabPosGananteJauneImpaire[i%7]|| tabPosGananteJauneImpaire[i%7]==-1);
+								continuerBoucle.et((tabPosGananteRougePaire[i%7]&lt;=i));
+								//ne pas prendre en compte les pairs au dessus de la position 
+								if (a !='r')break;							
+						case 'g':case 'j':case '.':case 'f':
+								Modele.grille[i]=1;
+								continuerBoucle.et(Modele.partieFinie(i));
+								if (a == 'j' || a == '.')continuerBoucle.inv();
+								if (a !='.' &amp;&amp; a !='f' ||  !continuerBoucle.b){
+									break;
+								}
+						case 'h':case 'i':
+								Modele.grille[i]=2;
+								continuerBoucle.et(Modele.partieFinie(i));
+								if (a == 'h' || a =='f')continuerBoucle.inv();
+								break;
+						case 't':
+								//indexof -1 pour faux
+								continuerBoucle.cond(posDeconseille.indexOf(i)+1);
+								break;					
+						default:							
+								var gotonextif=true; 
+					}
+					Modele.grille[i]=0;
+				}
+				if (Modele.grille[i]!=0 || gotonextif)
+				{
+					continuerBoucle.cond(comparerCaractere( a,b,impaire));
+				}
+				
+				if (( continuerBoucle.b) &amp;&amp; (i &gt;  modligne.length - 2 + o  ))
+				{
+							//return if line are equals 
+							return 	continuerBoucle.b
+				}
+		}
+	}
+&nbsp;
+	
+	
+	//fcomparerCaractere
+	//5 peu importe et
+	//1 pour j1 et 2 pour j2 0 pour vide 
+	//3 pour un j1 en paire 4 pour un j1 en impaire 
+	//6 pas de 0 mais la position doit exister
+	//7 pour j2 en paire et 8 pour j2 en impaire 
+	//9 pas de 0 renvoie true si la position n'existe pas
+	//g indique une position gagnante en mettant un pion adverse à cette position 
+function comparerCaractere (carMod,car,impaire)
+	{
+		carMod=''+carMod;
+		var comp=new bol(true);true
+		switch(carMod)
+		{
+			case '6' :	case '5':
+				comp.cond( car == 1 || car == 2 )
+				if (carMod=='6') break
+				comp.ou(car == 0);	
+				break
+			case '3':
+				comp.cond( car == 1 &amp;&amp; impaire==false );
+				break
+			case  '4':
+				comp.cond( car == 1 &amp;&amp; impaire==true );
+				break
+			case  '7':
+				comp.cond( car == 2 &amp;&amp; impaire==false );
+				break
+			case '8':
+				comp.cond( car == 2 &amp;&amp; impaire==true );
+				break
+			case  '9':
+					comp.cond ( car !=0 );	
+					break;
+			case 'z':
+					comp.cond(car !=1) ;
+					break;			
+			case  'y':
+					comp.cond(car!=2) ;	
+					break;
+			case  'a':
+				comp.cond(1);
+				break;
+			default: comp.cond(car == carMod);
+			
+		}
+		return comp.b;
+	}
+&nbsp;
+	//aléatoire symétrique basé sur la some des pions
+	/*function aleatoire() 
+	{
+		var gauche=0;
+		var droite=0;
+&nbsp;
+		for( var i=0;i&lt;38 ;i++)
+		{
+			gauche+=parseInt(Modele.grille[i]);
+			droite+=parseInt(Modele.grille[i+3])
+			if (i%3==0)
+			{
+				i+=(7-1)/2	
+			}
+		}
+		var u=gauche+droite;
+		if (gauche &lt; droite)
+		{
+			return(u);
+		}
+		else
+		{
+			return(7-u%7);
+		}
+	}*/
+&nbsp;
+&nbsp;
+	function gagnerDirect ()
+	{
+		for ( var i = 0;i&lt;7;i++)
+		{
+				var position=Modele.play(i,true);
+				if (Modele.partieFini &amp;&amp; position &gt;=0)
+				{		
+						//remettre partie fini à faux pour qu'il n'affiche pas la fin du jeu alors qu'on empeche le Modele.joueur de gagner à cette place 
+						Modele.partieFini=false;
+						//retour en chaine pour que 0 soit pas faux 
+						return ""+position ;
+				}		
+		}
+		return false;
+	}
+&nbsp;
+	function bloquerDirect (bool)
+	{
+	//cherche un endroit ou l'adversaire gagne pour le bloquer 
+		Modele.nextPlayer();
+		for ( var i = 0;i&lt;7;i++)
+		{
+			var position=Modele.play(i,true);
+			if (Modele.partieFini)
+			{
+					Modele.nextPlayer();
+					var pos=Modele.play(position,bool);
+					//retour en chaine pour que 0 soit pas faux 
+					return ""+position ;
+			}		
+		}
+		Modele.nextPlayer();
+	}
+	//remplit posInterdite
+	function dontHelpJ2(posInterdite)
+	{
+		for ( var i = 0;i&lt;7;i++)
+		{
+			var position=Modele.play(i,true);
+			//on la mit en fictif avec le parametre true  mais il faut qu'il reste dans la Modele.grille 
+			Modele.grille[position]="1";
+			Modele.nextPlayer();
+			Modele.play(i,true);
+			Modele.nextPlayer();
+			//supprimer le pion rajouté précédemment 
+			Modele.grille[position]="0";
+&nbsp;
+			if (Modele.partieFini &amp;&amp; position !=posInterdite[posInterdite.length-1] &amp;&amp; position &gt;= 0)
+			{
+					posInterdite.push(position);
+			}		
+		}
+	}
+&nbsp;
+	//ne pas Modele.play dessous un endroit ou on gagnerais en jouant au dessus 
+	function notUnderMe(posDeconseille)
+	{
+&nbsp;
+		// ne pas Modele.play dessous un endroit ou l'on gagne 
+		for ( var i = 0;i&lt;7;i++)
+		{
+			Modele.nextPlayer();
+			var position=Modele.play(i,true);
+			//on la mit en fictif avec le parametre true  mais il faut qu'il reste dans la Modele.grille 
+			Modele.grille[position]="2";		
+			Modele.nextPlayer();
+			Modele.play(i,true);
+			//supprimer le pion rajouté précédemment 
+			Modele.grille[position]="0";		
+			if (Modele.partieFini)
+			{
+					//rajouter la position en déconseillé 
+				if (position !=posDeconseille.at(-1) &amp;&amp; position &gt;=0)				
+				{
+						<span class="missing-if-branch" title="else path not taken" >E</span>if (position &gt;=0){
+							posDeconseille.push(position);
+						}
+				}
+			}				
+		}
+&nbsp;
+	}
+&nbsp;
+	//retourne ou Modele.play sinon -1
+	function playHereOrNot(posJoueur)
+	{	
+		posJoueur=parseInt(posJoueur);
+		posJoueur=Modele.play(posJoueur,true);
+		if (posJoueur &lt; 0)
+		{
+			return(0);
+		}
+		var cond1 = (positionInterdite(posJoueur,posInterdite)) ;
+		var cond2 = (positionInterdite(posJoueur,posDeconseille));
+		if ( !(cond1 || cond2) )
+		{
+			posJoueur =Modele.play(posJoueur,true);
+			return(""+posJoueur);
+		}
+		return(0);
+&nbsp;
+	}
+&nbsp;
+	function positionOfSym(pos,length)
+	{
+		var position = length - pos%7 -1 ;
+		/*if (length % 2==0)
+		{
+			position-- ;
+		}*/
+		<span class="missing-if-branch" title="else path not taken" >E</span>if (pos%7!=6){
+			pos+=6-pos%7
+		}
+		while (position&lt;=pos){position+=7}
+		position-=7;
+		return position;
+	}
+&nbsp;
+&nbsp;
+	//remplit la position gagnante la plus basse en pair pour le j2 rouge et et impaire pour le j1 jaune 
+	function fillsWinningPos(){
+	//initialiser les 2 tableaux -1 = pas de position gagnante sur cette colonne sinon c'est la position 
+&nbsp;
+		for(var o=0; o&lt;7 ;o++)
+		{	
+			tabPosGananteJaunePaire[o]= -1;
+			tabPosGananteRougePaire[o]= -1;
+			tabPosGananteJauneImpaire[o]= -1;
+			tabPosGananteRougeImpaire[o]= -1;
+		}
+&nbsp;
+		for(var o=42; o&gt;0; o--)
+		{
+			if ( Modele.grille[o]==0 )
+			{
+				Modele.grille[o]=1;
+				var trouvePlayerImpaire=tabPosGananteJauneImpaire[o%7];
+				var trouveBotPaire=tabPosGananteRougePaire[o%7];
+				var trouvePlayerPaire=tabPosGananteJaunePaire[o%7];
+				var trouveBotImpaire=tabPosGananteRougeImpaire[o%7];
+				
+				if ( Math.floor(o/7)%2==1 &amp;&amp; trouvePlayerImpaire== -1 &amp;&amp; Modele.partieFinie(o))
+				{						
+					tabPosGananteJauneImpaire[o%7]=o;
+				}
+				else if ( Math.floor(o/7)%2==0 &amp;&amp; trouvePlayerPaire== -1 &amp;&amp; Modele.partieFinie(o))
+				{						
+					tabPosGananteJaunePaire[o%7]=o;
+				}
+				
+				Modele.grille[o]=2;
+				if ( (Math.floor(o/7)%2)==0 &amp;&amp; trouveBotPaire==-1 &amp;&amp; Modele.partieFinie(o))
+				{
+					tabPosGananteRougePaire[o%7]=o;
+				}
+				else if ( (Math.floor(o/7)%2)==1 &amp;&amp; trouveBotImpaire==-1 &amp;&amp; Modele.partieFinie(o))
+				{
+					tabPosGananteRougeImpaire[o%7]=o;
+				}
+				Modele.grille[o]=0;
+&nbsp;
+			}
+		}
+		
+	}
+&nbsp;
+&nbsp;
+	//fdemisDetector remplit les position on il y a ce modele si le modele est trouvé en position on remplit la position du 0 du mileu dans le tableau 
+	/*
+	"0505",				"8050",
+	"0805",		ou		"5050",
+	"5505",				"5520",
+	"5502",				"5550"
+	*/
+	/*
+	"5050",				"0508",
+	"5080",		ou		"0505",
+	"5055",				"0255",
+	"2055",				"0555"
+	*/
+&nbsp;
+&nbsp;
+	//tamp
+	/*function demisDetector()
+	{
+		tabDiagoRight.init(-1,7);
+		tabDiagoLeft.init(-1,7);
+		detectorPusher(["8050","5050","5520","5550"],tabDiagoRight,1);
+		detectorPusher(["0505","0805","5505","5502"],tabDiagoRight,2);
+		detectorPusher(["5050","5080","5055","2055"],tabDiagoLeft,1);
+		detectorPusher(["0508","0505","0255","0555"],tabDiagoLeft,2);
+	}
+	//detecte les modeles et les push dans le tableau en rajoutant le décalage 
+	function detectorPusher(tab2,tab,decalage)
+	{
+		position=-1;	
+		while (position&lt;42)
+		{
+			var position = modeleDetector2( tab2, position+1);
+			position2=parseInt(position)+decalage;
+			if (tab[position%7]!=-1)
+			{
+				tab[position%7]=position+decalage;
+			}		
+		}
+	}*/
+	
+&nbsp;
+	//mes booleens
+	var bol=function(bole)
+	{
+		this.b=(bole) ? 1 : <span class="branch-1 cbranch-no" title="branch not covered" >0;</span>
+	}
+&nbsp;
+	bol.prototype.et=function(bole)
+	{
+		this.b =(this.b &amp;&amp; bole) ? 1 : 0;
+	}
+&nbsp;
+	bol.prototype.ou=function(bole)
+	{
+		this.b = (this.b || bole) ? 1 : 0 ;
+	}
+&nbsp;
+	bol.prototype.inv=function()
+	{
+		this.b =(this.b)  ? 0 : 1;
+	}
+	bol.prototype.cond=function(bole)
+	{
+		this.b = bole? 1 : 0;
+	}
+&nbsp;
+	function valide(pos)
+	{
+		return(pos&lt;42 &amp;&amp; pos&gt;=0);
+&nbsp;
+	}
+&nbsp;
+	//teste toute position à partir de u et joue à celle pas interdite  
+	function joueToutePosition(u,retournerPosition)
+	{		
+		var i=u;
+		//tant que la position est pas autorisé tester une autre 
+		while ( i&lt; u+7 )
+		{	
+			var pos = playHereOrNot(i);
+			if (pos)			
+			{	
+				return(""+pos);
+			}
+			i++;
+		}
+		return (0);
+	}		
+&nbsp;
+	function symetrique2(leModele,symetrique)
+	{
+		if (symetrique==true)
+		{
+			var mod =leModele.reverse();
+			return(leModele.reverse());
+		}
+		else
+		{
+			return(leModele);
+		}
+	}
+&nbsp;
+	function playSansModele(position)
+	{
+			while(1)
+			{			
+				//on retestes toutes les  positions cad 7 possibles et on y joue si possible
+				var pos = joueToutePosition(position);
+				if (pos)		
+				{	
+					break;
+				}			
+				//on supprime les moins déconseillés
+				<span class="missing-if-branch" title="if path not taken" >I</span>if (posDeconseille.length==0)
+				{
+<span class="cstat-no" title="statement not covered" >					if (posInterdite.length==0)</span>
+					{
+<span class="cstat-no" title="statement not covered" >						break;</span>
+					}
+<span class="cstat-no" title="statement not covered" >					posInterdite.pop();</span>
+				}
+				else
+				{	
+					posDeconseille.pop();
+				}	
+		}
+		return(""+pos);
+&nbsp;
+		
+	}
+	
+&nbsp;
+	
+/*
+	function smartLevelInnumber()
+	{	
+		var smartLevel=dif;
+		var rand=Math.random(); 
+		if (smartLevel&lt;10) return 0;
+		var smartLevel=(rand+dif/100);
+		if (smartLevel &gt;0.9)
+			return 10;
+		if (smartLevel +rand &gt;1)
+			return 9;
+		if (smartLevel +rand &gt;0.8)
+			return 8;
+		if (smartLevel +rand &gt;0.6)
+			return 7;	
+		if (smartLevel &gt;0.4)
+			return 6;	
+		if (smartLevel +rand  &gt;0.4)
+			return 5;	
+		if (smartLevel &gt;0.2)
+			return 6;	
+		if (smartLevel +rand  &gt;0.2)
+			return 5;
+	}*/
+&nbsp;
+}
+	
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Dec 17 2014 18:21:05 GMT+0100 (Paris, Madrid)</div>
+</div>
+
+<script src="../prettify.js"></script>
+
+<script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
+<script>
+
+    YUI().use('datatable', function (Y) {
+
+        var formatters = {
+          pct: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              try {
+                  return o.value.toFixed(2) + '%';
+              } catch (ex) { return o.value + '%'; }
+          },
+          html: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.record.get(o.column.key + '_html');
+          }
+        },
+          defaultFormatter = function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.value;
+          };
+
+        function getColumns(theadNode) {
+            var colNodes = theadNode.all('tr th'),
+                cols = [],
+                col;
+            colNodes.each(function (colNode) {
+                col = {
+                    key: colNode.getAttribute('data-col'),
+                    label: colNode.get('innerHTML') || ' ',
+                    sortable: !colNode.getAttribute('data-nosort'),
+                    className: colNode.getAttribute('class'),
+                    type: colNode.getAttribute('data-type'),
+                    allowHTML: colNode.getAttribute('data-html') === 'true' || colNode.getAttribute('data-fmt') === 'html'
+                };
+                col.formatter = formatters[colNode.getAttribute('data-fmt')] || defaultFormatter;
+                cols.push(col);
+            });
+            return cols;
+        }
+
+        function getRowData(trNode, cols) {
+            var tdNodes = trNode.all('td'),
+                    i,
+                    row = { classes: {} },
+                    node,
+                    name;
+            for (i = 0; i < cols.length; i += 1) {
+                name = cols[i].key;
+                node = tdNodes.item(i);
+                row[name] = node.getAttribute('data-value') || node.get('innerHTML');
+                row[name + '_html'] = node.get('innerHTML');
+                row.classes[name] = node.getAttribute('class');
+                //Y.log('Name: ' + name + '; Value: ' + row[name]);
+                if (cols[i].type === 'number') { row[name] = row[name] * 1; }
+            }
+            //Y.log(row);
+            return row;
+        }
+
+        function getData(tbodyNode, cols) {
+            var data = [];
+            tbodyNode.all('tr').each(function (trNode) {
+                data.push(getRowData(trNode, cols));
+            });
+            return data;
+        }
+
+        function replaceTable(node) {
+            if (!node) { return; }
+            var cols = getColumns(node.one('thead')),
+                data = getData(node.one('tbody'), cols),
+                table,
+                parent = node.get('parentNode');
+
+            table = new Y.DataTable({
+                columns: cols,
+                data: data,
+                sortBy: 'file'
+            });
+            parent.set('innerHTML', '');
+            table.render(parent);
+        }
+
+        Y.on('domready', function () {
+            replaceTable(Y.one('div.coverage-summary table'));
+            if (typeof prettyPrint === 'function') {
+                prettyPrint();
+            }
+        });
+    });
+</script>
+</body>
+</html>
