@@ -22,7 +22,7 @@ var IA=new function()
 	this.p4BlockEasy=function(posJoueur)
 	{
 		var botSmart = parseInt(self.dif)/100+Math.random() > 1 //dif is choose by player with slider
-		if (Modele.partieFini){
+		if (Modele.isGameFinish){
 				return(false);
 		};
 		if (botSmart){
@@ -659,7 +659,7 @@ function comparerCaractere (carMod,car,impaire)
 				if (Modele.isGameFinish)
 				{		
 						//remettre partie fini à faux pour qu'il n'affiche pas la fin du jeu alors qu'on empeche le Modele.joueur de gagner à cette place 
-						Modele.partieFini=false;
+						Modele.isGameFinish=false;
 						//retour en chaine pour que 0 soit pas faux 
 						return ""+pos.value ;
 				}		
@@ -674,7 +674,7 @@ function comparerCaractere (carMod,car,impaire)
 		for ( var i = 0;i<7;i++)
 		{
 			var position=Modele.play(i,true);
-			if (Modele.partieFini)
+			if (Modele.isGameFinish)
 			{
 					Modele.nextPlayer();
 					var pos=Modele.play(position,bool);
@@ -699,7 +699,7 @@ function comparerCaractere (carMod,car,impaire)
 			//supprimer le pion rajouté précédemment 
 			Modele.grille[position]="0";
 
-			if (Modele.partieFini && position !=posInterdite[posInterdite.length-1] && position >= 0)
+			if (Modele.isGameFinish && position !=posInterdite[posInterdite.length-1] && position >= 0)
 			{
 					posInterdite.push(position);
 			}		
@@ -721,7 +721,7 @@ function comparerCaractere (carMod,car,impaire)
 			Modele.play(i,true);
 			//supprimer le pion rajouté précédemment 
 			Modele.grille[position]="0";		
-			if (Modele.partieFini)
+			if (Modele.isGameFinish)
 			{
 					//rajouter la position en déconseillé 
 				if (position !=posDeconseille.at(-1) && position >=0)				
