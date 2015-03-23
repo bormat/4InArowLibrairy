@@ -1,26 +1,59 @@
-function Pion(nb){
-		this.col = nb%7;
-		this.line=Math.floor(nb/7);
-		this.pos=nb;
+var Obj = {
+	new : function(){
+		return Object.create(Obj.prototype);
+	},
+	prototype : {
+		add : function(methods){
+			for (i in methods){
+				this[i] = methods[i];
+			}
+		}
+	}	
 }
 
-Pion.prototype={
-	value : function(){
-		return(Modele.grille[this.pos]);
+
+
+function Disc(nb){
+	this.col = nb%7;
+	this.line=Math.floor(nb/7);
+	this.pos=nb;
+}
+
+var Disc = {
+	new : function(nb){
+		var disc =  Object.create(Disc.prototype);
+		disc.col = nb%7;
+		disc.line=Math.floor(nb/7);
+		disc.pos=nb;
+		return disc;
 	},
-	inc : function(val){
-		var oldpos=this.pos;
-		this.pos+=val;
-		var lineD=Math.abs(oldpos%7-this.pos%7) ;
-		var colD=Math.abs(Math.floor(oldpos/7)-Math.floor(this.pos/7))
-		//si le décalage dépasse une ligne ou 1 colonne on annule
-		if ( lineD > 1 || colD > 1){	
-			this.pos=oldpos;
-			return false;				
+	prototype : {
+		value : function(){
+			return(Modele.grille[this.pos]);
+		},
+		inc : function(val){
+			var oldpos=this.pos;
+			this.pos+=val;
+			var lineDir=Math.abs(oldpos%7-this.pos%7) ;
+			var colDir=Math.abs(Math.floor(oldpos/7)-Math.floor(this.pos/7))
+			//si le décalage dépasse une ligne ou 1 colonne on annule
+			if ( lineDir > 1 || colDir> 1){	
+				this.pos=oldpos;
+				return false;				
+			}
+			this.line= Math.floor((this.pos)/7);	
+			this.col = (this.pos)%7;
+			return true;
+		},
+		GoToDir : function(direction, colorValue){
+			while (this.inc(direction)){
+				if (this.value() != colorValue ){
+					//on revient sur un Disc de la même couleur que Disc 0
+					this.inc(-direction);
+					break;
+				}
+			}
 		}
-		this.line= Math.floor((this.pos)/7);	
-		this.col = (this.pos)%7;
-		return true;
 	}
 }
 
@@ -30,7 +63,7 @@ var Modele={
 	joueur:"j1",
 	grille:[],
 	backup:[],
-	partieFini:false,
+	isGameFinish:false,
 	init:function(){
 		for (var i=0;i<42;i++){
 			Modele.grille[i]="0";
@@ -76,53 +109,64 @@ var Modele={
 			position +=7;			
 		}		
 		if ( Modele.grille[position] == "0" ){
-			Modele.mettrePion(position,test);
+			Modele.mettreDisc(position,test);
 			return position;
 		}
 		return (-1);
 	},
-	mettrePion : function mettrePion(position,test){
+	play2 : function(position,test){
+		var toReturn = Obj.new();
+		position %= 7;
+		while ( Modele.grille[position+7] == "0" && position <37 ){
+			position +=7;			
+		}
+		if ( Modele.grille[position] == "0" ){
+			Modele.isGameFinish = Modele.mettreDisc(position,test)
+			toReturn.add({
+				isOK : true ,
+				value : position
+			})
+		}else{
+			toReturn.isOK = false;
+		}		
+		return toReturn;
+	},
+	mettreDisc : function mettreDisc(position,test){
 		var numJoueur=Modele.joueur.charAt(1);
 		Modele.grille[position]=""+numJoueur;
 		if (!(test)){
 			Modele.nextPlayer()
 			Modele.backup.push(position);
 		}
-		Modele.partieFini = Modele.partieFinie(position) ;
+		Modele.isGameFinish = Modele.isGameEnd(position) ;
 		if (test){	
 			Modele.grille[position]="0";
 		}
-		return Modele.partieFini//false;
+		return Modele.isGameFinish//false;
 	},
 
-	partieFinie : function(start){
-		Modele.partieFini=false;
+	isGameEnd : function(lastPos){
+		Modele.isGameFinish=false;
 		//direction permettant un puissance 4
 		var tabDir=[1,6,7,8];
-		var start0=new Pion(start);
+		var start0 = Disc.new(lastPos);
+		var colorValue = start0.value();
 		for (var o=0,size=tabDir.length; o<size; o++){
-			var start1=new Pion(start);	//left of the align 
-			var start2=new Pion(start); //right of the align
+			var start1 = Disc.new(lastPos);	//left of the align 
+			var start2 = Disc.new(lastPos); //right of the align
 			var direction=tabDir[o];
 			var i=0;
 			//continue in direction while color is same
-			//start is a Pion that contains the position writen in x,y or with number between 0,41 included 
-			function GoToDir(start,direction){
-				while (start.inc(direction)){
-					if (start.value()!=start0.value() ){
-						//on revient sur un pion de la même couleur que pion 0
-						start.inc(-direction);
-						break;
-					}
-				}
-			}
-			GoToDir(start1,direction);
-			GoToDir(start2,-direction);
+			//lastPos is a Disc that contains the position writen in x,y or with number between 0,41 included 
+		
+			start1.GoToDir(direction,colorValue);
+			start2.GoToDir(-direction,colorValue);
 			var lineDiff=Math.abs(start2.line-start1.line);
 			var collDiff=Math.abs(start2.col-start1.col);
+			//if Disc are separate by 4 Discs the game is end
 			if (lineDiff>=3 || collDiff>=3){
-				Modele.winInfo={pion1:start1 , pion2:start2, dir:-direction }
-				Modele.partieFini=true;
+				Modele.winInfo = {disc1:start1 , disc2:start2, dir:-direction }
+				Modele.isGameFinish=true;
 				return true;
 			}
 		}
@@ -130,11 +174,11 @@ var Modele={
 	},	
 	multiplePut : function(tab,testOrNot){
 		for (var i=0;i< tab.length;i++){
-			Modele.mettrePion(tab[i],testOrNot);
+			Modele.mettreDisc(tab[i],testOrNot);
 		}
 	},
 	undo : function(emplacement,Nothuman){
-			Modele.partieFini=false;
+			Modele.isGameFinish=false;
 			var pos=Modele.backup.pop();
 			if (pos==38)
 				return Modele.backup.push(pos);
@@ -166,7 +210,7 @@ var Modele={
 		$.cookie('boolSmart', JSON.stringify(IA.boolSmart));
 	},
 	playAgain : function(emplacement){
-		Modele.partieFini==false;
+		Modele.isGameFinish==false;
 		Modele.init();
 		Modele.joueur='j1';
 		Modele.play(3);
