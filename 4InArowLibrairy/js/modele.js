@@ -126,6 +126,8 @@ var Modele={
 				isOK : true ,
 				value : position
 			})
+		}else{
+			toReturn.isOK = false;
 		}		
 		return toReturn;
 	},
