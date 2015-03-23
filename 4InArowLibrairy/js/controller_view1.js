@@ -195,9 +195,9 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		}
 		
 		$scope.undo=function(){
-			if (Modele.isGameFinish){
+			if (Modele.partieFini){
 				darkWinningPos(false);
-				Modele.isGameFinish=false;
+				Modele.partieFini=false;
 			}
 
 
@@ -219,7 +219,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		var stackPosition=[]
 		$scope.fallenPion=function(pos){
 			if ($scope.mode=="normal"){
-				if (!Modele.isGameFinish){
+				if (!Modele.partieFini){
 					stackPosition.push(pos);
 				}	
 				else{
@@ -236,7 +236,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		$scope.message2=message;
 		var threadIsntUsed=true;
 		function loopThreatAnimation(){
-			if (Modele.isGameFinish && stackPosition.length==0){
+			if (Modele.partieFini && stackPosition.length==0){
 				return false;
 			}
 			if (stackPosition.length!=0){
@@ -249,7 +249,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 						return(threadIsntUsed=true);
 					}
 					var stopAlert=false;
-					if (Modele.isGameFinish){
+					if (Modele.partieFini){
 						function b(){
 							message();
 							$scope.$apply();
@@ -266,7 +266,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 			function callbackPlayer(){
 				function callbackBotIfActiveElsePlayer1(){
 					threadIsntUsed=true;
-					if (!stopAlert && Modele.isGameFinish){
+					if (!stopAlert && Modele.partieFini){
 						message();
 					}
 					//threat other position if player play during animation
@@ -286,12 +286,12 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		}
 		function darkWinningPos(dark){
 					var f=Modele.winInfo;
-					var i=f.disc1.pos;
+					var i=f.pion1.pos;
 					var colorNumber= $scope.grille[i]%3;
 					if (dark){
 						 colorNumber = (colorNumber==1) ? 4 : 8;
 					}
-					for (;i!=f.disc2.pos + f.dir ;i+=f.dir){
+					for (;i!=f.pion2.pos + f.dir ;i+=f.dir){
 						setGrille(i, colorNumber);
 					}
 		}
