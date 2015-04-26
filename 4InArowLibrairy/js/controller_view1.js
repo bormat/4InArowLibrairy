@@ -286,12 +286,12 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		}
 		function darkWinningPos(dark){
 					var f=Modele.winInfo;
-					var i=f.pion1.pos;
+					var i=f.pion1;
 					var colorNumber= $scope.grille[i]%3;
 					if (dark){
 						 colorNumber = (colorNumber==1) ? 4 : 8;
 					}
-					for (;i!=f.pion2.pos + f.dir ;i+=f.dir){
+					for (;i!=f.pion2 + f.dir ;i+=f.dir){
 						setGrille(i, colorNumber);
 					}
 		}

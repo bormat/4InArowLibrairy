@@ -1,27 +1,22 @@
-function Pion(nb){
-		this.col = nb%7;
-		this.line=Math.floor(nb/7);
+function Disc(nb){
 		this.pos=nb;
+		this.initColorNumber = Modele.grille[this.pos];
 }
 
-Pion.prototype={
-	value : function(){
-		return(Modele.grille[this.pos]);
+Disc.distance =function(disc1, disc2, xOrY){
+		var distX = (xOrY !="y") ? (disc2 % 7 - disc1 % 7) : 0;
+		var distY = (xOrY !="x") ? Math.floor(disc2/7) - Math.floor(disc1/7) : 0;
+		return  Math.max(Math.abs(distX), Math.abs(distY));
+}
+Disc.prototype={
+	goToDir: function(dir){
+		var newPos = this.pos;
+		do {
+			pos = newPos;
+			newPos = pos  + dir
+		} while( Disc.distance(pos, newPos ) <= 1  && Modele.grille[newPos] == this.initColorNumber );
+		return pos;
 	},
-	inc : function(val){
-		var oldpos=this.pos;
-		this.pos+=val;
-		var lineD=Math.abs(oldpos%7-this.pos%7) ;
-		var colD=Math.abs(Math.floor(oldpos/7)-Math.floor(this.pos/7))
-		//si le décalage dépasse une ligne ou 1 colonne on annule
-		if ( lineD > 1 || colD > 1){	
-			this.pos=oldpos;
-			return false;				
-		}
-		this.line= Math.floor((this.pos)/7);	
-		this.col = (this.pos)%7;
-		return true;
-	}
 }
 
 
@@ -99,28 +94,13 @@ var Modele={
 		Modele.partieFini=false;
 		//direction permettant un puissance 4
 		var tabDir=[1,6,7,8];
-		var start0=new Pion(start);
+		var disc = new Disc(start);	//left of the align 
 		for (var o=0,size=tabDir.length; o<size; o++){
-			var start1=new Pion(start);	//left of the align 
-			var start2=new Pion(start); //right of the align
 			var direction=tabDir[o];
-			var i=0;
 			//continue in direction while color is same
-			//start is a Pion that contains the position writen in x,y or with number between 0,41 included 
-			function GoToDir(start,direction){
-				while (start.inc(direction)){
-					if (start.value()!=start0.value() ){
-						//on revient sur un pion de la même couleur que pion 0
-						start.inc(-direction);
-						break;
-					}
-				}
-			}
-			GoToDir(start1,direction);
-			GoToDir(start2,-direction);
-			var lineDiff=Math.abs(start2.line-start1.line);
-			var collDiff=Math.abs(start2.col-start1.col);
-			if (lineDiff>=3 || collDiff>=3){
+			var start1 = disc.goToDir(direction);
+			var start2 = disc.goToDir(-direction);
+			if (Disc.distance(start1 ,start2)>=3){
 				Modele.winInfo={pion1:start1 , pion2:start2, dir:-direction }
 				Modele.partieFini=true;
 				return true;
