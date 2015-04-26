@@ -27,7 +27,7 @@ var IA=new function()
 		};
 		if (botSmart){
 			this.boolSmart.push("true")
-			Modele.joueur="j1";
+			Modele.setPlayer(1);
 			fillsWinningPos();	
 			var pos = -1;
 			for(var step=0;step<6 && (pos >48 || pos<0 || pos===false );step++){
@@ -38,7 +38,7 @@ var IA=new function()
 						pos=bloquerDirect(true);break;
 				case 2: 
 						findForbiddenAndNotRecommandedPosition();
-						pos=gagneEn2Coup("j1");
+						pos=gagneEn2Coup(1);
 						break;
 				case 3: 
 						var findAt={modelID:0,positionInGrille:48};
@@ -271,31 +271,30 @@ function propertyExist(prop){
 //push where don't play without modele
 function detectBadPositionAlgorythme(){
 	for (var i=0;i<7;i++){
-		Modele.joueur="j1";
+		Modele.setPlayer(1);
 		var pos=Modele.play(i,true);
 		Modele.grille[pos]="1";
-		var j2Win=gagneEn2Coup("j2");
+		var j2Win=gagneEn2Coup(2);
 		if (j2Win!==false){
 			posDeconseille.push(pos);
 		}
 		Modele.grille[pos]=0;
 	}
-	Modele.joueur="j1";
+	Modele.setPlayer(1);
 }
 	
 //compte les positions gagnantes crées si on joue dans les 7 poositions possibles et joue là ou il faut pour gagner en 2 coups
 //ne fonctionne pas pour toutes les grilles de jeu
 function gagneEn2Coup(playerTurn){
-	var playerTurn2=playerTurn.substring(1)*1;
 	for(var i=0;i<7;i++){
-		Modele.joueur=playerTurn;
+		Modele.setPlayer(playerTurn);
 		var cond = false;
 		//
 		var pos=Modele.play(i,true);
-		cond = (playerTurn2==1)	? positionInterdite(pos,posInterdite) : comparerLigne("g",pos-7);
+		cond = (playerTurn==1)	? positionInterdite(pos,posInterdite) : comparerLigne("g",pos-7);
 		if (!cond){
 			var position2=pos;
-			Modele.grille[pos]=playerTurn2;
+			Modele.grille[pos]=playerTurn;
 			var cptGagnerDirect=0;
 			for(var o=0;o<7;o++){
 				//
@@ -303,8 +302,8 @@ function gagneEn2Coup(playerTurn){
 				if (Modele.partieFini && pos >=0){
 					cptGagnerDirect++;
 					//si il y a une position gagnante au dessus d'une autre 
-					var WinnerPos=(Modele.joueur == "j1") ? "g" : "i";
-					var otherPlayerWinOnMe=(Modele.joueur == "j1") ? false: comparerLigne("g",pos);
+					var WinnerPos=(!Modele.isHumanPlayer()) ? "g" : "i";
+					var otherPlayerWinOnMe= (!Modele.isHumanPlayer()) ? false: comparerLigne("g",pos);
 					if ( (cptGagnerDirect ==1 && comparerLigne(WinnerPos,pos-7) )|| (cptGagnerDirect >1 && !otherPlayerWinOnMe) ){	
 						Modele.grille[position2]=0;
 						return(i)

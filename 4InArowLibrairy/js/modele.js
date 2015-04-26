@@ -1,11 +1,11 @@
-function Disc(nb){
-		this.pos=nb;
+function Disc(pos){
+		this.pos=pos;
 		this.initColorNumber = Modele.grille[this.pos];
 }
 
 Disc.distance =function(disc1, disc2, xOrY){
-		var distX = (xOrY !="y") ? (disc2 % 7 - disc1 % 7) : 0;
-		var distY = (xOrY !="x") ? Math.floor(disc2/7) - Math.floor(disc1/7) : 0;
+		var distX =  (disc2 % 7 - disc1 % 7);
+		var distY = Math.floor(disc2/7) - Math.floor(disc1/7);
 		return  Math.max(Math.abs(distX), Math.abs(distY));
 }
 Disc.prototype={
@@ -14,7 +14,7 @@ Disc.prototype={
 		do {
 			pos = newPos;
 			newPos = pos  + dir
-		} while( Disc.distance(pos, newPos ) <= 1  && Modele.grille[newPos] == this.initColorNumber );
+		} while(Disc.distance(pos, newPos ) <= 1  && Modele.grille[newPos] == this.initColorNumber );
 		return pos;
 	},
 }
@@ -63,6 +63,10 @@ var Modele={
 	},
 	setPlayer : function(number){
 		Modele.joueur="j"+number;
+	},
+
+	isHumanTurn : function(){
+		return Modele.joueur=="j1";
 	},
 	play : function(position,test){
 		/*la position r[e]cup[e]r[e] est celle de la plus haute ligne */

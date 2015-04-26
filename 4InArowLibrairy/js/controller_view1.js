@@ -43,7 +43,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 				$scope.undo();
 			}
 			$scope.grille.safeClone(Modele.grille);
-			Modele.joueur="j2";
+			Modele.setPlayer(2);
 		}
 		
 		$scope.mode="normal";
@@ -209,7 +209,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 					$scope.undo();
 				}else{
 					// if there is a problem with the player who have to play change the player
-					Modele.joueur="j2";
+					Modele.setPlayer(2);
 				}
 			}
 		}
@@ -299,7 +299,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 					//show winning pos
 					darkWinningPos(true)					
 					var message;
-					if (Modele.joueur==="j1"){
+					if (!Modele.isHumanTurn()){
 						if (IA.boolSmart.indexOf("false")+1){
 							message="bravo vous avez gagnez  augmentez un peu le niveau";
 						}
