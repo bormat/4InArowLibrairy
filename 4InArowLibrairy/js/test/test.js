@@ -1,6 +1,6 @@
 describe("myFunction", function() {
 		afterEach(function() {
-			Modele.partieFini = false;
+			Modele.isGameFinish(false);
 		});
 		function testor(tab,pos,identifier){
 			it(identifier+"shouldBeAt"+pos, function(){
@@ -85,7 +85,21 @@ it("shouldBe", function(){
         "1121220",
         ])
 		 	expect(IA.p4BlockEasy(6,true)).toEqual(10);
-		}); 
+	}); 
+		
+	 it("shouldBe", function(){
+		Modele.setModel([
+			"0000000",
+			"0000000",
+			"0001010",
+			"0002120",
+			"0001212",
+			"0021212",
+			]
+		)
+		expect(IA.p4BlockEasy(6,true)).toEqual(18);
+	}); 
+	
 		
 		
 	it("shouldBe", function(){
@@ -1883,11 +1897,11 @@ it("shouldBe", function(){
         "4218188",
         "2421888",
        ])
-		expect(Modele.partieFinie(14)).toBe(true);
-		expect(Modele.partieFinie(27)).not.toBe(true);
-		expect(Modele.partieFinie(20)).toBe(true);
-		expect(Modele.partieFinie(29)).toBe(true);
-		expect(Modele.partieFinie(29)).toBe(true);
+		expect(Modele.isGameFinish(14)).toBe(true);
+		expect(Modele.isGameFinish(27)).not.toBe(true);
+		expect(Modele.isGameFinish(20)).toBe(true);
+		expect(Modele.isGameFinish(29)).toBe(true);
+		expect(Modele.isGameFinish(29)).toBe(true);
 
 		});
 			

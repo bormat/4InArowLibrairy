@@ -22,14 +22,14 @@ var IA=new function()
 	this.p4BlockEasy=function(posJoueur,retournerPosition)
 	{
 		var botSmart = parseInt(self.dif)/100+Math.random() > 1 //dif is choose by player with slider
-		if (Modele.partieFini){
+		if (Modele.isGameFinish()){
 				return(false);
 		};
 		if (botSmart){
 			this.boolSmart.push("true")
-			Modele.joueur="j1";
+			Modele.setPlayer(1);
 			fillsWinningPos();	
-			var pos = -1;
+			var pos = false;
 			for(var step=0;step<6 && (pos >48 || pos<0 || pos===false );step++){
 				switch(step){
 				case 0:
@@ -38,7 +38,7 @@ var IA=new function()
 						pos=bloquerDirect(true);break;
 				case 2: 
 						findForbiddenAndNotRecommandedPosition();
-						pos=gagneEn2Coup("j1");
+						pos=gagneEn2Coup(1);
 						break;
 				case 3: 
 						var findAt={modelID:0,positionInGrille:48};
@@ -51,7 +51,7 @@ var IA=new function()
 						})
 						break;
 				case 5: 
-						pos=giveMeACheckedPosition(function(){ 
+						pos=giveMeACheckedPosition(function(){
 							return (playSansModele(posJoueur));
 						})
 						if (pos===false){
@@ -65,29 +65,29 @@ var IA=new function()
 			this.boolSmart.push("false");
 			var pos=Math.floor(Math.random()*7);
 		};	
-		pos=Modele.play(pos,retournerPosition);
-		return pos;
+		return Modele.play(pos,retournerPosition);
 	}
 
-	function giveMeACheckedPosition(functionWhoReturnAStringPosToCheck){
+	function giveMeACheckedPosition(functionWhoReturnFalseOrPosToCheck){
 		var i=0;
-		var param
 		do{
-			var pos = functionWhoReturnAStringPosToCheck();	
-			param=wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, pos);
+			var pos = functionWhoReturnFalseOrPosToCheck();
+			if(pos === false){
+				break;
+			}
+			var param = wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, pos);
 			i++;
-		} while(param.isModelfound && pos && i<7);
+		} while(param.isModelfound && i<7);
 		return pos;
 	}
 
 	
-	function playAvecModele(findAt){	
+	function playAvecModele(findAt){
 		var TabOfTab=[attaque,defense,miniDef,mesModele]
 		var pos=false;
 		while(findAt.tabNumber < TabOfTab.length ){
-			var length=TabOfTab[findAt.tabNumber].length;
-			while (findAt.modelID < length){
-				var position=modeledetectorAndAnswer(TabOfTab[findAt.tabNumber],findAt);
+			while (findAt.modelID < TabOfTab[findAt.tabNumber].length){
+				var position = modeledetectorAndAnswer(TabOfTab[findAt.tabNumber],findAt);
 				if ( position!==false){
 					var pos=ifPlayHereGiveMeExactPos(position);
 					if (pos!==false){
@@ -108,17 +108,17 @@ var IA=new function()
 	
 	
 //return boolean true if after play to a position a model is matched
-function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, playerInNumber, posBot){
-var isModelfound=false
-	posBot=Modele.play(posBot,true);
-	Modele.grille[posBot]=playerInNumber;
-	bigloop : for (var i=0;i<7 && !isModelfound;i++){
+function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, player, posBot){
+	var isModelfound=false
+	posBot = Modele.play(posBot,true);
+	Modele.grille[posBot]  = player;
+    for (var i=0; i<7 && !isModelfound;i++){
 		var pos=Modele.play(i,true);
 		Modele.grille[pos]=2;
 		if (pos >= 0 ){
-			for ( var j=0; j<TabWontBecomeLikeThisModel.length && ! isModelfound ; j++ ){
+			for ( var j=0; j < TabWontBecomeLikeThisModel.length && ! isModelfound ; j++ ){
 				var param= structModelDetector(TabWontBecomeLikeThisModel[j], 48) ;
-				isModelfound=param.isModelfound
+				isModelfound = param.isModelfound
 			}
 			if (isModelfound){
 				posDeconseille.push(parseInt(posBot));
@@ -178,7 +178,7 @@ var futureIWant=function(param,ModelInStruct,pos,otherOption){
 
 function findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos,otherOption,theTab){
 			var isModelfound=false;
-			if( ! ModelInStruct.hasOwnProperty("logicalOperator") ){
+			if( !ModelInStruct.hasOwnProperty("logicalOperator") ){
 					for (var i=0; i<theTab.length && isModelfound===false; i++){
 						param=modeleDetector3(theTab[i],pos,otherOption);
 						if ( !(param.pos>42 || param.pos===false) ){
@@ -220,7 +220,7 @@ function structModelDetector(ModelInStruct,pos){
 	var theTab= ModelInStruct[(ModelInStruct.hasOwnProperty("futureTab")) ? "futureTab" : "tab"] ;
 	if ( ModelInStruct.hasOwnProperty("samePos")){
 		otherOption.samePos=true
-		otherOption.posTopLeftIWant=ModelInStruct.posTopLeftIWantposTopLeftIWant;
+		otherOption.posTopLeftIWant=ModelInStruct.posTopLeftIWant;
 	}
 	param =findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos,otherOption,theTab);
 	if( ModelInStruct.hasOwnProperty("futureTab")){
@@ -271,43 +271,40 @@ function propertyExist(prop){
 //push where don't play without modele
 function detectBadPositionAlgorythme(){
 	for (var i=0;i<7;i++){
-		Modele.joueur="j1";
-		var pos=Modele.play(i,true);
+		Modele.setPlayer(1);
+		var pos = Modele.play(i,true);
 		Modele.grille[pos]="1";
-		var j2Win=gagneEn2Coup("j2");
+		var j2Win=gagneEn2Coup(2);
 		if (j2Win!==false){
 			posDeconseille.push(pos);
 		}
 		Modele.grille[pos]=0;
 	}
-	Modele.joueur="j1";
+	Modele.setPlayer(1);
 }
 	
 //compte les positions gagnantes crées si on joue dans les 7 poositions possibles et joue là ou il faut pour gagner en 2 coups
 //ne fonctionne pas pour toutes les grilles de jeu
 function gagneEn2Coup(playerTurn){
-	var playerTurn2=playerTurn.substring(1)*1;
 	for(var i=0;i<7;i++){
-		Modele.joueur=playerTurn;
-		var cond = false;
-		//
+		Modele.setPlayer(playerTurn);
 		var pos=Modele.play(i,true);
-		cond = (playerTurn2==1)	? positionInterdite(pos,posInterdite) : comparerLigne("g",pos-7);
+		var cond = (playerTurn==1)	? positionInterdite(pos,posInterdite) : comparerLigne("g",pos-7);
 		if (!cond){
 			var position2=pos;
-			Modele.grille[pos]=playerTurn2;
+			Modele.grille[pos]=playerTurn;
 			var cptGagnerDirect=0;
 			for(var o=0;o<7;o++){
 				//
 				var pos = Modele.play(o,true);
-				if (Modele.partieFini && pos >=0){
+				if (Modele.isGameFinish() && pos >=0){
 					cptGagnerDirect++;
 					//si il y a une position gagnante au dessus d'une autre 
-					var WinnerPos=(Modele.joueur == "j1") ? "g" : "i";
-					var otherPlayerWinOnMe=(Modele.joueur == "j1") ? false: comparerLigne("g",pos);
-					if ( (cptGagnerDirect ==1 && comparerLigne(WinnerPos,pos-7) )|| (cptGagnerDirect >1 && !otherPlayerWinOnMe) ){	
-						Modele.grille[position2]=0;
-						return(i)
+					var WinnerPos=(Modele.getPlayer() == 1) ? "g" : "i";
+					var otherPlayerWinOnMe=(Modele.getPlayer() == 1) ? false: comparerLigne("g",pos);
+					if ( (cptGagnerDirect == 1 && comparerLigne(WinnerPos,pos-7) )|| (cptGagnerDirect >1 && !otherPlayerWinOnMe) ){	
+						Modele.grille[position2] = 0;
+						return(i);
 					}
 				}
 			}
@@ -339,7 +336,12 @@ function gagneEn2Coup(playerTurn){
 					nbline=findAt.isModelfoundParams.theTab.length;
 				}
 				theTab=theTab.length;
-				var positionmodele = findAt.isModelfoundParams.pos + positionOfSym(posRelativeToModele,theTab, findAt.isModelfoundParams.sym);
+				
+				if( findAt.isModelfoundParams.theModelItSelf && findAt.isModelfoundParams.theModelItSelf.futureTab){
+					var positionmodele = findAt.isModelfoundParams.playAt;
+				}else{
+					var positionmodele = findAt.isModelfoundParams.pos + positionOfSym(posRelativeToModele,theTab, findAt.isModelfoundParams.sym);
+				}
 				tabPosInBigGrille.push(positionmodele);		
 			}
 			if (Array.isArray(findAt.isModelfoundParams.playAt)){
@@ -363,8 +365,6 @@ function gagneEn2Coup(playerTurn){
 	//fmodele
 	this.modeledetectorAndAnswer =modeledetectorAndAnswer;
 	function modeledetectorAndAnswer(modele,findAt){
-		var positionRelativeModel, lengthModel;
-		var position=false;		
 		findAt.modele=modele;
 		findAt.callback = function(tabPosInBigGrille){
 			findAt.positionToPlay=tabPosInBigGrille[0];
@@ -568,14 +568,14 @@ function gagneEn2Coup(playerTurn){
 								if (a !='r')break;							
 						case 'g':case 'j':case '.':case 'f':
 								Modele.grille[i]=1;
-								continuerBoucle.et(Modele.partieFinie(i));
+								continuerBoucle.et(Modele.isGameFinish(i));
 								if (a == 'j' || a == '.')continuerBoucle.inv();
 								if (a !='.' && a !='f' ||  !continuerBoucle.b){
 									break;
 								}
 						case 'h':case 'i':
 								Modele.grille[i]=2;
-								continuerBoucle.et(Modele.partieFinie(i));
+								continuerBoucle.et(Modele.isGameFinish(i));
 								if (a == 'h' || a =='f')continuerBoucle.inv();
 								break;
 						case 't':
@@ -656,10 +656,10 @@ function comparerCaractere (carMod,car,impaire)
 		for ( var i = 0;i<7;i++)
 		{
 				var position=Modele.play(i,true);
-				if (Modele.partieFini && position >=0)
+				if (Modele.isGameFinish() && position >=0)
 				{		
 						//remettre partie fini à faux pour qu'il n'affiche pas la fin du jeu alors qu'on empeche le Modele.joueur de gagner à cette place 
-						Modele.partieFini=false;
+						Modele.isGameFinish(false);
 						//retour en chaine pour que 0 soit pas faux 
 						return ""+position ;
 				}		
@@ -674,7 +674,7 @@ function comparerCaractere (carMod,car,impaire)
 		for ( var i = 0;i<7;i++)
 		{
 			var position=Modele.play(i,true);
-			if (Modele.partieFini)
+			if (Modele.isGameFinish())
 			{
 					Modele.nextPlayer();
 					var pos=Modele.play(position,bool);
@@ -699,7 +699,7 @@ function comparerCaractere (carMod,car,impaire)
 			//supprimer le pion rajouté précédemment 
 			Modele.grille[position]="0";
 
-			if (Modele.partieFini && position !=posInterdite[posInterdite.length-1] && position >= 0)
+			if (Modele.isGameFinish() && position !=posInterdite[posInterdite.length-1] && position >= 0)
 			{
 					posInterdite.push(position);
 			}		
@@ -721,7 +721,7 @@ function comparerCaractere (carMod,car,impaire)
 			Modele.play(i,true);
 			//supprimer le pion rajouté précédemment 
 			Modele.grille[position]="0";		
-			if (Modele.partieFini)
+			if (Modele.isGameFinish())
 			{
 					//rajouter la position en déconseillé 
 				if (position !=posDeconseille.at(-1) && position >=0)				
@@ -790,18 +790,18 @@ function comparerCaractere (carMod,car,impaire)
 				var trouvePlayerPaire=tabPosGananteJaunePaire[o%7];
 				var trouveBotImpaire=tabPosGananteRougeImpaire[o%7];
 
-				if ( Math.floor(o/7)%2==1 && trouvePlayerImpaire== -1 && Modele.partieFinie(o)){				
+				if ( Math.floor(o/7)%2==1 && trouvePlayerImpaire== -1 && Modele.isGameFinish(o)){				
 					tabPosGananteJauneImpaire[o%7]=o;
 				}
-				else if ( Math.floor(o/7)%2==0 && trouvePlayerPaire== -1 && Modele.partieFinie(o)){				
+				else if ( Math.floor(o/7)%2==0 && trouvePlayerPaire== -1 && Modele.isGameFinish(o)){				
 					tabPosGananteJaunePaire[o%7]=o;
 				}
 				
 				Modele.grille[o]=2;
-				if ( (Math.floor(o/7)%2)==0 && trouveBotPaire==-1 && Modele.partieFinie(o)){
+				if ( (Math.floor(o/7)%2)==0 && trouveBotPaire==-1 && Modele.isGameFinish(o)){
 					tabPosGananteRougePaire[o%7]=o;
 				}
-				else if ( (Math.floor(o/7)%2)==1 && trouveBotImpaire==-1 && Modele.partieFinie(o)){
+				else if ( (Math.floor(o/7)%2)==1 && trouveBotImpaire==-1 && Modele.isGameFinish(o)){
 					tabPosGananteRougeImpaire[o%7]=o;
 				}
 				Modele.grille[o]=0;

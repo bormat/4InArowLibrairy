@@ -195,9 +195,9 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		}
 		
 		$scope.undo=function(){
-			if (Modele.partieFini){
+			if (Modele.isGameFinish()){
 				darkWinningPos(false);
-				Modele.partieFini=false;
+				Modele.isGameFinish(false);
 			}
 
 
@@ -219,7 +219,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		var stackPosition=[]
 		$scope.fallenPion=function(pos){
 			if ($scope.mode=="normal"){
-				if (!Modele.partieFini){
+				if (!Modele.isGameFinish()){
 					stackPosition.push(pos);
 				}	
 				else{
@@ -236,7 +236,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		$scope.message2=message;
 		var threadIsntUsed=true;
 		function loopThreatAnimation(){
-			if (Modele.partieFini && stackPosition.length==0){
+			if (Modele.isGameFinish() && stackPosition.length==0){
 				return false;
 			}
 			if (stackPosition.length!=0){
@@ -249,7 +249,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 						return(threadIsntUsed=true);
 					}
 					var stopAlert=false;
-					if (Modele.partieFini){
+					if (Modele.isGameFinish()){
 						function b(){
 							message();
 							$scope.$apply();
@@ -266,7 +266,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 			function callbackPlayer(){
 				function callbackBotIfActiveElsePlayer1(){
 					threadIsntUsed=true;
-					if (!stopAlert && Modele.partieFini){
+					if (!stopAlert && Modele.isGameFinish()){
 						message();
 					}
 					//threat other position if player play during animation
@@ -286,6 +286,9 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		}
 		function darkWinningPos(dark){
 					var f=Modele.winInfo;
+					if (!f){
+						return false;
+					}
 					var i=f.pion1;
 					var colorNumber= $scope.grille[i]%3;
 					if (dark){
@@ -299,12 +302,12 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 					//show winning pos
 					darkWinningPos(true)					
 					var message;
-					if (!Modele.isHumanTurn()){
+					if (Modele.isHumanTurn()){
 						if (IA.boolSmart.indexOf("false")+1){
-							message="bravo vous avez gagnez  augmentez un peu le niveau";
+							message="bravo vous avez gagné  augmentez un peu le niveau";
 						}
 						else{
-							message="bravo vous avez gagnez  envoyer votre historique par commentaire pour améliorer le jeu";
+							message="bravo vous avez gagné  envoyer votre historique par commentaire pour améliorer le jeu";
 							$("#comment").append("ne touchez pas cette ligne c'est votre historique de jeux"+JSON.stringify(Modele.backup));
 						}
 					}
