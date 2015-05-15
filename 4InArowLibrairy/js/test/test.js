@@ -9,6 +9,32 @@ describe("myFunction", function() {
 			});
 		}
 		
+		it("test", function(){
+			Modele.setModel([
+			"0011200",
+			"0222100",
+			"0112200",
+			"0221100",
+			"1212100",
+			"1121220",
+			])
+			expect(IA.p4BlockEasy(1,true)).toEqual(21);
+		});
+		
+		
+		it("test", function(){
+			Modele.setModel(
+			[
+			"0011200",
+			"0022100",
+			"0012200",
+			"0021100",
+			"0212100",
+			"1121220",
+			])
+			expect(IA.p4BlockEasy(4,true)).not.toEqual(41);
+		});
+		
 		
 		/*it("shouldBe", function(){
 		 	expect(IA.testerSiContenu3(4,6)).toEqual(3);
@@ -1982,6 +2008,8 @@ it("shouldBe", function(){
         ])
 		expect(IA.p4BlockEasy(4,true)).not.toEqual(18);
 		});
+		
+		
 
 
 		

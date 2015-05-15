@@ -58,8 +58,8 @@ var Modele={
 			Modele.nextPlayer()
 			Modele.backup.push(position);
 		}
-		Modele.isGameFinish(position) ;
-		if (test){	
+		Modele.isGameFinish(position);
+		if (test){
 			Modele.grille[position]="0";
 		}
 		return Modele.isGameFinish()//false;

@@ -1,5 +1,26 @@
 "use strict";
 var toto=0;
+
+var forOf =function(obj, func){
+	var keys  = Object.keys(obj);
+	var lg = keys.length
+	for (var i = 0; i < lg; i++){
+			var o = keys[i];
+			func(obj[o], o, obj);     
+	}
+}
+var forOfSome = function(obj, func){
+	var keys  = Object.keys(obj);
+	var lg = keys.length;
+	for (var i = 0; i < lg; i++){
+		var o = keys[i];
+		if (func(obj[o], o, obj)){
+			return;
+		};     
+	}
+	return i == lg;//all funcs return false
+}
+
 var IA=new function()
 {
 	var self=this;
@@ -106,20 +127,28 @@ var IA=new function()
 	}	
 	
 	
-	
+function falseOrModelIfFound(param){
+	if (param.isModelfound){
+		return param;
+	}
+	return false;
+}	
 //return boolean true if after play to a position a model is matched
 function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, player, posBot){
 	var isModelfound=false
+	var param;
 	posBot = Modele.play(posBot,true);
 	Modele.grille[posBot]  = player;
     for (var i=0; i<7 && !isModelfound;i++){
 		var pos=Modele.play(i,true);
 		Modele.grille[pos]=2;
 		if (pos >= 0 ){
-			for ( var j=0; j < TabWontBecomeLikeThisModel.length && ! isModelfound ; j++ ){
-				var param= structModelDetector(TabWontBecomeLikeThisModel[j], 48) ;
-				isModelfound = param.isModelfound
-			}
+			isModelfound = !forOfSome(TabWontBecomeLikeThisModel, function(mod){
+				param= structModelDetector(mod, 48) ;
+				if (param.isModelfound){
+					return true;
+				}
+			})
 			if (isModelfound){
 				posDeconseille.push(parseInt(posBot));
 			}		
@@ -129,20 +158,18 @@ function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, player, posBot){
 	Modele.grille[posBot]=0;
 	return param;
 }
-function falseOrModelIfFound(param){
-	if (param.isModelfound){
-		return param;
-	}
-	return false;
-}
+
 function futureTab1(ModelInStruct,pos,otherOption,param){
 	var futureTab=ModelInStruct.futureTab;
+	var param;
 	var isModelfound=false;
 	var findTheFirstModelInGrille=function(){
-		for (var i=0; i<futureTab.length && !isModelfound; i++){
-			param= modeleDetector3(ModelInStruct.futureTab[i],pos,otherOption) ;
-			isModelfound=param.isModelfound;
-		}
+		forOfSome(ModelInStruct.futureTab, function(mod){
+			param = modeleDetector3(mod,pos,otherOption) ;
+			if( isModelfound = param.isModelfound){
+				return true;
+			}
+		})
 	}
 	findTheFirstModelInGrille();
 	for (var j=0; j<7 && !isModelfound; j++){
@@ -159,6 +186,7 @@ function futureTab1(ModelInStruct,pos,otherOption,param){
 	}
 	return isModelfound;
 }
+
 var futureIWant=function(param,ModelInStruct,pos,otherOption){
 	var theTab=ModelInStruct.futureTab;
 	for (var j=0; j<7 && !param.isModelfound; j++){
@@ -179,17 +207,17 @@ var futureIWant=function(param,ModelInStruct,pos,otherOption){
 function findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos,otherOption,theTab){
 			var isModelfound=false;
 			if( !ModelInStruct.hasOwnProperty("logicalOperator") ){
-					for (var i=0; i<theTab.length && isModelfound===false; i++){
-						param=modeleDetector3(theTab[i],pos,otherOption);
-						if ( !(param.pos>42 || param.pos===false) ){
-							isModelfound=true;
+					forOfSome(theTab, function(mod){
+						param=modeleDetector3(mod, pos, otherOption);
+						if ( param.isModelfound ){
+							return true;
 						}
-					}
-			}else{// by default it is the operator or between Model else do the next code
+					})
+			}else{// by default it is the operator "or" between Model else do the next code
 				var length=(ModelInStruct.hasOwnProperty("sym")) ? 1 : 2 ;
 				for (var j=0;j<length && isModelfound===false; j++){
 					if (ModelInStruct.hasOwnProperty("sameSym") && length == 2){
-						otherOption.sym=Boolean(j);
+						otherOption.sym=Boolean(j);//first time false second time true
 					}
 					var stringToEVal="param=";
 					var logicalOperator = ModelInStruct.logicalOperator;
@@ -229,30 +257,30 @@ function structModelDetector(ModelInStruct,pos){
 	if (param.isModelfound){
 		param.theTab=theTab;
 		if (ModelInStruct.hasOwnProperty("exept")){
-				if (ModelInStruct.exept.hasOwnProperty("sameSym") && ModelInStruct.exept.sameSym===true ){
-					ModelInStruct.exept.sym=param.sym
-				}
-				if ( ModelInStruct.exept.hasOwnProperty("samePos")){
-					var posBottomLeftIWant= topToBottom(param.pos, ModelInStruct.exept.tab[0].length)
-					ModelInStruct.posTopLeftIWant=param.pos;
-					var param2=structModelDetector( ModelInStruct.exept, posBottomLeftIWant)
-					if (param2.isModelfound==true ){
-						if (param2.positionInGrille==param.positionInGrille){
-							param.isModelfound=false;
-						}
-					}					
-				}else{
-					ModelInStruct.exept.samePosAt=false;
-					var param2=structModelDetector( ModelInStruct.exept, 48 )
-					if (param2.isModelfound==true ){
+			if (ModelInStruct.exept.hasOwnProperty("sameSym") && ModelInStruct.exept.sameSym===true ){
+				ModelInStruct.exept.sym=param.sym
+			}
+			if ( ModelInStruct.exept.hasOwnProperty("samePos")){
+				var posBottomLeftIWant= topToBottom(param.pos, ModelInStruct.exept.tab[0].length)
+				ModelInStruct.posTopLeftIWant=param.pos;
+				var param2=structModelDetector( ModelInStruct.exept, posBottomLeftIWant)
+				if (param2.isModelfound==true ){
+					if (param2.positionInGrille==param.positionInGrille){
 						param.isModelfound=false;
-					}				
+					}
 				}
+			}else{
+				ModelInStruct.exept.samePosAt=false;
+				var param2=structModelDetector( ModelInStruct.exept, 48 )
+				if (param2.isModelfound==true ){
+					param.isModelfound=false;
+				}				
+			}
 		}
-		param.theModelItSelf=ModelInStruct;
-		if (ModelInStruct.hasOwnProperty("otherCondToBeTrue") && propertyExist(ModelInStruct.otherCondToBeTrue) ){
+		param.theModelItSelf = ModelInStruct;
+		/*if (ModelInStruct.hasOwnProperty("otherCondToBeTrue") && propertyExist(ModelInStruct.otherCondToBeTrue) ){
 			pos2=ModelInStruct.otherCondToBeTrue(param);
-		}
+		}*/
 		if (ModelInStruct.hasOwnProperty("playAt")){
 			param.playAt=ModelInStruct.playAt
 			param.theTab=ModelInStruct.tab;
@@ -318,46 +346,49 @@ function gagneEn2Coup(playerTurn){
 	function positionInterdite(position,posInterdite){
 		return ( posInterdite.indexOf(position) >= 0 ) ;
 	}
-
-	
-	function execute_callback_if_Model_at_ModelID_Found(findAt){
+	function getListOfMatchingPos(findAt){
 		var tabPosInBigGrille=[];
-		var nbline=0;
-		findAt.isModelfoundParams = (!Array.isArray(findAt.modele[findAt.modelID])) ? structModelDetector(findAt.modele[findAt.modelID], findAt.positionInGrille) : modeleDetector4(findAt.modele[findAt.modelID], findAt.positionInGrille);
-		
-		if ( findAt.isModelfoundParams.isModelfound==true ){
-			
-			var addPos2 = function (posRelativeToModele){
-				var theTab =findAt.isModelfoundParams.theTab[0];
-				if (Array.isArray(theTab)){
-					nbline=theTab.length;
-					theTab=theTab[0];
-				}else{
-					nbline=findAt.isModelfoundParams.theTab.length;
-				}
-				theTab=theTab.length;
-				
-				if( findAt.isModelfoundParams.theModelItSelf && findAt.isModelfoundParams.theModelItSelf.futureTab){
-					var positionmodele = findAt.isModelfoundParams.playAt;
-				}else{
-					var positionmodele = findAt.isModelfoundParams.pos + positionOfSym(posRelativeToModele,theTab, findAt.isModelfoundParams.sym);
-				}
-				tabPosInBigGrille.push(positionmodele);		
-			}
+		var nbLine;
+		//on cherche le modele
+		var model = findAt.modele[findAt.modelID]
+		findAt.isModelfoundParams = Array.isArray(model) ? 
+			modeleDetector4(model, findAt.positionInGrille)
+		:
+			structModelDetector(model, findAt.positionInGrille)
+		;
+		//si trouvé 
+		if ( findAt.isModelfoundParams.isModelfound==true ){			
 			if (Array.isArray(findAt.isModelfoundParams.playAt)){
 				for (var u=0;u<findAt.isModelfoundParams.playAt.length ;u++){	
-					addPos2(findAt.isModelfoundParams.playAt[u])
+					nbLine = addPosOkToGroup(findAt.isModelfoundParams.playAt[u] , findAt,tabPosInBigGrille)
 				}
 			}else{
-				addPos2(findAt.isModelfoundParams.playAt);
+				nbLine = addPosOkToGroup(findAt.isModelfoundParams.playAt, findAt,tabPosInBigGrille);
 			}
-			findAt.positionInGrille=beginToEnd(findAt.isModelfoundParams.pos, nbline);
-			findAt.callback(tabPosInBigGrille,findAt);
-		}else{
+			findAt.positionInGrille=beginToEnd(findAt.isModelfoundParams.pos, nbLine);
+		}else{//si pas trouvé 
 			findAt.positionInGrille=48;
 		}
+		return tabPosInBigGrille;
 	}
 	
+	var addPosOkToGroup = function (posRelativeToModele, findAt,tabPosInBigGrille){
+			var theTab =findAt.isModelfoundParams.theTab[0];
+			if (Array.isArray(theTab)){
+				var nbLine=theTab.length;
+				theTab=theTab[0];
+			}else{
+				var nbLine=findAt.isModelfoundParams.theTab.length;
+			}
+			if( findAt.isModelfoundParams.theModelItSelf && findAt.isModelfoundParams.theModelItSelf.futureTab){
+				var positionmodele = findAt.isModelfoundParams.playAt;
+			}else{
+				var positionmodele = findAt.isModelfoundParams.pos + positionOfSym(posRelativeToModele,theTab.length, findAt.isModelfoundParams.sym);
+			}
+			tabPosInBigGrille.push(positionmodele);
+			return [nbLine,];
+		}
+			
 	function beginToEnd(begin,nbLine){
 		return begin + nbLine*7-7;
 	}
@@ -366,16 +397,18 @@ function gagneEn2Coup(playerTurn){
 	this.modeledetectorAndAnswer =modeledetectorAndAnswer;
 	function modeledetectorAndAnswer(modele,findAt){
 		findAt.modele=modele;
-		findAt.callback = function(tabPosInBigGrille){
-			findAt.positionToPlay=tabPosInBigGrille[0];
-			findAt.modelID--;
-		},
+		var positionToPlay;
 		findAt.isModelfoundParams={isModelfound:false};
+		var tab=[];
 		while ( findAt.modelID<modele.length && findAt.isModelfoundParams.isModelfound==false){
-			execute_callback_if_Model_at_ModelID_Found(findAt);	
+			tab = getListOfMatchingPos(findAt);	
 			findAt.modelID++;
 		}
-		return (findAt.isModelfoundParams.isModelfound===false) ? false : findAt.positionToPlay;
+		for(var i = tab.length;i--;){
+				positionToPlay = tab[0];
+				findAt.modelID--;
+		}
+		return (findAt.isModelfoundParams.isModelfound===false) ? false : positionToPlay;
 	}
 	
 
@@ -386,13 +419,6 @@ function gagneEn2Coup(playerTurn){
 		dontHelpJ2(posInterdite);
 		detectBadPositionAlgorythme();
 		var findAt = {positionInGrille:48};
-		
-		findAt.callback = function(tabPosInBigGrille){
-			for (var i=0;i<tabPosInBigGrille.length;i++){
-				posDeconseille.push(tabPosInBigGrille[i]);
-			}
-			findAt.positionInGrille--;
-		};
 		findAt.isModelfoundParams={isModelfound:false};
 		var tabForbids=[modPosDeconseille,interditUnPeu];
 		for ( var o=0 ; o < tabForbids.length ;o++){
@@ -400,10 +426,15 @@ function gagneEn2Coup(playerTurn){
 			findAt.modelID=0;
 			while (findAt.modelID < findAt.modele.length ){
 				//tant que le modele est trouvé on continue de le chercher et de pusher les positions interdites 
-				execute_callback_if_Model_at_ModelID_Found(findAt);
+				var tab = getListOfMatchingPos(findAt);
 				if (findAt.isModelfoundParams.isModelfound==false ){
 					findAt.positionInGrille=48;	
 					findAt.modelID++;
+				}else{
+					for (var i=0;i<tab.length;i++){
+						posDeconseille.push(tab[i]);
+					}
+					findAt.positionInGrille--;
 				}
 			}
 		}
@@ -438,11 +469,11 @@ function gagneEn2Coup(playerTurn){
 	}
 
 	function isModeleBottomFlat(oneModele){
-		var line=oneModele.at(-1);
-		for ( var i=0; i<line.length ; i++ ){
-			if (line[i]!='a' && line[i]!='9') break;
-		}
-		return (i<line.length) ? 0 : 1 ;
+		return forOfSome(oneModele.at(-1), function(pos){
+			if (pos!='a' && pos!='9'){
+				return true;
+			}
+		}) 
 	}
 	this.modeleDetector4=modeleDetector4;
 	function modeleDetector4(oneModeleAndTheAnswer,position){
@@ -483,7 +514,7 @@ function gagneEn2Coup(playerTurn){
 				alert(e)
 			}
 			if (!posOneModeleSym2[sym].isModelfound ){
-				posOneModeleSym2[sym].pos -=  1+posPart( (posOneModeleSym2[sym].pos-1)%7 + oneModele[0].length -7)
+				posOneModeleSym2[sym].pos -=  1+positiveOrFalse( (posOneModeleSym2[sym].pos-1)%7 + oneModele[0].length -7)
 				if (!dontChangeSym){
 					sym=!sym;
 				}
@@ -496,12 +527,16 @@ function gagneEn2Coup(playerTurn){
 	this.modeleDectector1=modeleDectector1;
 	function modeleDectector1(oneModele,posOneModele,sym){
 		if ( posOneModele !==false ){
-			var continuerBoucle = true;
-			for (var i = 0 ; i< oneModele.length && continuerBoucle ; i++ ){
-				var line=symetrique2(oneModele.at(-i-1),sym);
-				continuerBoucle=comparerLigne(line,posOneModele-7*i);
+			for (var i = 0; i++ < oneModele.length ;){//i from 1 to lenght
+				var line= oneModele.at(-i);
+				if (sym){ 
+					line = line.reverse();
+				}
+				if (!comparerLigne(line,posOneModele-7*(i-1))){
+					break;
+				}				
 			}
-			if (i == oneModele.length  && continuerBoucle){
+			if (i > oneModele.length){
 				return { pos:posOneModele, isModelfound:true };
 			}
 		}
@@ -509,7 +544,7 @@ function gagneEn2Coup(playerTurn){
 	}
 				
 				
-	function posPart(pos){
+	function positiveOrFalse(pos){
 		return pos > 0 ? pos : false;
 	}
 	
@@ -518,7 +553,7 @@ function gagneEn2Coup(playerTurn){
 	}
 	
 	function bottomToTop (pos, length){
-		return ( pos - length*7 +7 )
+		return ( pos + ~length * 7 )
 	}
 	
 	//fcomparerLigne
@@ -753,23 +788,13 @@ function comparerCaractere (carMod,car,impaire)
 		return(false);
 	}
 
-	function positionOfSym(pos,length,sym)
-	{
-		var position;
+function positionOfSym(pos,length,sym){
 		if (sym){
-			var position = length - pos%7 -1 ;
-			if (pos%7!=6){
-				pos+=6-pos%7
-			}
-			while (position<=pos){position+=7}
-			position-=7;
-		}else{
-			position=pos;
+			pos += mod(length + ~pos, 7) - pos%7 ;
 		}
-		return position;
+		return pos;
 	}
-
-
+	
 	//remplit la position gagnante la plus basse en pair pour le j2 rouge et et impaire pour le j1 jaune 
 	this.fillsWinningPos=fillsWinningPos;
 	function fillsWinningPos(){
@@ -852,18 +877,6 @@ function comparerCaractere (carMod,car,impaire)
 		}
 		return (false);
 	}		
-
-	function symetrique2(leModele,symetrique){
-		if (symetrique==true)
-		{
-			var mod =leModele.reverse();
-			return(leModele.reverse());
-		}
-		else
-		{
-			return(leModele);
-		}
-	}
 
 	function playSansModele(position){
 		while(1){		

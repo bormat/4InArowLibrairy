@@ -16,13 +16,13 @@ function loadjscssfile(filename, filetype){
   document.getElementsByTagName("head")[0].appendChild(fileref)
 }
 
-Number.prototype.mod = function(n) {
-console.log(2);
-return ((this%n)+n)%n;
+var mod = function(a, n) {
+	return a - Math.floor(a/n) * n;
 }
+//Math.floor(a/n) == Math.ceil(a/n)-1
 
 Number.prototype.sign = function(n) {
-return (this>=0) ? 1 : -1;
+	return (this>=0) ? 1 : -1;
 }
 
 Number.prototype.between=function(a,b){
@@ -43,8 +43,7 @@ Array.prototype.at = function(a){
 	return this[a];
 }
 Array.prototype.init = function(val,taille){
-	for(var o=0; o<taille ;o++)
-	{	
+	for(var o=0; o<taille ;o++){	
 		this[o]= val;
 	}
 }
