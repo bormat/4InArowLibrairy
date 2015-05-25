@@ -51,32 +51,32 @@ var IA = new function(){
 			var pos = false;
 			for(var step=0;step<6 && (pos >48 || pos<0 || pos===false );step++){
 				switch(step){
-				case 0:
-						pos=gagnerDirect();break;
-				case 1: 
-						pos=bloquerDirect(true);break;
-				case 2: 
-						findForbiddenAndNotRecommandedPosition();
-						pos=gagneEn2Coup(1);
-						break;
-				case 3: 
-						var findAt={modelID:0,positionInGrille:48};
-						pos=modeledetectorAndAnswer(perfectModele,findAt);
-						break;
-				case 4:	
-						pos=giveMeACheckedPosition(function(){ 
-							findAt={modelID:0,positionInGrille:48,tabNumber:0};
-							return (playAvecModele(findAt))
-						})
-						break;
-				case 5: 
-						pos=giveMeACheckedPosition(function(){
-							return (playSansModele(posJoueur));
-						})
-						if (pos===false){
-							playSansModele(posJoueur);
-						}
-						break;
+					case 0:
+							pos=gagnerDirect();break;
+					case 1: 
+							pos=bloquerDirect(true);break;
+					case 2: 
+							findForbiddenAndNotRecommandedPosition();
+							pos=gagneEn2Coup(1);
+							break;
+					case 3: 
+							var findAt={modelID:0,positionInGrille:48};
+							pos=modeledetectorAndAnswer(perfectModele,findAt);
+							break;
+					case 4:	
+							pos=giveMeACheckedPosition(function(){ 
+								findAt={modelID:0,positionInGrille:48,tabNumber:0};
+								return (playAvecModele(findAt))
+							})
+							break;
+					case 5: 
+							pos=giveMeACheckedPosition(function(){
+								return (playSansModele(posJoueur));
+							})
+							if (pos===false){
+								playSansModele(posJoueur);
+							}
+							break;
 				}
 			}
 		}else{
@@ -109,7 +109,7 @@ var IA = new function(){
 				var position = modeledetectorAndAnswer(TabOfTab[findAt.tabNumber],findAt);
 				if ( position!==false){
 					var pos=ifPlayHereGiveMeExactPos(position);
-					if (pos!==false){
+					if (~pos){
 						return pos;
 					}
 					findAt.positionInGrille--;	
@@ -157,13 +157,13 @@ function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, player, posBot){
 	return param;
 }
 
-var futureIWant=function(param,ModelInStruct,pos,otherOption){
+var futureIWant=function(param,ModelInStruct,pos){
 	var theTab=ModelInStruct.tab;
 	for (var j=0; j<7 && !param.isModelfound; j++){
 		var pos3 = Modele.play(j,true);
-		if (~pos3 && pos3!==false ){
+		if (~pos3){
 			Modele.grille[pos3]=1;
-			param=findModel(param,ModelInStruct ,pos);
+			param=findModel(ModelInStruct ,pos);
 			Modele.grille[pos3]=0;
 		}
 	}
@@ -174,16 +174,17 @@ var futureIWant=function(param,ModelInStruct,pos,otherOption){
 	return param;
 }
 
-function findModel(param,ModelInStruct ,pos){
+function findModel(ModelInStruct ,pos){
+			var param ={}
 			var theTab = ModelInStruct.tab;
 			var isModelfound=false;
 			if( !ModelInStruct.hasOwnProperty("logicalOperator") ){
-					forOfSome(theTab, function(mod){
-						param=modeleDetector3(mod, pos);
-						if ( param.isModelfound ){
-							return true;
-						}
-					})
+				forOfSome(theTab, function(mod){
+					param=modeleDetector3(mod, pos);
+					if ( param.isModelfound ){
+						return true;
+					}
+				})
 			}else{// by default it is the operator or between Model else do the next code
 				var otherOption={}
 				var length=(ModelInStruct.hasOwnProperty("sym")) ? 1 : 2 ;
@@ -213,57 +214,28 @@ function findModel(param,ModelInStruct ,pos){
 	param.sym : BooleanValue force the symetry to be true or false 
 }*///fstruct
 function structModelDetector(ModelInStruct,pos){
-	var param={isModelfound:false};
-	var otherOption={};
-	if (ModelInStruct.hasOwnProperty("sym")){
-		//otherOption.sym=ModelInStruct.sym
-	}
-	var theTab= ModelInStruct.tab ;
-	if ( ModelInStruct.hasOwnProperty("samePos")){
-		//otherOption.samePos=true
-		//otherOption.posTopLeftIWant=ModelInStruct.posTopLeftIWant;
-	}
-	param =findModel(param,ModelInStruct ,pos);
+	var param = {};
+	param = findModel(ModelInStruct ,pos);
 	//if we can reach a futur model that is not already reached
 	if( !param.isModelfound && ModelInStruct.mode == "futur" ){
-		param = futureIWant(param,ModelInStruct,pos,otherOption)
+		param = futureIWant(param,ModelInStruct,pos)
 	}
 	//watch exeptions if model found
 	if (param.isModelfound){
-		param.theTab=theTab;
-		if (ModelInStruct.hasOwnProperty("exept")){
-			if (ModelInStruct.exept.hasOwnProperty("sameSym") && ModelInStruct.exept.sameSym===true ){
-				ModelInStruct.exept.sym=param.sym
-			}
-			if ( ModelInStruct.exept.hasOwnProperty("samePos")){
-				var posBottomLeftIWant= topToBottom(param.pos, ModelInStruct.exept.tab[0].length)
-				ModelInStruct.posTopLeftIWant=param.pos;
-				var param2=structModelDetector( ModelInStruct.exept, posBottomLeftIWant)
-				if (param2.isModelfound==true ){
-					if (param2.positionInGrille==param.positionInGrille){
-						param.isModelfound=false;
-					}
-				}
-			}else{
-				ModelInStruct.exept.samePosAt=false;
-				var param2=structModelDetector( ModelInStruct.exept, 48 )
-				if (param2.isModelfound==true ){
-					param.isModelfound=false;
-				}				
+		var exept = ModelInStruct.exept;
+		param.theModelItSelf = ModelInStruct;
+		if(exept){
+			exept.sym = param.sym;
+			if(structModelDetector(exept, 48).isModelfound){
+				param.isModelfound=false;
 			}
 		}
-		param.theModelItSelf = ModelInStruct;
-		/*if (ModelInStruct.hasOwnProperty("otherCondToBeTrue") && propertyExist(ModelInStruct.otherCondToBeTrue) ){
-			pos2=ModelInStruct.otherCondToBeTrue(param);
-		}*/
-		if (ModelInStruct.hasOwnProperty("playAt")){
-			param.playAt=ModelInStruct.playAt
-			param.theTab=ModelInStruct.tab;
+		if(ModelInStruct.hasOwnProperty("playAt")){
+			param.playAt = ModelInStruct.playAt;
 		}
 	}
 	return param;
 }
-
 
 
 
@@ -293,7 +265,7 @@ function gagneEn2Coup(playerTurn){
 	for(var i=0;i<7;i++){
 		Modele.setPlayer(playerTurn);
 		var pos=Modele.play(i,true);
-		var cond = (playerTurn==1)	? positionInterdite(pos,posInterdite) : comparerLigne("g",pos-7);
+		var cond = (playerTurn==1)	? ~posInterdite.indexOf(pos) : comparerLigne("g",pos-7);
 		if (!cond){
 			var position2=pos;
 			Modele.grille[pos]=playerTurn;
@@ -317,11 +289,6 @@ function gagneEn2Coup(playerTurn){
 	}
 	return false;
 }
-	this.positionOfSym=positionOfSym;
-	//retourne si la position est interdite ou non 
-	function positionInterdite(position,posInterdite){
-		return ( posInterdite.indexOf(position) >= 0 ) ;
-	}
 	function getListOfMatchingPos(findAt){
 		var tabPosInBigGrille=[];
 		var nbLine;
@@ -729,26 +696,22 @@ function comparerCaractere (carMod,car,impaire)
 	{	
 		posJoueur=parseInt(posJoueur);
 		posJoueur=Modele.play(posJoueur,true);
-		if (posJoueur < 0){
-			return(false);
+		if (~posJoueur){
+			var cond1 = ~posInterdite.indexOf(posJoueur) ;
+			var cond2 = ~posDeconseille.indexOf(posJoueur);
+			if (!(cond1 || cond2)){
+				posJoueur = Modele.play(posJoueur,true);
+				return(posJoueur);
+			}
 		}
-		var cond1 = (positionInterdite(posJoueur,posInterdite)) ;
-		var cond2 = (positionInterdite(posJoueur,posDeconseille));
-		if ( !(cond1 || cond2) )
-		{
-			posJoueur = Modele.play(posJoueur,true);
-			return(""+posJoueur);
-		}
-		return(false);
+		return(-1);
 	}
 
-function positionOfSym(pos,length,sym){
-		if (sym){
-			pos += mod(length + ~pos, 7) - pos%7 ;
-		}
-		return pos;
+	function positionOfSym(pos,length,sym){
+		return pos += sym && mod(length + ~pos, 7) - pos%7 ;
 	}
-	
+this.positionOfSym=positionOfSym;
+
 	//remplit la position gagnante la plus basse en pair pour le j2 rouge et et impaire pour le j1 jaune 
 	this.fillsWinningPos=fillsWinningPos;
 	function fillsWinningPos(){
@@ -824,19 +787,19 @@ function positionOfSym(pos,length,sym){
 		//tant que la position est pas autorisé tester une autre 
 		while ( i< u+7 ){	
 			var pos = ifPlayHereGiveMeExactPos(i);
-			if (pos !== false){
+			if (~pos){
 				return(pos);
 			}
 			i++;
 		}
-		return (false);
+		return (-1);
 	}		
 
 	function playSansModele(position){
 		while(1){		
 			//on retestes toutes les  positions cad 7 possibles et on y joue si possible
 			var pos = joueToutePosition(position);
-			if (pos!==false){
+			if (~pos){
 				break;
 			}	
 			//on supprime les moins déconseillés
