@@ -95,8 +95,12 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 			$scope.endGameMessage=false;			
 		}
 		
-		$scope.deplier=function(columClass){
-			$scope[columClass]=($scope[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
+		$scope.deplier=function(columClass,bool){
+			if(bool != undefined){
+				$scope[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
+			}else{
+				$scope[columClass]=($scope[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
+			}
 		}
 		
 		function setGrille(i,player){
@@ -138,15 +142,15 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 				color=creator.getColor(colorNumber);
 				return color;
 			}
-			var color=0;
-			switch(parseInt(colorNumber)){
-				case 0: color= "white";break;
-				case 1: color ="yellow";break;
-				case 2: color ="red";break;
-				case 4: color="rgb(160,166,0)";break;
-				case 8: color="rgb(140,0,0)";break;
-			}				
-			return color;
+			return (function(){
+				switch(parseInt(colorNumber)){
+					case 0: return "white";
+					case 1: return "yellow";
+					case 2: return "red";
+					case 4: return "rgb(160,166,0)"; //black yellow 
+					case 8: return "rgb(140,0,0)";//black red
+				}
+			})();
         };
 		
 		$scope.restore=function(){
@@ -199,8 +203,6 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 				darkWinningPos(false);
 				Modele.isGameFinish(false);
 			}
-
-
 			var pos=Modele.undo();
 			setGrille(pos,0);
 			IA.boolSmart.pop();
@@ -212,6 +214,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 					Modele.setPlayer(2);
 				}
 			}
+			$scope.deplier( 'columClass',false );
 		}
 		
 		
@@ -316,7 +319,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 					}
 					$scope.message = message;
 					$scope.endGameMessage=true;
-					$scope.deplier( 'columClass' );
+					$scope.deplier( 'columClass',true );
 					$scope.$digest();
 				}
 		$scope.message="ça va commencer";
@@ -327,7 +330,7 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 	$scope.minCol=0;
 	$scope.maxCol=6;
 	creator=(function(){
-		var colorNumber=1;0
+		var colorNumber=1;
 		var getColor = function (chara){
 				var color='transparent';
 				switch(''+chara){				
@@ -354,9 +357,8 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 				}
 				return(color);
 			};			
-			var affectnumber= function(pos){
-					var chara=String.fromCharCode(keyboard.code());
-					colorNumber= chara.toLowerCase();
+			var affectnumber= function(keyCode){
+				colorNumber= String.fromCharCode(keyCode).toLowerCase();
 			}
 		return {
 			//'chooseColor' : chooseColor
@@ -368,42 +370,40 @@ app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 	
 	$scope.keydown=function(event){
 		event.preventDefault();
+		//play at the number push on keyboard
 		keyboard.setEvent(event);
+		var keyCode = keyboard.code();			
 		if ($scope.mode=="creator"){
-			creator.affectnumber()
-			return true;
+				return creator.affectnumber(keyCode)
 		}
-		if (keyboard.getCtrlKey()){
-			if ( keyboard.isPush('Z')){	
+		//numerical number (0 to 9)
+		if (keyCode>47 && keyCode<58){
+			$scope.fallenPion(keyCode - 48);
+		}else{			
+			if (keyboard.getCtrlKey() && keyboard.isPush('Z')){
 				$scope.undo();
 			}
-		}
-		//right key and left key change the preview  
-		if (keyboard.code()==37||keyboard.code()==39){
-			var nextPosDirection=keyboard.code()-38;
-			var nextPos=preview;
-			for(var i=0;i==0 || Modele.grille[nextPos]!=0 && i<8;i++ ){
-				nextPos+=nextPosDirection;
-				if (nextPos.isNaN){nextPos=5;break;}
-				nextPos=nextPos.mod(7);						
+			//right key and left key change the preview  
+			if (keyboard.code()==37||keyboard.code()==39){
+				var nextPosDirection = keyboard.code()-38;
+				var nextPos=preview;
+				var i = 7;
+				do{
+					nextPos+=nextPosDirection;
+					nextPos = mod(nextPos,7);						
+				}while(parseInt(Modele.grille[nextPos]) && i--)
+				$scope.preview(nextPos);
 			}
-			$scope.preview(nextPos);
-		}
-		//top arrow
-		else if (keyboard.code()==38){
-			$scope.preview($scope.undo());
-		}
-		//bottom arrow
-		else if (keyboard.code()==40){
-			var pos= (preview);
-			$scope.preview($scope.fallenPion(pos));
-		}
-		//play at the number push on keyboard
-		for (var i=0;i<10;i++){
-			if (keyboard.isPush(""+i)){
-				$scope.fallenPion(i);
+			//top arrow
+			else if (keyboard.code()==38){
+				$scope.undo();
+				$scope.preview();
 			}
-		} 			
+			//bottom arrow
+			else if (keyboard.code()==40){
+				$scope.preview($scope.fallenPion(preview));
+			}
+		}
 	};
 
 	$scope.scrollInPx=function(lg){

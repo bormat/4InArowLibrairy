@@ -11,6 +11,29 @@ describe("myFunction", function() {
 		
 		it("test", function(){
 			Modele.setModel([
+			"0000000",
+			"0020100",
+			"0012200",
+			"0021100",
+			"0212100",
+			"1121220",
+			])
+			expect(IA.p4BlockEasy(1,true)).toEqual(10);
+		});
+		it("test", function(){
+			Modele.setModel([
+			"0100000",
+			"0202100",
+			"0112200",
+			"0221100",
+			"0212100",
+			"1121220",
+			])
+			expect(IA.p4BlockEasy(1,true)).toEqual(9);
+		});
+		
+		it("test", function(){
+			Modele.setModel([
 			"0011200",
 			"0222100",
 			"0112200",

@@ -1,5 +1,4 @@
 "use strict";
-var toto=0;
 
 var forOf =function(obj, func){
 	var keys  = Object.keys(obj);
@@ -18,11 +17,10 @@ var forOfSome = function(obj, func){
 			return;
 		};     
 	}
-	return i == lg;//all funcs return false
+	return true;//all funcs return false we return true
 }
 
-var IA=new function()
-{
+var IA = new function(){
 	var self=this;
 	this.dif=100;
 	this.setDif=function(dif){
@@ -143,7 +141,7 @@ function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, player, posBot){
 		var pos=Modele.play(i,true);
 		Modele.grille[pos]=2;
 		if (pos >= 0 ){
-			isModelfound = !forOfSome(TabWontBecomeLikeThisModel, function(mod){
+			isModelfound = ! forOfSome(TabWontBecomeLikeThisModel, function(mod){
 				param= structModelDetector(mod, 48) ;
 				if (param.isModelfound){
 					return true;
@@ -159,41 +157,13 @@ function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, player, posBot){
 	return param;
 }
 
-function futureTab1(ModelInStruct,pos,otherOption,param){
-	var futureTab=ModelInStruct.futureTab;
-	var param;
-	var isModelfound=false;
-	var findTheFirstModelInGrille=function(){
-		forOfSome(ModelInStruct.futureTab, function(mod){
-			param = modeleDetector3(mod,pos,otherOption) ;
-			if( isModelfound = param.isModelfound){
-				return true;
-			}
-		})
-	}
-	findTheFirstModelInGrille();
-	for (var j=0; j<7 && !isModelfound; j++){
-		var pos3 = Modele.play(j,true);
-		if (pos3 >= 0 && pos3!==false ){
-			Modele.grille[pos3]=1
-			findTheFirstModelInGrille()
-			Modele.grille[pos3]=0;
-		}
-	}
-	if (isModelfound){
-		param.theTab=ModelInStruct.futureTab;
-		param.playAt=pos3;
-	}
-	return isModelfound;
-}
-
 var futureIWant=function(param,ModelInStruct,pos,otherOption){
-	var theTab=ModelInStruct.futureTab;
+	var theTab=ModelInStruct.tab;
 	for (var j=0; j<7 && !param.isModelfound; j++){
 		var pos3 = Modele.play(j,true);
 		if (pos3 >= 0 && pos3!==false ){
 			Modele.grille[pos3]=1;
-			param=findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos,otherOption, theTab);
+			param=findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos);
 			Modele.grille[pos3]=0;
 		}
 	}
@@ -204,7 +174,9 @@ var futureIWant=function(param,ModelInStruct,pos,otherOption){
 	return param;
 }
 
-function findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos,otherOption,theTab){
+function findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos){
+			var otherOption={}
+			var theTab = ModelInStruct.tab;
 			var isModelfound=false;
 			if( !ModelInStruct.hasOwnProperty("logicalOperator") ){
 					forOfSome(theTab, function(mod){
@@ -213,11 +185,11 @@ function findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos,otherOption,t
 							return true;
 						}
 					})
-			}else{// by default it is the operator "or" between Model else do the next code
+			}else{// by default it is the operator or between Model else do the next code
 				var length=(ModelInStruct.hasOwnProperty("sym")) ? 1 : 2 ;
 				for (var j=0;j<length && isModelfound===false; j++){
 					if (ModelInStruct.hasOwnProperty("sameSym") && length == 2){
-						otherOption.sym=Boolean(j);//first time false second time true
+						otherOption.sym=Boolean(j);
 					}
 					var stringToEVal="param=";
 					var logicalOperator = ModelInStruct.logicalOperator;
@@ -234,26 +206,29 @@ function findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos,otherOption,t
 
 /*param{
 	isModelfound : false or true always exist 
-	playAt : position to play is the modele is found 
+	playAt : position to play if the modele is found 
 	theTab: contain the tab found it can be a futureTab or a  (present) tab 
 	pos : the position or the modele is found in the grille
 	param.sameSym : BooleanValue forces the symmetry to be the same for all model of the struct 
 	param.sym : BooleanValue force the symetry to be true or false 
 }*///fstruct
 function structModelDetector(ModelInStruct,pos){
-	var param={};var otherOption={};
+	var param={isModelfound:false};
+	var otherOption={};
 	if (ModelInStruct.hasOwnProperty("sym")){
-		otherOption.sym=ModelInStruct.sym
+		//otherOption.sym=ModelInStruct.sym
 	}
-	var theTab= ModelInStruct[(ModelInStruct.hasOwnProperty("futureTab")) ? "futureTab" : "tab"] ;
+	var theTab= ModelInStruct.tab ;
 	if ( ModelInStruct.hasOwnProperty("samePos")){
-		otherOption.samePos=true
-		otherOption.posTopLeftIWant=ModelInStruct.posTopLeftIWant;
+		//otherOption.samePos=true
+		//otherOption.posTopLeftIWant=ModelInStruct.posTopLeftIWant;
 	}
-	param =findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos,otherOption,theTab);
-	if( ModelInStruct.hasOwnProperty("futureTab")){
-		param= (!param.isModelfound) ? futureIWant(param,ModelInStruct,pos,otherOption) : {isModelfound :false};
+	param =findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos);
+	//if we can reach a futur model that is not already reached
+	if( !param.isModelfound && ModelInStruct.mode == "futur" ){
+		param = futureIWant(param,ModelInStruct,pos,otherOption)
 	}
+	//watch exeptions if model found
 	if (param.isModelfound){
 		param.theTab=theTab;
 		if (ModelInStruct.hasOwnProperty("exept")){
@@ -285,11 +260,12 @@ function structModelDetector(ModelInStruct,pos){
 			param.playAt=ModelInStruct.playAt
 			param.theTab=ModelInStruct.tab;
 		}
-	}else{
-		param={isModelfound:false};
 	}
 	return param;
 }
+
+
+
 
 function propertyExist(prop){
 	return (prop!="")
@@ -380,7 +356,7 @@ function gagneEn2Coup(playerTurn){
 			}else{
 				var nbLine=findAt.isModelfoundParams.theTab.length;
 			}
-			if( findAt.isModelfoundParams.theModelItSelf && findAt.isModelfoundParams.theModelItSelf.futureTab){
+			if( findAt.isModelfoundParams.theModelItSelf && findAt.isModelfoundParams.theModelItSelf.mode == "futur"){
 				var positionmodele = findAt.isModelfoundParams.playAt;
 			}else{
 				var positionmodele = findAt.isModelfoundParams.pos + positionOfSym(posRelativeToModele,theTab.length, findAt.isModelfoundParams.sym);
@@ -431,9 +407,7 @@ function gagneEn2Coup(playerTurn){
 					findAt.positionInGrille=48;	
 					findAt.modelID++;
 				}else{
-					for (var i=0;i<tab.length;i++){
-						posDeconseille.push(tab[i]);
-					}
+					Array.prototype.push.apply(posDeconseille, tab)
 					findAt.positionInGrille--;
 				}
 			}
