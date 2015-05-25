@@ -140,7 +140,7 @@ function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, player, posBot){
     for (var i=0; i<7 && !isModelfound;i++){
 		var pos=Modele.play(i,true);
 		Modele.grille[pos]=2;
-		if (pos >= 0 ){
+		if (~pos){
 			isModelfound = ! forOfSome(TabWontBecomeLikeThisModel, function(mod){
 				param= structModelDetector(mod, 48) ;
 				if (param.isModelfound){
@@ -161,9 +161,9 @@ var futureIWant=function(param,ModelInStruct,pos,otherOption){
 	var theTab=ModelInStruct.tab;
 	for (var j=0; j<7 && !param.isModelfound; j++){
 		var pos3 = Modele.play(j,true);
-		if (pos3 >= 0 && pos3!==false ){
+		if (~pos3 && pos3!==false ){
 			Modele.grille[pos3]=1;
-			param=findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos);
+			param=findModel(param,ModelInStruct ,pos);
 			Modele.grille[pos3]=0;
 		}
 	}
@@ -174,18 +174,18 @@ var futureIWant=function(param,ModelInStruct,pos,otherOption){
 	return param;
 }
 
-function findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos){
-			var otherOption={}
+function findModel(param,ModelInStruct ,pos){
 			var theTab = ModelInStruct.tab;
 			var isModelfound=false;
 			if( !ModelInStruct.hasOwnProperty("logicalOperator") ){
 					forOfSome(theTab, function(mod){
-						param=modeleDetector3(mod, pos, otherOption);
+						param=modeleDetector3(mod, pos);
 						if ( param.isModelfound ){
 							return true;
 						}
 					})
 			}else{// by default it is the operator or between Model else do the next code
+				var otherOption={}
 				var length=(ModelInStruct.hasOwnProperty("sym")) ? 1 : 2 ;
 				for (var j=0;j<length && isModelfound===false; j++){
 					if (ModelInStruct.hasOwnProperty("sameSym") && length == 2){
@@ -223,7 +223,7 @@ function structModelDetector(ModelInStruct,pos){
 		//otherOption.samePos=true
 		//otherOption.posTopLeftIWant=ModelInStruct.posTopLeftIWant;
 	}
-	param =findWithOrWithoutLogicalOperator(param,ModelInStruct ,pos);
+	param =findModel(param,ModelInStruct ,pos);
 	//if we can reach a futur model that is not already reached
 	if( !param.isModelfound && ModelInStruct.mode == "futur" ){
 		param = futureIWant(param,ModelInStruct,pos,otherOption)
@@ -301,7 +301,7 @@ function gagneEn2Coup(playerTurn){
 			for(var o=0;o<7;o++){
 				//
 				var pos = Modele.play(o,true);
-				if (Modele.isGameFinish() && pos >=0){
+				if (Modele.isGameFinish() && ~pos){
 					cptGagnerDirect++;
 					//si il y a une position gagnante au dessus d'une autre 
 					var WinnerPos=(Modele.getPlayer() == 1) ? "g" : "i";
@@ -428,7 +428,7 @@ function gagneEn2Coup(playerTurn){
 			{				
 				position=parseInt(position);
 				var pos= posDeconseille.indexOf(position)
-				while ( pos>=0 )
+				while ( ~pos )
 				{
 					posDeconseille.splice(pos,1);
 					pos= posDeconseille.indexOf(position)
@@ -464,39 +464,24 @@ function gagneEn2Coup(playerTurn){
 			sym=otherOption.sym
 			dontChangeSym=true;
 		}
-		
-		//var flat = isModeleBottomFlat(oneModele);		
 		var posOneModeleSym2={ true:{pos:position}, false:{pos:position} };
-		var continueLoopCond=function(){
-			if (posOneModeleSym2[sym].isModelfound || otherOption.hasOwnProperty("samepos")){
-				return false;
-			}
-			if ( posOneModeleSym2[!sym].pos < 0 ){
-				if (posOneModeleSym2[sym].pos < 0 ){
-					return false;
-				}
-			}
-			if (dontChangeSym && posOneModeleSym2[sym].pos < 0 ){
-				return false;
-			}
-			return true;			
-		}		
+		var stopLoopCond=function(){
+			var posSym = posOneModeleSym2[sym].pos
+			var pos = posOneModeleSym2[!sym].pos
+			return (posOneModeleSym2[sym].isModelfound || otherOption.hasOwnProperty("samepos") 
+					|| (posSym < 0  && pos < 0)  || (dontChangeSym && posSym < 0));
+		}
 		do {
-			try {
-			posOneModeleSym2[sym]=modeleDectector1(oneModele,posOneModeleSym2[sym].pos,sym);
-			}catch(e){
-				alert(e)
+			var poses = posOneModeleSym2[sym]=modeleDectector1(oneModele,posOneModeleSym2[sym].pos,sym);
+			if (!poses.isModelfound ){
+				//if we haven't the place to find the model at this pos go back until we have the place
+				poses.pos = Math.min(Math.ceil(poses.pos/7)*7 - oneModele[0].length, poses.pos-1);
+				sym= !dontChangeSym && !sym;
 			}
-			if (!posOneModeleSym2[sym].isModelfound ){
-				posOneModeleSym2[sym].pos -=  1+positiveOrFalse( (posOneModeleSym2[sym].pos-1)%7 + oneModele[0].length -7)
-				if (!dontChangeSym){
-					sym=!sym;
-				}
-			}
-		} while( continueLoopCond() );
-		
+		} while( !stopLoopCond() );
 		return { pos: posOneModeleSym2[sym].pos-7*(oneModele.length-1), sym:sym, isModelfound: posOneModeleSym2[sym].isModelfound, theTab:oneModele};
 	}
+
 	
 	this.modeleDectector1=modeleDectector1;
 	function modeleDectector1(oneModele,posOneModele,sym){
@@ -510,16 +495,11 @@ function gagneEn2Coup(playerTurn){
 					break;
 				}				
 			}
-			if (i > oneModele.length){
+			if (i > oneModele.length){//if model found
 				return { pos:posOneModele, isModelfound:true };
 			}
 		}
 		return { pos: posOneModele, isModelfound:false }; 
-	}
-				
-				
-	function positiveOrFalse(pos){
-		return pos > 0 ? pos : false;
 	}
 	
 	function topToBottom (pos, length){
