@@ -40,47 +40,38 @@ var IA = new function(){
 	//si retournerPosition on ne joue pas dans la Modele.grille mais retoune la position ou Modele.play parametre parfait pour les tests TDD
 	this.p4BlockEasy=function(posJoueur,retournerPosition)
 	{
-		var botSmart = parseInt(self.dif)/100+Math.random() > 1 //dif is choose by player with slider
+		var pos,findAt,botSmart;
+		botSmart = parseInt(self.dif)/100+Math.random() > 1 //dif is choose by player with slider
 		if (Modele.isGameFinish()){
 				return(false);
 		};
 		if (botSmart){
-			var pos,findAt;
 			this.boolSmart.push("true")
 			Modele.setPlayer(1);
 			fillsWinningPos();
-			var isPosOk = function(pos2){
-				if( pos2 <48 && pos2 >= 0 && pos2 !== false){
-					pos = pos2;
-					return true;
-				}
-			}
-			var isPosOk2 = function(pos2){
-				pos = ~pos2;
-				return pos2;
-			}
-			var findAt;
-			//equivalent to elseif !cond
-				isPosOk2 (gagnerDirect()) 
+			//newt line while pos == -1
+			pos = ~(
+				~gagnerDirect()
 			|| 
-				isPosOk2(bloquerDirect(true)) 
+				~bloquerDirect(true)
 			||
-				isPosOk2((findForbiddenAndNotRecommandedPosition(),gagneEn2Coup(1)))
+				(findForbiddenAndNotRecommandedPosition(),~gagneEn2Coup(1))
 			||
-				isPosOk2((findAt={modelID:0,positionInGrille:48},modeledetectorAndAnswer(perfectModele,findAt)))
+				(findAt={modelID:0,positionInGrille:48},~modeledetectorAndAnswer(perfectModele,findAt))
 			||
-				isPosOk(giveMeACheckedPosition(function(){ 
+				~giveMeACheckedPosition(function(){ 
 					findAt={modelID:0,positionInGrille:48,tabNumber:0};
 					return (playAvecModele(findAt))
-				}))
+				})
 			||
-				isPosOk(giveMeACheckedPosition(function(){
+				~giveMeACheckedPosition(function(){
 					return (playSansModele(posJoueur));
-				}))
+				})
+			)
 		}else{
 			//push that we don't play in 100% mode  and take a pos randomly
 			this.boolSmart.push("false");
-			var pos=Math.floor(Math.random()*7);
+			pos=Math.floor(Math.random()*7);
 		};	
 		return Modele.play(pos,retournerPosition);
 	}
@@ -105,8 +96,7 @@ var IA = new function(){
 		while(findAt.tabNumber < TabOfTab.length ){
 			while (findAt.modelID < TabOfTab[findAt.tabNumber].length){
 				var position3 = modeledetectorAndAnswer(TabOfTab[findAt.tabNumber],findAt) ;
-				if ( position3!==false){
-					position3= ~position3;
+				if ( ~position3){
 					var pos=ifPlayHereGiveMeExactPos(position3);
 					if (~pos){
 						return pos;
@@ -120,7 +110,7 @@ var IA = new function(){
 			findAt.tabNumber++;
 		}
 		findAt.positionInGrille="notFound";
-		return false;
+		return -1;
 	}	
 	
 	
@@ -249,7 +239,7 @@ function detectBadPositionAlgorythme(){
 		Modele.setPlayer(1);
 		var pos = Modele.play(i,true);
 		Modele.grille[pos]="1";
-		if (gagneEn2Coup(2)){
+		if (~gagneEn2Coup(2)){
 			posDeconseille.push(pos);
 		}
 		Modele.grille[pos]=0;
@@ -278,14 +268,14 @@ function gagneEn2Coup(playerTurn){
 					var otherPlayerWinOnMe=(Modele.getPlayer() == 1) ? false: comparerLigne("g",pos);
 					if ( (cptGagnerDirect == 1 && comparerLigne(WinnerPos,pos-7) )|| (cptGagnerDirect >1 && !otherPlayerWinOnMe) ){	
 						Modele.grille[position2] = 0;
-						return(~i);
+						return(i);
 					}
 				}
 			}
 			Modele.grille[position2]=0;
 		}
 	}
-	return false;
+	return -1;
 }
 	function getListOfMatchingPos(findAt){
 		var tabPosInBigGrille=[];
@@ -347,7 +337,7 @@ function gagneEn2Coup(playerTurn){
 				positionToPlay = tab[0];
 				findAt.modelID--;
 	
-		return (findAt.isModelfoundParams.isModelfound===false) ? false : ~positionToPlay;
+		return (findAt.isModelfoundParams.isModelfound===false) ? -1 : positionToPlay;
 	}
 
 	function findForbiddenAndNotRecommandedPosition(){
@@ -385,8 +375,7 @@ function gagneEn2Coup(playerTurn){
 		while( findAt.modelID < mesModele.length)
 		{
 			var position=modeledetectorAndAnswer(tabException,findAt);
-			if (position){		
-				position = ~position;			
+			if (~position){		
 				position=parseInt(position);
 				var pos= posDeconseille.indexOf(position)
 				while ( ~pos )
@@ -590,10 +579,10 @@ function comparerCaractere (carMod,car,impaire){
 					//remettre partie fini à faux pour qu'il n'affiche pas la fin du jeu alors qu'on empeche le Modele.joueur de gagner à cette place 
 					Modele.isGameFinish(false);
 					//retour en chaine pour que 0 soit pas faux 
-					return ~position ;
+					return position ;
 			}
 		}
-		return false;
+		return -1;
 	}
 
 	function bloquerDirect (bool){
@@ -604,12 +593,11 @@ function comparerCaractere (carMod,car,impaire){
 			if (Modele.isGameFinish()){
 					Modele.nextPlayer();
 					var pos=Modele.play(position,bool);
-					//retour en chaine pour que 0 soit pas faux 
-					return ~position ;
+					return position ;
 			}		
 		}
 		Modele.nextPlayer();
-		return false;
+		return -1;
 	}
 	//remplit posInterdite
 	function dontHelpJ2(posInterdite){
