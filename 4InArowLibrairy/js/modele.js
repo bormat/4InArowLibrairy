@@ -27,6 +27,9 @@ var Modele={
 				if(typeof pos == "boolean"){
 					isGameFinish = pos;
 				}else{//integer
+					if(pos<0){
+						return false;
+					}
 					var disc = new Disc(pos);	
 					[1,6,7,8].some(function(direction){
 						var start1 = disc.goToDir(direction);

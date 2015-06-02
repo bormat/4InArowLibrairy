@@ -8,7 +8,18 @@ describe("myFunction", function() {
 				expect(IA.p4BlockEasy(pos-1,true)).toEqual(pos);
 			});
 		}
-		
+		it("joueEn24", function(){
+		Modele.setModel(
+		[
+        "2020100",
+        "1010100",
+        "2010100",
+        "2210200",
+        "1222100",
+        "1121220",
+      ])
+		expect(IA.p4BlockEasy(0,true)).toEqual(24);
+		});
 		it("test", function(){
 			Modele.setModel([
 			"0000000",
@@ -1923,18 +1934,7 @@ it("shouldBe", function(){
 				
 		
 		
-		it("joueEn24", function(){
-		Modele.setModel(
-		[
-        "2020100",
-        "1010100",
-        "2010100",
-        "2210200",
-        "1222100",
-        "1121220",
-      ])
-		expect(IA.p4BlockEasy(0,true)).toEqual(24);
-		});
+
 		
 		it("gameOver", function(){
 		Modele.setModel(
