@@ -54,7 +54,7 @@ describe("myFunction", function() {
 			])
 			expect(IA.p4BlockEasy(1,true)).toEqual(21);
 		});
-		
+
 		
 		it("test", function(){
 			Modele.setModel(
