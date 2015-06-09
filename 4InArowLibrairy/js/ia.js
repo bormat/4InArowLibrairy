@@ -34,8 +34,7 @@ var IA
 		isModelfound:function(){
 			return $isModelfound;
 		}		
-	}
-	
+	}	
 	var $winningRedPairs = [];
 	var $winningYellowOdds = [];
 	var $winningRedOdds = [];
@@ -187,6 +186,7 @@ function wontBecomeLikeThisModel(TabWontBecomeLikeThisModel, player, posBot){
 	pos= param.isModelfound ? -1 : pos;
 	return param;
 }
+
 function wontBecomeLikeThisModel2(TabWontBecomeLikeThisModel, player, posBot){
 	if(posBot<0){return false}
 	var lastMod;
@@ -199,7 +199,7 @@ function wontBecomeLikeThisModel2(TabWontBecomeLikeThisModel, player, posBot){
 		if (~pos){
 			$isModelfound = ! forOfSome(TabWontBecomeLikeThisModel, function(mod){
 				lastMod = mod;
-				param= structModelDetector(mod, 48) ;
+				param = structModelDetector(mod, 48) ;
 				if (param.isModelfound){
 					return true;
 				}
@@ -353,16 +353,11 @@ function winInTwoTurn(playerTurn){
 }
 	function getListOfMatchingPos(findAt){
 		var tabPosInBigGrille=[];
-		var nbLine;
 		//on cherche le modele
 		var model = $modele[findAt.modelID = $modelId]
-		$modelId = findAt.modelID;
-		$param = Array.isArray(model) ? 
-			modeleDetector4(model, $pos5)
-		:
-			structModelDetector(model, $pos5)
-		;
+		$param = structModelDetector(model, $pos5);
 		$currMod = $param.theTab;
+		$pos = $param.pos;
 		if($currMod){
 			$currMod  = (Array.isArray($currMod[0]) ? $currMod[0] : $currMod);
 		}
@@ -370,28 +365,27 @@ function winInTwoTurn(playerTurn){
 		if ( $isModelfound==true ){			
 			if (Array.isArray($playAt)){
 				for (var u=0;u<$playAt.length ;u++){	
-					nbLine = addPosOkToGroup($playAt[u],tabPosInBigGrille)
+					tabPosInBigGrille.push(addPosOkToGroup($playAt[u]))
 				}
 			}else{
-				nbLine = addPosOkToGroup($playAt,tabPosInBigGrille);
+				tabPosInBigGrille.push(addPosOkToGroup($playAt));
 			}
-			$pos5=beginToEnd($param.pos);
+			$pos5=beginToEnd($pos);
 		}else{//si pas trouvé 
 			$pos5 = 48;
 		}
 		return tabPosInBigGrille;
 	}
 	
-	var addPosOkToGroup = function (posRelativeToModele, tabPosInBigGrille){
+	var addPosOkToGroup = function (posRelativeToModele){
 		if( $param.theModelISelf && $param.theModelISelf.mode == "futur"){
-			var positionmodele = $playAt;
+			return $playAt;
 		}else{
-			var positionmodele = $param.pos + positionOfSym(posRelativeToModele,$currMod[0].length, $param.sym);
+			return $pos + positionOfSym(posRelativeToModele,$currMod[0].length, $param.sym);
 		}
-		tabPosInBigGrille.push(positionmodele);
 	}
 			
-	function beginToEnd(begin,nbLine){
+	function beginToEnd(begin){
 		return begin + $currMod.length*7-7;
 	}
 	
@@ -413,7 +407,6 @@ function winInTwoTurn(playerTurn){
 		$pos = tab[0];
 		findAt.modelID--;
 		$modelId--;
-
 		$isModelfound=$param.isModelfound;
 		return $pos = !$isModelfound ? -1 : $pos;
 	}
@@ -452,16 +445,14 @@ function winInTwoTurn(playerTurn){
 		$modelId = 0;
 		$pos5 = 48;
 		while($modelId  < mesModele.length){
-			var position=modeledetectorAndAnswer(tabException);
-			if (~position){		
-				position=parseInt(position);
+			modeledetectorAndAnswer(tabException);
+			if (~$pos){
+				var position = $pos;
 				var pos= $inadvisables.indexOf(position)
-				while ( ~pos )
-				{
+				while ( ~pos ){
 					$inadvisables.splice(pos,1);
 					pos= $inadvisables.indexOf(position)
-					
-				}			
+				}	
 				$pos5--;
 			}
 			else
