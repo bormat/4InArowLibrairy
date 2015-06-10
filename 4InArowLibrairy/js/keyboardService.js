@@ -1,5 +1,3 @@
-define(['app'], function (app) {
-
 	var keyboard=(function (){
 		// private methods
 		var event,intKeyCode;
@@ -34,4 +32,4 @@ define(['app'], function (app) {
 	app.factory("keyboard",function (){
 		return keyboard;
 	})
-})
+
