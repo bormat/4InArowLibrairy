@@ -27,15 +27,12 @@ var Modele={
 				if(typeof pos == "boolean"){
 					isGameFinish = pos;
 				}else{//integer
-					if(pos<0){
-						return false;
-					}
 					var disc = new Disc(pos);	
 					[1,6,7,8].some(function(direction){
-						var start1 = disc.goToDir(-direction);
-						var start2 = disc.goToDir(direction);
+						var start1 = disc.goToDir(direction);
+						var start2 = disc.goToDir(-direction);
 						if (isGameFinish = Disc.distance(start1 ,start2) >= 3){
-							Modele.winInfo = {pion1:start1, pion2:start2, dir:direction }
+							Modele.winInfo = {pion1:start1, pion2:start2, dir:-direction }
 							return true;
 						}
 					})
@@ -46,10 +43,10 @@ var Modele={
 	},
 	play : function(position,test){
 		position%=7;
-		while ( Modele.grille[position+7] == 0 && position <37 ){
+		while ( Modele.grille[position+7] == "0" && position <37 ){
 			position +=7;			
 		}		
-		if ( Modele.grille[position] == 0 ){
+		if ( Modele.grille[position] == "0" ){
 			Modele.mettrePion(position,test);
 			return position;
 		}
@@ -63,7 +60,7 @@ var Modele={
 		}
 		Modele.isGameFinish(position);
 		if (test){
-			Modele.grille[position]=0;
+			Modele.grille[position]="0";
 		}
 		return Modele.isGameFinish()//false;
 	},
@@ -79,7 +76,7 @@ var Modele={
 	backup:[],
 	init:function(){
 		for (var i=0;i<42;i++){
-			Modele.grille[i]=0;
+			Modele.grille[i]="0";
 		}
 		Modele.isGameFinish(false);
 	},

@@ -261,9 +261,8 @@
                                 onStart = function(event) {
                                     pointer.addClass('active');
                                     dimensions();
-									window.clic2=false;
-                                   /* event.stopPropagation();
-                                    event.preventDefault();*/
+                                    event.stopPropagation();
+                                    event.preventDefault();
                                     if (!listenerInAction){
 	                                    ngDocument[0].addEventListener(events.move, onMove);
 	                                    ngDocument[0].addEventListener(events.end, onEnd);

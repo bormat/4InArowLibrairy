@@ -790,7 +790,7 @@ function comparerCaractere (carMod,car,impaire){
 				}while (~$pos);
 				firstTurn = false;
 			}
-		}while($inadvisables.pop() || $forbids.pop());
+		}while($inadvisables.pop() != null  || $forbids.pop() != null );	
 	}
 }();
 	

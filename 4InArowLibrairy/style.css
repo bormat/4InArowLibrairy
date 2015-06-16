@@ -1,3 +1,6 @@
+*{
+	z-index:0;
+}
 #map-canvas {
 	height: 500px;
 }
@@ -27,6 +30,7 @@
 .main-content .break {
     margin: 25px 0;
 }
+
 
 .text-justify {
     text-align:justify;

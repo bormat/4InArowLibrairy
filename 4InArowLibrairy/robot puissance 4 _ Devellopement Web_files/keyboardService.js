@@ -1,5 +1,6 @@
-/*~function(){
-	var keyboard = function (){
+define(['app'], function (app) {
+
+	var keyboard=(function (){
 		// private methods
 		var event,intKeyCode;
 		var beetween = function(toComp,Min,Max){
@@ -28,10 +29,9 @@
 				setAndnormalizeIntKeyCode();
 			}
 		};
-	}()
-
+	})()
+	
 	app.factory("keyboard",function (){
 		return keyboard;
 	})
-}()*/
-
+})

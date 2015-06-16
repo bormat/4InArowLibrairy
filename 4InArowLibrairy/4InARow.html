@@ -6,7 +6,7 @@
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
+<script src="js/jqueryCookie.js"></script>
 <script src="js/myRules.js"></script>
 <script src="js/keyboard.js"></script>
 <script src="js/tableauDeModele.js"></script>
@@ -25,13 +25,12 @@
 </script>
 </head>
 <body>
-<div ng-app="myApp" ng-controller="myCtrl">
-<div id="applet"   autofocus ng-keydown="keydown($event)">
-<input id="scroll" ng-style="{ display: displayScroll }" ng-click="scroll=!scroll" value="bloquer la page" type="button" />
+<div id="app" ng-class ="isFullScreen" ng-app="myApp" ng-controller="myCtrl">
+<div id="applet"  tabindex="0"  ng-class ="isFullScreen" autofocus ng-keydown="keydown($event)">
 
 <input id="undo" value="annuler" ng-click="undo()" type="button"/><input id="paramP4" ng-click="displayOption()" value="option" type="button" />
 
-<div  myt-ouchstart="touchStart(this)" myt-ouchmove="touchMove(this)" myt-ouchend="touchEnd(this)" id="p4" >
+<div  myt-ouchstart="touchStart(this)"  myt-ouchmove="touchMove(this)" myt-ouchend="touchEnd(this)" id="p4" >
 	<span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in grille track by $index" ng-mouseover="preview($index)" ng-mouseleave="endPreview($index);" my-touchstart="alert('start')"  >
 	<img   ng-style="{'backgroundColor':graphique(pion)}" src="http://bormat2.free.fr/4InArowLibrairy/images/1px.png"/>
 			<br ng-if="$index%7==6" />
@@ -53,7 +52,63 @@
 	<div id="sliderID">
 		  <slider floor="0" ceiling="100" step="1" precision="2" ng-model="cost"></slider>
 		</div>
+		<div ng-if="mode=='creator'" style="width:100%;">
+			bonjour devellopeur ou pro du puissance 4 voici la grille représentant votre modele<br>
+			ligne début<input type="number" ng-model="minLine"><br/>
+			ligne fin<input type="number" ng-model="maxLine"><br/>
+			colone début <input type="number" ng-model="minCol"><br/>
+			colone fin<input type="number" ng-model="maxCol"><br/>
+			[<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>
+			<em ng-if="maxCol>=$index%7 && minCol<=$index%7 && minLine<=$index/7  && maxLine>$index/7-2"ng-repeat="pion in grille track by $index"><em ng-if="$index%7==minCol%7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"</em>{{pion}}<em ng-if="$index%7==maxCol%7">",<br/></em></em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],5</br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],
+			<br/>
+			<strong>choisir avec le clavier avant de cliquer :</strong><br>
+			//1 jaune<br>
+			//2 rouge<br>
+			//3 jaune impaire<br>
+			//4 jaune paire<br>
+			//5 tous dans le tableau de 42 cases<br>
+			//6 tout sauf 0 dans le tableau de 42 cases<br>
+			//7 rouge impaire<br>
+			//8 rouge paire<br>
+			//9 tous meme hors tableau de 42 case : <br><br>
+			
+			<strong>les options suivantes sont pour les cases vides exclusivement :</strong> <br>
+			//h rouge ne gagne pas a cette case <br>
+			//g jaune gagne à cette case <br>
+			//e et il n'y a pas de paire gagnant rouge j2 sur cette colonne (une case case rouge est dite gagnante si elle est sur une ligne paire en partant du bas avec l'indice 1 et qu'aucune case impaire où jaune pouvant directement gagner n'est au dessous)<br>
+			//i les rouges gagnent à cette case contraire de h<br>
+			//j jaune ne gagne pas à cette case inverse de g<br>
+			//. combiner de  j et i ouais  ils ont un point en commun haha ok je sort<br>
+			//r combiner de e et g jaune gagne à cette case et pas de rouge ligne paire gagnant en dessous (option en cour de disparition )<br>
+			//f combiner de g et h jaune gagne à cette ligne rouge ne gagne pas a cette ligne (option en cour de disparition )<br>
+			//z diff de 1 <br>
+			//y diff de 2 <br>
+			
+			
+		</div>
 	</div>	
+	
+	<style> 
+	#app.fullscreen  {	
+		background: rgba(0,0,0,0.8);
+		position:fixed;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+	}
+	
+	#applet.fullscreen {
+		position:absolute;
+		top:50%;
+		left:50%;
+		margin-top:0;
+		width:40%;
+		width: 90vmin;
+		transform: translate(-50%,-50%);
+	}
+	</style>
 </div>
 <br>
 </div>

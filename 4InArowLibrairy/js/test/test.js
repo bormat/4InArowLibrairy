@@ -8,6 +8,46 @@ describe("myFunction", function() {
 				expect(IA.p4BlockEasy(pos-1,true)).toEqual(pos);
 			});
 		}
+		
+		it("joueEn24", function(){
+		Modele.setModel([
+        "0000000",
+        "0000002",
+        "0000101",
+        "0001202",
+        "0002101",
+        "2101202",
+        ])
+		expect(IA.p4BlockEasy(32,true)).toEqual(17);
+		});
+		
+			
+		it("joueEn24", function(){
+		Modele.setModel( [
+        "0000000",
+        "0000000",
+        "0000000",
+        "0000000",
+        "0000100",
+        "2011220",
+        ])
+		expect(IA.p4BlockEasy(32,true)).toEqual(30);
+		});
+			
+		it("joueEn24", function(){
+		Modele.setModel(
+		  [
+        "0120200",
+        "0210100",
+        "0120202",
+        "1220101",
+        "2212102",
+        "1121211",
+        ])
+		expect(IA.p4BlockEasy(0,true)).not.toEqual(24);
+		});
+		
+
 		it("joueEn24", function(){
 		Modele.setModel(
 		[

@@ -1,32 +1,20 @@
-	var MyScopeAccess;
-	var lastY;
-	var lastX;
-	var originX;
-	var originY;
-	var lastScroll;
-	var app = angular.module('myApp', ['uiSlider']);
-	app.controller('myCtrl', function($scope,$timeout){
-		var o = $scope;
-		o.o = o;
-		o.IA = IA;
-		o.Modele = Modele;
-		o.whyItIsFinish = false;
-		Modele.isGameFinish(true);
-		o.clickOnBlack = function(){
-			(o.fen.disp = 'play',o.columClass = 'optionVisible')
-		}
-		o.isBotActive = true;
-		o.reverse = function(aString){
-			o[aString] = !o[aString]		
-		}
+var MyScopeAccess;
+var lastY;
+var lastX;
+var originX;
+var originY;
+
+var lastScroll;
+define(['app','ngcookies','slider','keyboardService','myRules','modele','ia','tableauDeModele','http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-animate.js'], function (app) {
+
+
+app.controller('View1Ctrl',function ($scope,$timeout,keyboard,$cookieStore) {
 		
-		MyScopeAccess=$scope;
 		$scope.endGameMessage=false;
+		loadjscssfile(path3+ 'css/theme.css','css');
+		loadjscssfile(path3+ 'css/index_1.css','css');
 		var time;
-		
-		$scope.fen =  {disp :  "play",stayOpen: !1};
-		$scope.isFullScreen = false;
-		
+		MyScopeAccess=$scope;
 		$scope.load=function(grille2){
 			Modele.setModel(grille2)
 			$scope.grille.safeClone(Modele.grille);
@@ -37,6 +25,12 @@
 				Modele.nextPlayer();
 			}
 		}
+		$scope.pionWidth=function(){
+			var width=Math.round($("#p4").width()*0.142857)-1;
+			return width;
+		}
+		$scope.displayScroll="none";
+	
 
 		function setGrille(i,player){
 			$scope.grille[i]=player;
@@ -54,9 +48,9 @@
 		
 		$scope.mode="normal";
 		$scope.cost=100;
-		$scope.columClass='optionVisible';
+		$scope.columClass='optionInvisible';
 		$scope.columClass2='optionInvisible';
-		$scope.stayOpen= false;
+		
 		$scope.alert = function(text) {
 			alert(text);
 		};
@@ -66,6 +60,7 @@
 		$scope.Modele = Modele;
 		$scope.grille2 = "jeu2"; 
 		$scope.grille = [];
+		$scope.botActive=true;
 		$scope.animation=true;
 		var grille=$scope.grille;
 		var grilleCreator;
@@ -85,13 +80,10 @@
 	
 
 		$scope.init=function(){
-			o.columClass = 'optionInvisible'
-			threadIsntUsed = true;
 			Modele.playAgain();
 			//setTimeout block the update of dom when user clic on replay 
 			setTimeout(function (){
 				$scope.endGameMessage=false;
-				$scope.fen.disp = "message"
 			},0);
 			grille=$scope.grille=Modele.grille.slice();
 		}
@@ -100,38 +92,16 @@
 			if (!( $scope.endGameMessage && $scope.columClass=='optionVisible')){
 				$scope.deplier('columClass');
 			}
-			$scope.endGameMessage=false;
-			$scope.fen.disp = "option";
-		}
-		//#99F 
-		$scope.deplier=function(columClass,bool){
-			if(bool != undefined){
-				$scope[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
-			}else{
-				$scope[columClass]=($scope[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
-			}
+			$scope.endGameMessage=false;			
 		}
 		
-		/*$scope.popup =  new DeplierClass();
-		
-		var DeplierClass = function(bool){
-			this[0] = bool;
+		$scope.deplier=function(columClass){
+			$scope[columClass]=($scope[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
 		}
-		DeplierClass.prototype = {
-			deplier = function(bool){
-				this[0] = (bool != undefined) ? bool : !this[0];
-			},
-			getClass : function(){
-				return this[0] ? 'optionVisible' : 'optionInvisible';
-			}
-		}*/
-		
-		
 		
 		function setGrille(i,player){
 			$scope.grille[i]=player;
 		}
-		
 		
 		var preview;
 		$scope.preview = function ($index){
@@ -149,7 +119,7 @@
 				preview=pos;
 			}
 			debug($index)
-		};
+        };
 		function debug(pos){
 			if (pos%7!=0){
 				setGrille(0,Modele.grille[0])
@@ -160,7 +130,7 @@
 				setGrille($index%7,0);
 			}
 
-		};
+        };
    
 		$scope.color2='red';
 		$scope.graphique = function (colorNumber) {
@@ -168,25 +138,25 @@
 				color=creator.getColor(colorNumber);
 				return color;
 			}
-			return (function(){
-				switch(parseInt(colorNumber)){
-					case 0: return "white";
-					case 1: return "yellow";
-					case 2: return "red";
-					case 4: return "rgb(160,166,0)"; //black yellow 
-					case 8: return "rgb(140,0,0)";//black red
-				}
-			})();
-		};
+			var color=0;
+			switch(parseInt(colorNumber)){
+				case 0: color= "white";break;
+				case 1: color ="yellow";break;
+				case 2: color ="red";break;
+				case 4: color="rgb(160,166,0)";break;
+				case 8: color="rgb(140,0,0)";break;
+			}				
+			return color;
+        };
 		
 		$scope.restore=function(){
-			var backup = $.cookie("backup");
+			var backup =$cookieStore.get('backup');
 			$scope.loadStory(backup);
 
 		}
 		
 		$scope.save=function(){
-			$.cookie("backup",  Modele.backup)
+			$cookieStore.put('backup', Modele.backup);			
 		}
 			
 					
@@ -229,11 +199,12 @@
 				darkWinningPos(false);
 				Modele.isGameFinish(false);
 			}
-			threadIsntUsed = true;
+
+
 			var pos=Modele.undo();
 			setGrille(pos,0);
 			IA.boolSmart.pop();
-			if ($scope.isBotActive && Modele.getPlayer()==1 ){
+			if ($scope.botActive && Modele.getPlayer()==1 ){
 				if (Modele.backup.length%2==0){
 					$scope.undo();
 				}else{
@@ -241,7 +212,6 @@
 					Modele.setPlayer(2);
 				}
 			}
-			$scope.deplier( 'columClass',false );
 		}
 		
 		
@@ -266,10 +236,8 @@
 		$scope.message2=message;
 		var threadIsntUsed=true;
 		function loopThreatAnimation(){
-			if (Modele.isGameFinish()){
-				stackPosition.length=0;
-				threadIsntUsed = true
-				return;
+			if (Modele.isGameFinish() && stackPosition.length==0){
+				return false;
 			}
 			if (stackPosition.length!=0){
 				if ( threadIsntUsed){
@@ -278,16 +246,16 @@
 					// it is possible theplayer is really fast so we record all all position where he click in stackPosition and threat them now
 					var pos=Modele.play(stackPosition.shift());
 					if (pos<0){
-						threadIsntUsed = true
-						return;
+						return(threadIsntUsed=true);
 					}
-					/*var stopAlert=false;*/
+					var stopAlert=false;
 					if (Modele.isGameFinish()){
-						message();
-						//stopAlert=true
-					}else if(Modele.grille.indexOf(0) < 0 ){
-						message("égalité");
-						threadIsntUsed = true
+						function b(){
+							message();
+							$scope.$apply();
+						}
+						setTimeout(b,time);
+						stopAlert=true
 					}
 					player=Modele.getPlayer(1);
 					botPlayer=Modele.getPlayer(0);
@@ -298,13 +266,15 @@
 			function callbackPlayer(){
 				function callbackBotIfActiveElsePlayer1(){
 					threadIsntUsed=true;
-					if (/*!stopAlert &&*/ Modele.isGameFinish()){
+					if (!stopAlert && Modele.isGameFinish()){
 						message();
-					}					//threat other position if player play during animation
-					loopThreatAnimation();					
+					}
+					//threat other position if player play during animation
+					loopThreatAnimation();
+					
 				}	
 
-				if ($scope.isBotActive){
+				if ($scope.botActive){
 					IA.setDif($scope.cost);
 					var posBot=IA.p4BlockEasy(pos,false);
 					anim(posBot,botPlayer,callbackBotIfActiveElsePlayer1);
@@ -314,9 +284,6 @@
 				}
 			}
 		}
-		
-		
-		
 		function darkWinningPos(dark){
 					var f=Modele.winInfo;
 					if (!f){
@@ -326,37 +293,30 @@
 					var colorNumber= $scope.grille[i]%3;
 					if (dark){
 						 colorNumber = (colorNumber==1) ? 4 : 8;
-					}					
-					do{
-						setGrille(i, colorNumber);		
-					}while(i+=f.dir, i <= f.pion2)
+					}
+					for (;i!=f.pion2 + f.dir ;i+=f.dir){
+						setGrille(i, colorNumber);
+					}
 		}
-		function message(egality){
-					o.fen.disp = "message";
-					o.whyItIsFinish = false;
+		function message(){
+					//show winning pos
+					darkWinningPos(true)					
 					var message;
-					if(egality){
-						message="ceci est une égalité mais pas une victoire"
-					}else{
-						//show winning pos
-						darkWinningPos(true)					
-						
-						if (Modele.isHumanTurn()){
-							if (IA.boolSmart.indexOf("false")+1){
-								message="bravo vous avez gagné  augmentez un peu le niveau";
-							}
-							else{
-								message="bravo vous avez gagné  envoyer votre historique par commentaire pour améliorer le jeu";
-								$("#comment").append("ne touchez pas cette ligne c'est votre historique de jeux"+JSON.stringify(Modele.backup));
-							}
+					if (Modele.isHumanTurn()){
+						if (IA.boolSmart.indexOf("false")+1){
+							message="bravo vous avez gagné  augmentez un peu le niveau";
 						}
 						else{
-							message="Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents";
+							message="bravo vous avez gagné  envoyer votre historique par commentaire pour améliorer le jeu";
+							$("#comment").append("ne touchez pas cette ligne c'est votre historique de jeux"+JSON.stringify(Modele.backup));
 						}
+					}
+					else{
+						message="Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents";
 					}
 					$scope.message = message;
 					$scope.endGameMessage=true;
-					$scope.deplier( 'columClass',true );
+					$scope.deplier( 'columClass' );
 					$scope.$digest();
 				}
 		$scope.message="ça va commencer";
@@ -367,7 +327,7 @@
 	$scope.minCol=0;
 	$scope.maxCol=6;
 	creator=(function(){
-		var colorNumber=1;
+		var colorNumber=1;0
 		var getColor = function (chara){
 				var color='transparent';
 				switch(''+chara){				
@@ -394,8 +354,9 @@
 				}
 				return(color);
 			};			
-			var affectnumber= function(keyCode){
-				colorNumber= String.fromCharCode(keyCode).toLowerCase();
+			var affectnumber= function(pos){
+					var chara=String.fromCharCode(keyboard.code());
+					colorNumber= chara.toLowerCase();
 			}
 		return {
 			//'chooseColor' : chooseColor
@@ -407,43 +368,44 @@
 	
 	$scope.keydown=function(event){
 		event.preventDefault();
-	
-		var keyCode = event.which		
+		keyboard.setEvent(event);
 		if ($scope.mode=="creator"){
-			creator.affectnumber(keyCode)
-			return;
-		}		
-		//play at the number push on keyboard
-		//numerical number (0 to 9)
-		if (keyCode>47 && keyCode<58){
-			$scope.fallenPion(keyCode - 48);
-			return;
-		}			
-		if (event.which == 90 && event.ctrlKey){
-			$scope.undo();
-			return;
+			creator.affectnumber()
+			return true;
+		}
+		if (keyboard.getCtrlKey()){
+			if ( keyboard.isPush('Z')){	
+				$scope.undo();
+			}
 		}
 		//right key and left key change the preview  
-		if (keyCode==37||keyCode==39){
-			var inc = keyCode-38;
+		if (keyboard.code()==37||keyboard.code()==39){
+			var nextPosDirection=keyboard.code()-38;
 			var nextPos=preview;
-			var i = 7;
-			do{
-				nextPos = mod(nextPos + inc,7);						
-			}while( +Modele.grille[nextPos] && i--)
+			for(var i=0;i==0 || Modele.grille[nextPos]!=0 && i<8;i++ ){
+				nextPos+=nextPosDirection;
+				if (nextPos.isNaN){
+					nextPos=5;break;
+				}
+				nextPos = mod(nextPos,7);						
+			}
 			$scope.preview(nextPos);
-			return;
 		}
 		//top arrow
-		if (keyCode==38){
-			$scope.undo();
-			$scope.preview();
-			return;
+		else if (keyboard.code()==38){
+			$scope.preview($scope.undo());
 		}
 		//bottom arrow
-		if (keyCode==40){
-			$scope.preview($scope.fallenPion(preview));
+		else if (keyboard.code()==40){
+			var pos= (preview);
+			$scope.preview($scope.fallenPion(pos));
 		}
+		//play at the number push on keyboard
+		for (var i=0;i<10;i++){
+			if (keyboard.isPush(""+i)){
+				$scope.fallenPion(i);
+			}
+		} 			
 	};
 
 	$scope.scrollInPx=function(lg){
@@ -487,17 +449,17 @@
 			$scope.preview(pos);
 	}
 	
-	$scope.touchEnd = function(element){
+	
+	$scope.touchEnd = function(element) {
 			if ($scope.columClass=='optionVisible'){
 				return false;
 			}
 			event.preventDefault();
 			$scope.fallenPion(preview);
 	}
+	
 });
-
-
-app.directive('mytOuchstart', [function() {
+	app.directive('mytOuchstart', [function() {
 		return function(scope, element, attr) {
 			MyScopeAccess.P4=element;
 			element.on('touchstart', function(event) { 
@@ -532,5 +494,8 @@ app.directive('mytOuchstart', [function() {
 			});
 		};
 	}])
+}); 
 
-	
+
+
+

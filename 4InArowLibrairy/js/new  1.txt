@@ -1,0 +1,124 @@
+hi 
+Longhand: 
+if ( "a".indexOf("arrow") >0){}
+
+Shorthand:
+
+if (~ "a".indexOf("arrow"){}
+
+it works for all function witch return -1 to say false because ~x = - x -1 and ~-1=0
+
+-------
+
+Longhand:
+
+for(i=7;i>0;i--)
+
+Shorthand:
+
+for(i=8;--i;)
+
+-------
+Longhand while(1){}
+Shorthand:for(;;){}
+
+ok lol for 1 letter
+
+--------
+
+the example with switch is no optimal here my way :
+
+Longhand swtich(a){
+case1: f1()break;
+case2: f2()break
+
+}
+
+Shorthand
+
+var cases = [
+f1,
+f2,
+];
+var a = cases[something])
+a && a();// when i have twice the same think i prefer use && instead of if
+
+--
+
+Longhand :
+
+if(a){
+
+b=5;
+
+}
+
+b = a && 5;
+
+warning b == false if not a,
+
+but you can use || for else if
+
+-----
+Longhand :
+
+(function(){alert()})()
+
+shortand:
+
+~function(){alert()}() works too with + or - or !
+
+---
+
+imagine a1 change the value of a and b1 change the value of b but don't retrun it
+
+Longhand:
+
+var c;
+
+a1()
+
+c = a
+
+if(!a){
+
+b1()
+
+c=b
+
+}
+
+shortand: with the operator "," coma that return the last
+
+var c = (a1(),a) || (b1(),b);
+
+with coma opérator and && and || and () you can completly remove if else but only do this if it stay readable
+
+----
+
+parseInt("10.5");
+
++"10.5"
+
+--
+
+you can use coma in while loop, the last is the condition ex:
+
+i=8;
+
+do{
+
+cond = myFunc(i);
+
+}while(i--,cond)
+
+---
+you can create shorcut of function with bind
+long :
+function find(){
+return aString.indexOf(anOtherString)
+}
+
+shorter: find = aString.indexOf.bind(aString,anOtherString)
+
+-- and please don't use for in you will go throught inherted property of prototype an alternative is object.keys or array.forEach

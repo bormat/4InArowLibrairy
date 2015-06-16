@@ -1,4 +1,4 @@
-var frAngular = angular.module('frAngular', []);
+/*var frAngular = angular.module('frAngular', []);
 
 // This service was based on OpenJS library available in BSD License
 // http://www.openjs.com/scripts/events/keyboard_shortcuts/index.php
@@ -222,4 +222,4 @@ frAngular.factory('keyboardManager', ['$window', '$timeout', function ($window, 
 	};
 	//
 	return keyboardManagerService;
-}]);
+}]);*/
