@@ -28,7 +28,14 @@ Number.prototype.sign = function(n) {
 Number.prototype.between=function(a,b){
 	return (a<=this && b>=this);
 }
-    enumerable: false,
+Object.prototype.addP = function(o){
+	var keys = Object.keys(o)
+	var lg = keys.length;
+	for(var i = 0; i < lg; i++){
+		var u = keys[i];
+		this[u] = o[u];
+	}
+}
 
 
 
@@ -47,10 +54,6 @@ Array.prototype.init = function(val,taille){
 		this[o]= val;
 	}
 }
-//empeche la propriété de se retouver dans chaque tablea sinon le for each va afficher la propriété 
-Array.prototype.init.enumerable= false ;
-Array.prototype.at.enumerable= false;
-Array.prototype.safeClone.enumerable= false;
 
 //example whenReady("$('#applet span')[41]",disableDrag);
 function whenReady(selector,callback,time){

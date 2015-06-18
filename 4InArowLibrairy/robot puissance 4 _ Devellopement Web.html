@@ -117,7 +117,7 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 <link href='css/index_1.css' 	rel='stylesheet' type='text/css'>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.3.js"></script>
 <script src="js/jqueryCookie.js"></script>
 <script src="js/myRules.js"></script>
 <script src="js/keyboard.js"></script>
@@ -151,7 +151,7 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 
 <div  myt-ouchstart="touchStart(this)"  myt-ouchmove="touchMove(this)" myt-ouchend="touchEnd(this)" id="p4" >
 	<!-- 42 pions-->
-	<span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in grille track by $index" ng-mouseover="preview($index)" ng-mouseleave="endPreview($index);" my-touchstart="alert('start')"  >
+	<span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in goodGrille() track by $index" ng-mouseover="preview($index)" ng-mouseleave="endPreview($index);" my-touchstart="alert('start')"  >
 		<img   ng-style="{'backgroundColor':graphique(pion)}" src="http://bormat2.free.fr/4InArowLibrairy/images/1px.png"/>
 		<br ng-if="$index%7==6" />
 	</span>
@@ -172,8 +172,9 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 			<input id="Input3"  ng-style="{'width': InputWidth[0]}" value="sauvegarder" ng-click="save()" type="button"/>
 			<input id="Input4" value="restaurer" ng-click="restore()" type="button"/>
 			<input id="Input5" value="rejouer" ng-click="init()" type="button"/>
-			<input id="Input6" ng-value="'mode pressé '+(animation ? 'off' : 'on')" ng-click="animation=!animation" type="button"/>
-			<input id="Input1" value="annuler" ng-click="undo()" type="button"><input id="Input2" ng-value=" isBotActive ? 'robot Actif' : '(ro)bot Désactivé' " ng-click="reverse('isBotActive')" type="button"/>
+			<input id="Input6" ng-value="'mode pressé '+(animation2 ? 'off' : 'on')" ng-click="reverse('animation2')" type="button"/>
+			<input id="Input1" value="annuler" ng-click="undo()" type="button">
+			<input id="Input2" ng-value=" isBotActive ? 'robot Actif' : '(ro)bot Désactivé' " ng-click="reverseIsBotActive()" type="button"/>
 			<input id="Input7" value="mode devellopeur switch" ng-click="modeleCreator()" type="button">
 		</div>
 	</div>
@@ -185,15 +186,15 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 	
 	
 	
-		<div ng-if="mode=='creator'" style="width:100%;">
+		<div ng-if="modeCreator" style="width:100%;">
 			bonjour devellopeur ou pro du puissance 4 voici la grille représentant votre modele<br>
 			ligne début<input type="number" ng-model="minLine"><br/>
 			ligne fin<input type="number" ng-model="maxLine"><br/>
 			colone début <input type="number" ng-model="minCol"><br/>
 			colone fin<input type="number" ng-model="maxCol"><br/>
 			[<br>
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<br>
-			<em ng-if="maxCol>=$index%7 && minCol<=$index%7 && minLine<=$index/7  && maxLine>$index/7-2"ng-repeat="pion in grille track by $index"><em ng-if="$index%7==minCol%7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"</em>{{pion}}<em ng-if="$index%7==maxCol%7">",<br/></em></em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],5</br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],
+			[<br>
+			<em ng-if="maxCol>=$index%7 && minCol<=$index%7 && minLine<=$index/7  && maxLine>$index/7-2" ng-repeat="pion in goodGrille() track by $index"><em ng-if="$index%7==minCol%7"></em>{{pion}}<em ng-if="$index%7==maxCol%7">",<br/></em></em>],5</br>],
 			<br/>
 			<strong>choisir avec le clavier avant de cliquer :</strong><br>
 			//1 jaune<br>

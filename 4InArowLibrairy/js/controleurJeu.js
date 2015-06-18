@@ -6,207 +6,282 @@
 	var lastScroll;
 	var app = angular.module('myApp', ['uiSlider']);
 	app.controller('myCtrl', function($scope,$timeout){
-		var o = $scope;
-		o.o = o;
-		o.IA = IA;
-		o.Modele = Modele;
-		o.whyItIsFinish = false;
-		Modele.isGameFinish(true);
-		o.clickOnBlack = function(){
-			(o.fen.disp = 'play',o.columClass = 'optionVisible')
+		var $keyCode;
+		var o = MyScopeAccess = $scope;
+				//MODELE CREATOR 
+		o.minLine=0;
+		o.maxLine=5;
+		o.minCol=0;
+		o.maxCol=6;
+		o.tabColor = {
+	/*a*/ '-30' : "rgb(255,0,234)",
+			'0' : 'white',
+			'1' : "rgb(255,251,0)",
+			'2' : "rgb(255,0,0)",
+			'3' : "rgb(205,209,77)",
+			'4' : "rgb(160,166,0)",//black yellow 
+	/*5*/	'5' : "rgb(255,162,0)",
+			'6' : "rgb(99,99,99)",
+			'7' : "rgb(255,128,128)",
+			'8' : "rgb(140,0,0)",//black red	
+	/*9*/	'9' : "rgb(0,255,221)"
 		}
-		o.isBotActive = true;
-		o.reverse = function(aString){
-			o[aString] = !o[aString]		
-		}
-		
-		MyScopeAccess=$scope;
-		$scope.endGameMessage=false;
-		var time;
-		
-		$scope.fen =  {disp :  "play",stayOpen: !1};
-		$scope.isFullScreen = false;
-		
-		$scope.load=function(grille2){
-			Modele.setModel(grille2)
-			$scope.grille.safeClone(Modele.grille);
-		}
-		$scope.load2=function(grille2,player){
-			$scope.load(grille2);
-			if (parseInt(Modele.joueur)!=parseInt(player)){
-				Modele.nextPlayer();
+		var $grille,
+			stackPosition = [],
+			threadIsntUsed=true,
+			preview,
+			time,
+			DeplierClass = function(bool){
+				this[0] = bool;
 			}
-		}
-
-		function setGrille(i,player){
-			$scope.grille[i]=player;
-		}
-		$scope.loadStory=function(grille2){
-			if (!grille2) return false;
-			Modele.restore(grille2);
-			//if not player2  undo last move
-			if (Modele.backup.length%2==0){
-				$scope.undo();
-			}
-			$scope.grille.safeClone(Modele.grille);
-			Modele.setPlayer(2);
-		}
-		
-		$scope.mode="normal";
-		$scope.cost=100;
-		$scope.columClass='optionVisible';
-		$scope.columClass2='optionInvisible';
-		$scope.stayOpen= false;
-		$scope.alert = function(text) {
-			alert(text);
-		};
-		$scope.optionDisp=function(){
-					return ($scope.optionsWidth==optionsWidthInit ) ? "block" : "none" ;
-		}
-		$scope.Modele = Modele;
-		$scope.grille2 = "jeu2"; 
-		$scope.grille = [];
-		$scope.animation=true;
-		var grille=$scope.grille;
-		var grilleCreator;
-		$scope.modeleCreator=function(){
-			if ($scope.mode=="creator"){
-				$scope.mode="normal";
-				$scope.grille=grille;
-			}else{
-				$scope.mode="creator";
-				grilleCreator=grille.slice();
-				$scope.grille=grilleCreator;
-				endPreview(preview)
-				setGrille(Modele.backup.at(-1),0)
-			}			
-		}
-		
-	
-
-		$scope.init=function(){
-			o.columClass = 'optionInvisible'
-			threadIsntUsed = true;
-			Modele.playAgain();
-			//setTimeout block the update of dom when user clic on replay 
-			setTimeout(function (){
-				$scope.endGameMessage=false;
-				$scope.fen.disp = "message"
-			},0);
-			grille=$scope.grille=Modele.grille.slice();
-		}
-		$scope.init();
-		$scope.displayOption=function(){
-			if (!( $scope.endGameMessage && $scope.columClass=='optionVisible')){
-				$scope.deplier('columClass');
-			}
-			$scope.endGameMessage=false;
-			$scope.fen.disp = "option";
-		}
-		//#99F 
-		$scope.deplier=function(columClass,bool){
-			if(bool != undefined){
-				$scope[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
-			}else{
-				$scope[columClass]=($scope[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
-			}
-		}
-		
-		/*$scope.popup =  new DeplierClass();
-		
-		var DeplierClass = function(bool){
-			this[0] = bool;
-		}
+			
 		DeplierClass.prototype = {
-			deplier = function(bool){
+			deplier : function(bool){
 				this[0] = (bool != undefined) ? bool : !this[0];
 			},
 			getClass : function(){
 				return this[0] ? 'optionVisible' : 'optionInvisible';
 			}
-		}*/
-		
-		
-		
-		function setGrille(i,player){
-			$scope.grille[i]=player;
-		}
-		
-		
-		var preview;
-		$scope.preview = function ($index){
-			if ($scope.mode=="creator"){
-				return (false);
-			}
-			if (preview!==undefined){
-				endPreview(preview)
-			}
-			var pos=($index+7)%7;
-			if (!isNaN(pos)){
-				if  (grille[pos]==0){
-					setGrille(pos,Modele.getPlayer(0));// 0 the current player 1 for the next 
+		}	
+		o.addP({
+			o : o,
+			modeCreator : false,
+			message : "ça va commencer",
+			//boolean
+			isBotActive : true,
+			whyItIsFinish : false,
+			animation2 : true,
+			endGameMessage : false,
+			popup : new DeplierClass(),
+			IA : IA,
+			Modele : Modele,
+			fen :  {disp :  "play",stayOpen: !1},
+			mode : "normal",
+			cost : 100,
+			columClass : 'optionVisible',
+			columClass2 : 'optionInvisible',
+			grille : [],
+			message : "ça va commencer",
+			message : message,
+			endGameMessage : true
+		})
+
+		//function
+		o.addP({
+			clickOnBlack : function(){
+				o.fen.disp = 'play',
+				o.columClass = 'optionVisible'
+			},
+			reverse : function(aString){
+				o[aString] = !o[aString]		
+			},
+			alert : function(text) {
+				alert(text);
+			},
+			optionDisp : function(){
+				return (o.optionsWidth==optionsWidthInit ) ? "block" : "none" ;
+			},
+			loadStory : function(grille2){
+				if (!grille2) return false;
+				Modele.restore(grille2);
+				//if not player2  undo last move
+				if (Modele.backup.length%2==0){
+					o.undo();
 				}
-				preview=pos;
+				$grille.safeClone(Modele.grille);
+				Modele.setPlayer(2);
+			},
+			load : function(grille2){
+				Modele.setModel(grille2)
+				$grille.safeClone(Modele.grille);
+			},
+			modeleCreator : function(){
+				if (!o.modeCreator){
+					endPreview(preview);
+					o.grilleCreator = $grille.slice();
+					o.grilleCreator[Modele.backup.at(-1)] = 0;
+				}
+				o.reverse('modeCreator');				
+			},
+			goodGrille : function(){
+				return o.modeCreator ?  o.grilleCreator : $grille ;
+			},
+			displayOption : function(){
+				if (!( o.endGameMessage && o.columClass=='optionVisible')){
+					o.deplier('columClass');
+				}
+				o.endGameMessage=false;
+				o.fen.disp = "option";
+			},
+			init : function(){
+				o.columClass = 'optionInvisible'
+				threadIsntUsed = true;
+				Modele.playAgain();
+				//setTimeout block the update of dom when user clic on replay 
+				setTimeout(function (){
+					o.endGameMessage=false;
+					o.fen.disp = "message"
+				},0);
+				$grille = Modele.grille.slice();
+			},
+			deplier : function(columClass,bool){
+				if(bool != undefined){
+					o[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
+				}else{
+					o[columClass]=(o[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
+				}
+			},
+			preview : function ($index){
+				if (o.modeCreator){
+					return (false);
+				}
+				if (preview!==undefined){
+					endPreview(preview)
+				}
+				var pos=($index+7)%7;
+				if (!isNaN(pos)){
+					if  ($grille[pos]==0){
+						$grille[pos] = Modele.getPlayer(0);// 0 the current player 1 for the next 
+					}
+					preview=pos;
+				}
+				
+				if ($index%7!=0){
+					$grille[0] = Modele.grille[0]
+				}
+			},
+			restore : function(){
+				var backup = $.cookie("backup");
+				o.loadStory(backup);
+			},			
+			save : function(){
+				$.cookie("backup",  Modele.backup)
+			},
+			graphique : function (colorNumber) {
+				return o.tabColor[colorNumber];
+			},
+			undo : function(){
+				if (Modele.isGameFinish()){
+					darkWinningPos(false);
+					Modele.isGameFinish(false);
+				}
+				threadIsntUsed = true;
+				var pos=Modele.undo();
+				$grille[pos] = 0;
+				IA.boolSmart.pop();
+				if (o.isBotActive && Modele.getPlayer()==1 ){
+					if (Modele.backup.length%2==0){
+						o.undo();
+					}else{
+						// if there is a problem with the player who have to play change the player
+						Modele.setPlayer(2);
+					}
+				}
+				o.deplier( 'columClass',false );
+			},
+			fallenPion : function(pos){
+				if (o.modeCreator){
+					o.grilleCreator[pos] = $keyCode - 96 ;return //96 -> 0
+				}
+				if (!Modele.isGameFinish()){
+					stackPosition.push(pos);
+				}	
+				else{
+					stackPosition=[]
+				}
+				loopThreatAnimation();
+			},						
+			keydown : function(event){
+				event.preventDefault();
+				$keyCode = event.which;
+				if (o.modeCreator){
+					return ;
+				}		
+				//play at the number push on keyboard
+				//numerical number (0 to 9)
+				if ( $keyCode > 47 && $keyCode < 58){
+					o.fallenPion( $keyCode - 48);return
+				}			
+				if (event.which == 90 && event.ctrlKey){
+					o.undo();return
+				}
+				//right key and left key change the preview  
+				if ( $keyCode ==37|| $keyCode==39){
+					var inc = $keyCode - 38;
+					var nextPos=preview;
+					var i = 7;
+					do{
+						nextPos = mod(nextPos + inc,7);						
+					}while( +Modele.grille[nextPos] && i--)
+					o.preview(nextPos);
+					return;
+				}
+				//top arrow
+				if ( $keyCode==38){
+					o.undo();
+					o.preview();return
+				}
+				//bottom arrow
+				if ( $keyCode==40){
+					o.preview(o.fallenPion(preview));
+				}
+			},
+			scrollInPx : function(lg){
+				var init= $(window).scrollTop();
+				$(window).scrollTop(init-lg);
+			},
+			touchStart : function(element){
+				o.displayScroll="block";
+				lastY=event.touches[0].clientY;
+				o.touchMove(element);
+			},
+			touchMove : function(element){   	
+				if (o.columClass=='optionVisible' || o.columClass2=='optionVisible'){
+					return false;
+				}
+				var width = element.P4.width();
+				var pos= (event.touches.length>=1) ? event.touches[0].pageX : -1;
+				if (pos<0) return false;
+				pos=(pos-element.P4.offset().left)*7/width;
+				pos=Math.floor(pos);
+				o.preview(pos);			
+				event.preventDefault();
+			},
+			touchEnd : function(element){
+				if (o.columClass=='optionVisible'){
+					return false;
+				}
+				event.preventDefault();
+				o.fallenPion(preview);
+			},
+			reverseIsBotActive : function(){
+				o.reverse("isBotActive");
+				if (Modele.backup.length%2 == 0){
+					o.undo();
+				}
 			}
-			debug($index)
-		};
-		function debug(pos){
-			if (pos%7!=0){
-				setGrille(0,Modele.grille[0])
-			}
-		}
+		})
+			
 		function endPreview ($index) {
 			if  (Modele.grille[$index%7]%7==0){
-				setGrille($index%7,0);
+				$grille[$index%7] = 0;
 			}
+		}	
 
-		};
-   
-		$scope.color2='red';
-		$scope.graphique = function (colorNumber) {
-			if ($scope.mode=="creator"){
-				color=creator.getColor(colorNumber);
-				return color;
-			}
-			return (function(){
-				switch(parseInt(colorNumber)){
-					case 0: return "white";
-					case 1: return "yellow";
-					case 2: return "red";
-					case 4: return "rgb(160,166,0)"; //black yellow 
-					case 8: return "rgb(140,0,0)";//black red
-				}
-			})();
-		};
-		
-		$scope.restore=function(){
-			var backup = $.cookie("backup");
-			$scope.loadStory(backup);
-
-		}
-		
-		$scope.save=function(){
-			$.cookie("backup",  Modele.backup)
-		}
-			
-					
-
-		var anim=function(pos,player,callback){
-			anim2=function(i){			
-				
-				
+		var anim = function(pos,player,callback){
+			anim2 = function(i){
 				if (i>6){
-					setGrille(i-7,0) ;
+					$grille[i-7] = 0 ;
 				}
 				if (Modele.grille[i]!=0){ 
 					player = (Modele.grille[i]);
 				};
-				setGrille(i, player);
+				$grille[i] = player;
 				var clickOnUndo=Modele.grille[pos]*1==0 ;
 				//test if we have click on undo during animation
 				if (clickOnUndo ){
-					setGrille(i,0);
-					$scope.$digest();
+					$grille[i] = 0;
+					o.$digest();
 					if (callback){
 						callback();
 					}
@@ -221,50 +296,16 @@
 			$timeout(function(){
 				anim2(pos%7)
 			});
-			debug(pos)
-		}
-		
-		$scope.undo=function(){
-			if (Modele.isGameFinish()){
-				darkWinningPos(false);
-				Modele.isGameFinish(false);
-			}
-			threadIsntUsed = true;
-			var pos=Modele.undo();
-			setGrille(pos,0);
-			IA.boolSmart.pop();
-			if ($scope.isBotActive && Modele.getPlayer()==1 ){
-				if (Modele.backup.length%2==0){
-					$scope.undo();
-				}else{
-					// if there is a problem with the player who have to play change the player
-					Modele.setPlayer(2);
-				}
-			}
-			$scope.deplier( 'columClass',false );
-		}
-		
-		
-		
-		var stackPosition=[]
-		$scope.fallenPion=function(pos){
-			if ($scope.mode=="normal"){
-				if (!Modele.isGameFinish()){
-					stackPosition.push(pos);
-				}	
-				else{
-					stackPosition=[]
-				}
-				loopThreatAnimation();
-			}else{
-				modelCreatorClick(pos);
+			if (pos%7!=0){
+				$grille[0] = Modele.grille[0];
 			}
 		}
-		function modelCreatorClick(pos){
-			grilleCreator[pos]=creator.getColorNumber()
-		}
-		$scope.message2=message;
-		var threadIsntUsed=true;
+		
+		
+		
+		o.init();
+		$grille.safeClone(Modele.grille);		
+	
 		function loopThreatAnimation(){
 			if (Modele.isGameFinish()){
 				stackPosition.length=0;
@@ -274,7 +315,7 @@
 			if (stackPosition.length!=0){
 				if ( threadIsntUsed){
 					threadIsntUsed=false;
-					time=$scope.animation ? 50 : 0;
+					time=o.animation2 ? 50 : 0;
 					// it is possible theplayer is really fast so we record all all position where he click in stackPosition and threat them now
 					var pos=Modele.play(stackPosition.shift());
 					if (pos<0){
@@ -304,8 +345,8 @@
 					loopThreatAnimation();					
 				}	
 
-				if ($scope.isBotActive){
-					IA.setDif($scope.cost);
+				if (o.isBotActive){
+					IA.setDif(o.cost);
 					var posBot=IA.p4BlockEasy(pos,false);
 					anim(posBot,botPlayer,callbackBotIfActiveElsePlayer1);
 				}
@@ -318,183 +359,53 @@
 		
 		
 		function darkWinningPos(dark){
-					var f=Modele.winInfo;
-					if (!f){
-						return false;
-					}
-					var i=f.pion1;
-					var colorNumber= $scope.grille[i]%3;
-					if (dark){
-						 colorNumber = (colorNumber==1) ? 4 : 8;
-					}					
-					do{
-						setGrille(i, colorNumber);		
-					}while(i+=f.dir, i <= f.pion2)
-		}
-		function message(egality){
-					o.fen.disp = "message";
-					o.whyItIsFinish = false;
-					var message;
-					if(egality){
-						message="ceci est une égalité mais pas une victoire"
-					}else{
-						//show winning pos
-						darkWinningPos(true)					
-						
-						if (Modele.isHumanTurn()){
-							if (IA.boolSmart.indexOf("false")+1){
-								message="bravo vous avez gagné  augmentez un peu le niveau";
-							}
-							else{
-								message="bravo vous avez gagné  envoyer votre historique par commentaire pour améliorer le jeu";
-								$("#comment").append("ne touchez pas cette ligne c'est votre historique de jeux"+JSON.stringify(Modele.backup));
-							}
-						}
-						else{
-							message="Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents";
-						}
-					}
-					$scope.message = message;
-					$scope.endGameMessage=true;
-					$scope.deplier( 'columClass',true );
-					$scope.$digest();
-				}
-		$scope.message="ça va commencer";
-		
-	//MODELE CREATOR 
-	$scope.minLine=0;
-	$scope.maxLine=5;
-	$scope.minCol=0;
-	$scope.maxCol=6;
-	creator=(function(){
-		var colorNumber=1;
-		var getColor = function (chara){
-				var color='transparent';
-				switch(''+chara){				
-					case 'A':case 'a':
-						color="rgb(255,0,234)";break;
-					case '1':
-						color="rgb(255,251,0)";break;
-					case '2':
-						color="rgb(255,0,0)";break;
-					case '3':
-						color="rgb(205,209,77)";break;
-					case '4':
-						color="rgb(160,166,0)";break;
-					case '5':
-						color="rgb(255,162,0)";break;
-					case '6':
-						color="rgb(99,99,99)";break;
-					case '7':
-						color="rgb(255,128,128)";break;
-					case '8':
-						color="rgb(140,0,0)";break;
-					case '9':
-						color="rgb(0,255,221)";break;
-				}
-				return(color);
-			};			
-			var affectnumber= function(keyCode){
-				colorNumber= String.fromCharCode(keyCode).toLowerCase();
+			var f=Modele.winInfo;
+			if (!f){
+				return false;
 			}
-		return {
-			//'chooseColor' : chooseColor
-			'affectnumber': affectnumber,
-			'getColor':		getColor,
-			'getColorNumber': function(){ return colorNumber;}
-		}
-	})()
-	
-	$scope.keydown=function(event){
-		event.preventDefault();
-	
-		var keyCode = event.which		
-		if ($scope.mode=="creator"){
-			creator.affectnumber(keyCode)
-			return;
-		}		
-		//play at the number push on keyboard
-		//numerical number (0 to 9)
-		if (keyCode>47 && keyCode<58){
-			$scope.fallenPion(keyCode - 48);
-			return;
-		}			
-		if (event.which == 90 && event.ctrlKey){
-			$scope.undo();
-			return;
-		}
-		//right key and left key change the preview  
-		if (keyCode==37||keyCode==39){
-			var inc = keyCode-38;
-			var nextPos=preview;
-			var i = 7;
+			var i=f.pion1;
+			var colorNumber= $grille[i]%3;
+			if (dark){
+				 colorNumber = (colorNumber==1) ? 4 : 8;
+			}					
 			do{
-				nextPos = mod(nextPos + inc,7);						
-			}while( +Modele.grille[nextPos] && i--)
-			$scope.preview(nextPos);
-			return;
+				$grille[i] = colorNumber;		
+			}while(i+=f.dir, i <= f.pion2)
 		}
-		//top arrow
-		if (keyCode==38){
-			$scope.undo();
-			$scope.preview();
-			return;
+		
+		
+		function message(egality){
+			o.fen.disp = "message";
+			o.whyItIsFinish = false;
+			var message;
+			if(egality){
+				message="ceci est une égalité mais pas une victoire"
+			}else{
+				//show winning pos
+				darkWinningPos(true)					
+				
+				if (Modele.isHumanTurn()){
+					if (IA.boolSmart.indexOf("false")+1){
+						message="bravo vous avez gagné  augmentez un peu le niveau";
+					}
+					else{
+						message="bravo vous avez gagné  envoyer votre historique par commentaire pour améliorer le jeu";
+						$("#comment").append("ne touchez pas cette ligne c'est votre historique de jeux"+JSON.stringify(Modele.backup));
+					}
+				}
+				else{
+					message="Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents";
+				}
+			}
+			
+			o.deplier( 'columClass',true );
+			o.$digest();
 		}
-		//bottom arrow
-		if (keyCode==40){
-			$scope.preview($scope.fallenPion(preview));
-		}
-	};
-
-	$scope.scrollInPx=function(lg){
-		var init= $(window).scrollTop();
-		$(window).scrollTop(init-lg);
-	}
-	$scope.touchStart = function(element) {
-			$scope.displayScroll="block";
-			lastY=event.touches[0].clientY;
-			$scope.touchMove(element);
-	}
-
-	var scroll=true;
-	$(document).ready(function(){
-		$(document)[0].addEventListener('touchmove',function(event){
-			if (!scroll){
-				event.preventDefault();
-			}			
-		})
-	})
-	$scope.scroll=true;
-	//block or enable the scroll of page with finger on the p4
-	var scollOption = function(){
-		$(window).scrollTop($(window).scrollTop() - event.touches[0].clientY + lastY);
-		lastY=event.touches[0].clientY;
-	}
-
-	$scope.touchMove = function(element) {	    	
-			if ($scope.columClass=='optionVisible' || $scope.columClass2=='optionVisible'){
-				return false;
-			}
-			if ($scope.scroll){
-				scollOption();
-			}
-			event.preventDefault();
-			var width=element.P4.width();
-			var pos= (event.touches.length>=1) ? event.touches[0].pageX : -1;
-			if (pos<0) return false;
-			pos=(pos-element.P4.offset().left)*7/width;
-			pos=Math.floor(pos);
-			$scope.preview(pos);
-	}
-	
-	$scope.touchEnd = function(element){
-			if ($scope.columClass=='optionVisible'){
-				return false;
-			}
-			event.preventDefault();
-			$scope.fallenPion(preview);
-	}
+		
 });
+
+
+
 
 
 app.directive('mytOuchstart', [function() {
