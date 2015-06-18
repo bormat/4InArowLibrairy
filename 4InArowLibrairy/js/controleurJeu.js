@@ -5,7 +5,7 @@
 	var originY;
 	var lastScroll;
 	var app = angular.module('myApp', ['uiSlider']);
-	app.controller('myCtrl', function($scope,$timeout){
+	app.controller('myCtrl', function($scope,$$timeout){
 		var $keyCode;
 		var o = MyScopeAccess = $scope;
 				//MODELE CREATOR 
@@ -26,23 +26,58 @@
 			'8' : "rgb(140,0,0)",//black red	
 	/*9*/	'9' : "rgb(0,255,221)"
 		}
-		var $grille,
-			stackPosition = [],
-			threadIsntUsed=true,
-			preview,
-			time,
+		
+		declare : {  var
+			$grille,
+			$stackPosition = [],
+			$threadIsntUsed = true,
+			$preview,
+			$time,
 			DeplierClass = function(bool){
 				this[0] = bool;
-			}
-			
-		DeplierClass.prototype = {
-			deplier : function(bool){
-				this[0] = (bool != undefined) ? bool : !this[0];
+			},					
+			darkWinningPos = function(dark){
+				var f=Modele.winInfo;
+				if (!f){
+					return false;
+				}
+				var i=f.pion1;
+				var colorNumber= $grille[i]%3;
+				if (dark){
+					 colorNumber = (colorNumber==1) ? 4 : 8;
+				}					
+				do{
+					$grille[i] = colorNumber;		
+				}while(i+=f.dir, i <= f.pion2)
 			},
-			getClass : function(){
-				return this[0] ? 'optionVisible' : 'optionInvisible';
+			message = function(egality){
+				o.fen.disp = "message";
+				o.whyItIsFinish = false;
+				var message;
+				if(egality){
+					message="ceci est une égalité mais pas une victoire"
+				}else{
+					//show winning pos
+					darkWinningPos(true)					
+					
+					if (Modele.isHumanTurn()){
+						if (IA.boolSmart.indexOf("false")+1){
+							message="bravo vous avez gagné  augmentez un peu le niveau";
+						}
+						else{
+							message="bravo vous avez gagné  envoyer votre historique par commentaire pour améliorer le jeu";
+							$("#comment").append("ne touchez pas cette ligne c'est votre historique de jeux"+JSON.stringify(Modele.backup));
+						}
+					}
+					else{
+						message="Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents";
+					}
+				}				
+				o.deplier( 'columClass',true );
+				o.$digest();
 			}
 		}	
+		
 		o.addP({
 			o : o,
 			modeCreator : false,
@@ -63,7 +98,7 @@
 			grille : [],
 			message : "ça va commencer",
 			message : message,
-			endGameMessage : true
+			endGameMessage : true,
 		})
 
 		//function
@@ -97,7 +132,7 @@
 			},
 			modeleCreator : function(){
 				if (!o.modeCreator){
-					endPreview(preview);
+					end$preview($preview);
 					o.grilleCreator = $grille.slice();
 					o.grilleCreator[Modele.backup.at(-1)] = 0;
 				}
@@ -115,10 +150,10 @@
 			},
 			init : function(){
 				o.columClass = 'optionInvisible'
-				threadIsntUsed = true;
+				$threadIsntUsed = true;
 				Modele.playAgain();
-				//setTimeout block the update of dom when user clic on replay 
-				setTimeout(function (){
+				//set$timeout block the update of dom when user clic on replay 
+				set$timeout(function (){
 					o.endGameMessage=false;
 					o.fen.disp = "message"
 				},0);
@@ -131,19 +166,19 @@
 					o[columClass]=(o[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
 				}
 			},
-			preview : function ($index){
+			$preview : function ($index){
 				if (o.modeCreator){
 					return (false);
 				}
-				if (preview!==undefined){
-					endPreview(preview)
+				if ($preview!==undefined){
+					end$preview($preview)
 				}
 				var pos=($index+7)%7;
 				if (!isNaN(pos)){
 					if  ($grille[pos]==0){
 						$grille[pos] = Modele.getPlayer(0);// 0 the current player 1 for the next 
 					}
-					preview=pos;
+					$preview=pos;
 				}
 				
 				if ($index%7!=0){
@@ -165,7 +200,7 @@
 					darkWinningPos(false);
 					Modele.isGameFinish(false);
 				}
-				threadIsntUsed = true;
+				$threadIsntUsed = true;
 				var pos=Modele.undo();
 				$grille[pos] = 0;
 				IA.boolSmart.pop();
@@ -184,10 +219,10 @@
 					o.grilleCreator[pos] = $keyCode - 96 ;return //96 -> 0
 				}
 				if (!Modele.isGameFinish()){
-					stackPosition.push(pos);
+					$stackPosition.push(pos);
 				}	
 				else{
-					stackPosition=[]
+					$stackPosition=[]
 				}
 				loopThreatAnimation();
 			},						
@@ -205,25 +240,25 @@
 				if (event.which == 90 && event.ctrlKey){
 					o.undo();return
 				}
-				//right key and left key change the preview  
+				//right key and left key change the $preview  
 				if ( $keyCode ==37|| $keyCode==39){
 					var inc = $keyCode - 38;
-					var nextPos=preview;
+					var nextPos=$preview;
 					var i = 7;
 					do{
 						nextPos = mod(nextPos + inc,7);						
 					}while( +Modele.grille[nextPos] && i--)
-					o.preview(nextPos);
+					o.$preview(nextPos);
 					return;
 				}
 				//top arrow
 				if ( $keyCode==38){
 					o.undo();
-					o.preview();return
+					o.$preview();return
 				}
 				//bottom arrow
 				if ( $keyCode==40){
-					o.preview(o.fallenPion(preview));
+					o.$preview(o.fallenPion($preview));
 				}
 			},
 			scrollInPx : function(lg){
@@ -244,7 +279,7 @@
 				if (pos<0) return false;
 				pos=(pos-element.P4.offset().left)*7/width;
 				pos=Math.floor(pos);
-				o.preview(pos);			
+				o.$preview(pos);			
 				event.preventDefault();
 			},
 			touchEnd : function(element){
@@ -252,7 +287,7 @@
 					return false;
 				}
 				event.preventDefault();
-				o.fallenPion(preview);
+				o.fallenPion($preview);
 			},
 			reverseIsBotActive : function(){
 				o.reverse("isBotActive");
@@ -262,7 +297,7 @@
 			}
 		})
 			
-		function endPreview ($index) {
+		function end$preview ($index) {
 			if  (Modele.grille[$index%7]%7==0){
 				$grille[$index%7] = 0;
 			}
@@ -288,12 +323,12 @@
 					return(false);
 				}
 				if (i<pos ){
-					$timeout(function(){anim2(i+7)},time);
+					$$timeout(function(){anim2(i+7)},$time);
 				}else if (callback){
-					setTimeout( callback , time+1 );
+					set$timeout( callback , $time+1 );
 				}
 			};
-			$timeout(function(){
+			$$timeout(function(){
 				anim2(pos%7)
 			});
 			if (pos%7!=0){
@@ -308,18 +343,18 @@
 	
 		function loopThreatAnimation(){
 			if (Modele.isGameFinish()){
-				stackPosition.length=0;
-				threadIsntUsed = true
+				$stackPosition.length=0;
+				$threadIsntUsed = true
 				return;
 			}
-			if (stackPosition.length!=0){
-				if ( threadIsntUsed){
-					threadIsntUsed=false;
-					time=o.animation2 ? 50 : 0;
-					// it is possible theplayer is really fast so we record all all position where he click in stackPosition and threat them now
-					var pos=Modele.play(stackPosition.shift());
+			if ($stackPosition.length!=0){
+				if ( $threadIsntUsed){
+					$threadIsntUsed=false;
+					$time=o.animation2 ? 50 : 0;
+					// it is possible theplayer is really fast so we record all all position where he click in $stackPosition and threat them now
+					var pos=Modele.play($stackPosition.shift());
 					if (pos<0){
-						threadIsntUsed = true
+						$threadIsntUsed = true
 						return;
 					}
 					/*var stopAlert=false;*/
@@ -328,7 +363,7 @@
 						//stopAlert=true
 					}else if(Modele.grille.indexOf(0) < 0 ){
 						message("égalité");
-						threadIsntUsed = true
+						$threadIsntUsed = true
 					}
 					player=Modele.getPlayer(1);
 					botPlayer=Modele.getPlayer(0);
@@ -338,7 +373,7 @@
 			
 			function callbackPlayer(){
 				function callbackBotIfActiveElsePlayer1(){
-					threadIsntUsed=true;
+					$threadIsntUsed=true;
 					if (/*!stopAlert &&*/ Modele.isGameFinish()){
 						message();
 					}					//threat other position if player play during animation
@@ -356,51 +391,7 @@
 			}
 		}
 		
-		
-		
-		function darkWinningPos(dark){
-			var f=Modele.winInfo;
-			if (!f){
-				return false;
-			}
-			var i=f.pion1;
-			var colorNumber= $grille[i]%3;
-			if (dark){
-				 colorNumber = (colorNumber==1) ? 4 : 8;
-			}					
-			do{
-				$grille[i] = colorNumber;		
-			}while(i+=f.dir, i <= f.pion2)
-		}
-		
-		
-		function message(egality){
-			o.fen.disp = "message";
-			o.whyItIsFinish = false;
-			var message;
-			if(egality){
-				message="ceci est une égalité mais pas une victoire"
-			}else{
-				//show winning pos
-				darkWinningPos(true)					
-				
-				if (Modele.isHumanTurn()){
-					if (IA.boolSmart.indexOf("false")+1){
-						message="bravo vous avez gagné  augmentez un peu le niveau";
-					}
-					else{
-						message="bravo vous avez gagné  envoyer votre historique par commentaire pour améliorer le jeu";
-						$("#comment").append("ne touchez pas cette ligne c'est votre historique de jeux"+JSON.stringify(Modele.backup));
-					}
-				}
-				else{
-					message="Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents";
-				}
-			}
-			
-			o.deplier( 'columClass',true );
-			o.$digest();
-		}
+
 		
 });
 
