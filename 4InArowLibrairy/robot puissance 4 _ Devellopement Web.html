@@ -143,7 +143,7 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 
 
 <div id="app"   ng-class ="{'fullscreen': fen.disp != 'play', stopselect:1}" ng-app="myApp" ng-controller="myCtrl">
-<div style="width:100%;height:100%;" ng-click="fen.disp = 'play';columClass = 'optionVisible'"></div>
+<div style="width:100%;height:100%;" ng-click="fen.disp = 'play';popup.deplier()"></div>
 <div  ng-click="$event.stopPropagation()" id="applet"  tabindex="0"  ng-class ="{ 'fullscreen': fen.disp != 'play'}" autofocus ng-keydown="keydown($event)">
 
 <input id="undo" 	ng-show="fen.disp != 'play'" ng-click="undo()"			value="annuler" type="button" />
@@ -164,11 +164,11 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 	
 	
 	
-	<div ng-switch="fen.disp" class="colum" ng-click="fen.disp = 'option'; whyItIsFinish = true;deplier( 'columClass' );$event.stopPropagation()"  ng-class="columClass" >
-		<div ng-switch-when="message" id="message" class="colum2" >
+	<div  class="colum" ng-click="fen.disp = 'option'; whyItIsFinish = true;popup.deplier(false);$event.stopPropagation()"  ng-class="popup.getClass()" >
+		<div ng-show ="fen.disp == 'message'" id="message" class="colum2" >
 				{{message}}
 		</div>	
-		<div ng-switch-when="option" class="colum2" >
+		<div ng-show = "fen.disp == 'option'" class="colum2" >
 			<input id="Input3"  ng-style="{'width': InputWidth[0]}" value="sauvegarder" ng-click="save()" type="button"/>
 			<input id="Input4" value="restaurer" ng-click="restore()" type="button"/>
 			<input id="Input5" value="rejouer" ng-click="init()" type="button"/>

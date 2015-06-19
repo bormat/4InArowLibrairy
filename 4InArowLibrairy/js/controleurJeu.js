@@ -9,10 +9,6 @@
 		var $keyCode;
 		var o = MyScopeAccess = $scope;
 				//MODELE CREATOR 
-		o.minLine=0;
-		o.maxLine=5;
-		o.minCol=0;
-		o.maxCol=6;
 		o.tabColor = {
 	/*a*/ '-30' : "rgb(255,0,234)",
 			'0' : 'white',
@@ -31,281 +27,60 @@
 			threadIsntUsed=true,
 			preview,
 			time,
-			DeplierClass = function(bool){
-				this[0] = bool;
-			}
-			
-		DeplierClass.prototype = {
-			deplier : function(bool){
-				this[0] = (bool != undefined) ? bool : !this[0];
-			},
-			getClass : function(){
-				return this[0] ? 'optionVisible' : 'optionInvisible';
-			}
-		}	
-		o.addP({
-			o : o,
-			modeCreator : false,
-			message : "ça va commencer",
-			//boolean
-			isBotActive : true,
-			whyItIsFinish : false,
-			animation2 : true,
-			endGameMessage : false,
-			popup : new DeplierClass(),
-			IA : IA,
-			Modele : Modele,
-			fen :  {disp :  "play",stayOpen: !1},
-			mode : "normal",
-			cost : 100,
-			columClass : 'optionVisible',
-			columClass2 : 'optionInvisible',
-			grille : [],
-			message : "ça va commencer",
-			message : message,
-			endGameMessage : true
-		})
-
-		//function
-		o.addP({
-			clickOnBlack : function(){
-				o.fen.disp = 'play',
-				o.columClass = 'optionVisible'
-			},
-			reverse : function(aString){
-				o[aString] = !o[aString]		
-			},
-			alert : function(text) {
-				alert(text);
-			},
-			optionDisp : function(){
-				return (o.optionsWidth==optionsWidthInit ) ? "block" : "none" ;
-			},
-			loadStory : function(grille2){
-				if (!grille2) return false;
-				Modele.restore(grille2);
-				//if not player2  undo last move
-				if (Modele.backup.length%2==0){
-					o.undo();
-				}
-				$grille.safeClone(Modele.grille);
-				Modele.setPlayer(2);
-			},
-			load : function(grille2){
-				Modele.setModel(grille2)
-				$grille.safeClone(Modele.grille);
-			},
-			modeleCreator : function(){
-				if (!o.modeCreator){
-					endPreview(preview);
-					o.grilleCreator = $grille.slice();
-					o.grilleCreator[Modele.backup.at(-1)] = 0;
-				}
-				o.reverse('modeCreator');				
-			},
-			goodGrille : function(){
-				return o.modeCreator ?  o.grilleCreator : $grille ;
-			},
-			displayOption : function(){
-				if (!( o.endGameMessage && o.columClass=='optionVisible')){
-					o.deplier('columClass');
-				}
-				o.endGameMessage=false;
-				o.fen.disp = "option";
-			},
-			init : function(){
-				o.columClass = 'optionInvisible'
-				threadIsntUsed = true;
-				Modele.playAgain();
-				//setTimeout block the update of dom when user clic on replay 
-				setTimeout(function (){
-					o.endGameMessage=false;
-					o.fen.disp = "message"
-				},0);
-				$grille = Modele.grille.slice();
-			},
-			deplier : function(columClass,bool){
-				if(bool != undefined){
-					o[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
-				}else{
-					o[columClass]=(o[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
+			endPreview = function ($index) {
+				if  (Modele.grille[$index%7]%7==0){
+					$grille[$index%7] = 0;
 				}
 			},
-			preview : function ($index){
-				if (o.modeCreator){
-					return (false);
-				}
-				if (preview!==undefined){
-					endPreview(preview)
-				}
-				var pos=($index+7)%7;
-				if (!isNaN(pos)){
-					if  ($grille[pos]==0){
-						$grille[pos] = Modele.getPlayer(0);// 0 the current player 1 for the next 
+			anim = function(pos,player,callback){
+				anim2 = function(i){
+					if (i>6){
+						$grille[i-7] = 0 ;
 					}
-					preview=pos;
-				}
-				
-				if ($index%7!=0){
-					$grille[0] = Modele.grille[0]
-				}
-			},
-			restore : function(){
-				var backup = $.cookie("backup");
-				o.loadStory(backup);
-			},			
-			save : function(){
-				$.cookie("backup",  Modele.backup)
-			},
-			graphique : function (colorNumber) {
-				return o.tabColor[colorNumber];
-			},
-			undo : function(){
-				if (Modele.isGameFinish()){
-					darkWinningPos(false);
-					Modele.isGameFinish(false);
-				}
-				threadIsntUsed = true;
-				var pos=Modele.undo();
-				$grille[pos] = 0;
-				IA.boolSmart.pop();
-				if (o.isBotActive && Modele.getPlayer()==1 ){
-					if (Modele.backup.length%2==0){
-						o.undo();
-					}else{
-						// if there is a problem with the player who have to play change the player
-						Modele.setPlayer(2);
+					if (Modele.grille[i]!=0){ 
+						player = (Modele.grille[i]);
+					};
+					$grille[i] = player;
+					var clickOnUndo=Modele.grille[pos]*1==0 ;
+					//test if we have click on undo during animation
+					if (clickOnUndo ){
+						$grille[i] = 0;
+						o.$digest();
+						if (callback){
+							callback();
+						}
+						return(false);
 					}
-				}
-				o.deplier( 'columClass',false );
-			},
-			fallenPion : function(pos){
-				if (o.modeCreator){
-					o.grilleCreator[pos] = $keyCode - 96 ;return //96 -> 0
-				}
-				if (!Modele.isGameFinish()){
-					stackPosition.push(pos);
-				}	
-				else{
-					stackPosition=[]
-				}
-				loopThreatAnimation();
-			},						
-			keydown : function(event){
-				event.preventDefault();
-				$keyCode = event.which;
-				if (o.modeCreator){
-					return ;
-				}		
-				//play at the number push on keyboard
-				//numerical number (0 to 9)
-				if ( $keyCode > 47 && $keyCode < 58){
-					o.fallenPion( $keyCode - 48);return
-				}			
-				if (event.which == 90 && event.ctrlKey){
-					o.undo();return
-				}
-				//right key and left key change the preview  
-				if ( $keyCode ==37|| $keyCode==39){
-					var inc = $keyCode - 38;
-					var nextPos=preview;
-					var i = 7;
-					do{
-						nextPos = mod(nextPos + inc,7);						
-					}while( +Modele.grille[nextPos] && i--)
-					o.preview(nextPos);
-					return;
-				}
-				//top arrow
-				if ( $keyCode==38){
-					o.undo();
-					o.preview();return
-				}
-				//bottom arrow
-				if ( $keyCode==40){
-					o.preview(o.fallenPion(preview));
-				}
-			},
-			scrollInPx : function(lg){
-				var init= $(window).scrollTop();
-				$(window).scrollTop(init-lg);
-			},
-			touchStart : function(element){
-				o.displayScroll="block";
-				lastY=event.touches[0].clientY;
-				o.touchMove(element);
-			},
-			touchMove : function(element){   	
-				if (o.columClass=='optionVisible' || o.columClass2=='optionVisible'){
-					return false;
-				}
-				var width = element.P4.width();
-				var pos= (event.touches.length>=1) ? event.touches[0].pageX : -1;
-				if (pos<0) return false;
-				pos=(pos-element.P4.offset().left)*7/width;
-				pos=Math.floor(pos);
-				o.preview(pos);			
-				event.preventDefault();
-			},
-			touchEnd : function(element){
-				if (o.columClass=='optionVisible'){
-					return false;
-				}
-				event.preventDefault();
-				o.fallenPion(preview);
-			},
-			reverseIsBotActive : function(){
-				o.reverse("isBotActive");
-				if (Modele.backup.length%2 == 0){
-					o.undo();
-				}
-			}
-		})
-			
-		function endPreview ($index) {
-			if  (Modele.grille[$index%7]%7==0){
-				$grille[$index%7] = 0;
-			}
-		}	
-
-		var anim = function(pos,player,callback){
-			anim2 = function(i){
-				if (i>6){
-					$grille[i-7] = 0 ;
-				}
-				if (Modele.grille[i]!=0){ 
-					player = (Modele.grille[i]);
+					if (i<pos ){
+						$timeout(function(){anim2(i+7)},time);
+					}else if (callback){
+						setTimeout( callback , time+1 );
+					}
 				};
-				$grille[i] = player;
-				var clickOnUndo=Modele.grille[pos]*1==0 ;
-				//test if we have click on undo during animation
-				if (clickOnUndo ){
-					$grille[i] = 0;
-					o.$digest();
-					if (callback){
-						callback();
-					}
-					return(false);
+				$timeout(function(){
+					anim2(pos%7)
+				});
+				if (pos%7!=0){
+					$grille[0] = Modele.grille[0];
 				}
-				if (i<pos ){
-					$timeout(function(){anim2(i+7)},time);
-				}else if (callback){
-					setTimeout( callback , time+1 );
-				}
+			}		
+		;
+		
+			var DeplierClass = function(bool){
+				this[0] = bool;
 			};
-			$timeout(function(){
-				anim2(pos%7)
-			});
-			if (pos%7!=0){
-				$grille[0] = Modele.grille[0];
-			}
-		}
-		
-		
-		
-		o.init();
-		$grille.safeClone(Modele.grille);		
-	
+			DeplierClass.prototype = {
+				deplier : function(bool){
+					this[0] = (bool != undefined) ? bool : !this[0];
+				},
+				getClass : function(){
+					return this[0] ? 'optionVisible' : 'optionInvisible';
+				},
+				isDisp : function(){
+					return this[0];
+				}
+			}	
+						
 		function loopThreatAnimation(){
 			if (Modele.isGameFinish()){
 				stackPosition.length=0;
@@ -375,6 +150,8 @@
 		
 		
 		function message(egality){
+			$('#author').val() || $('#author').val('anonymous')
+			$('#email').val() || $('#email').val("anonymous@gmail.com");
 			o.fen.disp = "message";
 			o.whyItIsFinish = false;
 			var message;
@@ -397,18 +174,242 @@
 					message="Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents";
 				}
 			}
-			
-			o.deplier( 'columClass',true );
+			o.message = message;
+			o.popup.deplier(true);
 			o.$digest();
 		}
 		
+		o.addP({
+			o : o,
+			modeCreator : false,
+			message : "ça va commencer",
+			//boolean
+			isBotActive : true,
+			whyItIsFinish : false,
+			animation2 : true,
+			endGameMessage : false,
+			popup : new DeplierClass(),
+			IA : IA,
+			Modele : Modele,
+			fen :  {disp :  "play",stayOpen: !1},
+			mode : "normal",
+			cost : 100,
+			grille : [],
+			message : "ça va commencer",
+			message : message,
+			endGameMessage : true,
+			minLine : 0,
+			maxLine : 5,
+			minCol : 0,
+			maxCol : 6,
+		})
+
+		//function
+		o.addP({
+			clickOnBlack : function(){
+				o.fen.disp = 'play';
+				o.popup.deplier(false);
+			},
+			reverse : function(aString){
+				o[aString] = !o[aString]		
+			},
+			alert : function(text) {
+				alert(text);
+			},
+			optionDisp : function(){
+				return (o.optionsWidth==optionsWidthInit ) ? "block" : "none" ;
+			},
+			loadStory : function(grille2){
+				if (!grille2) return false;
+				Modele.restore(grille2);
+				//if not player2  undo last move
+				if (Modele.backup.length%2==0){
+					o.undo();
+				}
+				$grille.safeClone(Modele.grille);
+				Modele.setPlayer(2);
+			},
+			load : function(grille2){
+				Modele.setModel(grille2)
+				$grille.safeClone(Modele.grille);
+			},
+			modeleCreator : function(){
+				if (!o.modeCreator){
+					endPreview(preview);
+					o.grilleCreator = $grille.slice();
+					o.grilleCreator[Modele.backup.at(-1)] = 0;
+				}
+				o.reverse('modeCreator');				
+			},
+			goodGrille : function(){
+				return o.modeCreator ?  o.grilleCreator : $grille ;
+			},
+			displayOption : function(){
+				if (!( o.endGameMessage && o.popup.isDisp())){
+					o.popup.deplier();
+				}
+				o.endGameMessage=false;
+				o.fen.disp = "option";
+			},
+			init : function(){
+				o.popup.deplier(false);
+				threadIsntUsed = true;
+				Modele.playAgain();
+				//setTimeout block the update of dom when user clic on replay 
+				setTimeout(function (){
+					o.endGameMessage=false;
+					o.fen.disp = "message"
+				},0);
+				$grille = Modele.grille.slice();
+			},
+			deplier : function(columClass,bool){
+				if(bool != undefined){
+					o[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
+				}else{
+					o[columClass]=(o[columClass]== 'optionVisible') ? 'optionInvisible' : 'optionVisible';
+				}
+			},
+			preview : function ($index){
+				if (o.modeCreator){
+					return (false);
+				}
+				if (preview!==undefined){
+					endPreview(preview)
+				}
+				var pos=($index+7)%7;
+				if (!isNaN(pos)){
+					if  ($grille[pos]==0){
+						$grille[pos] = Modele.getPlayer(0);// 0 the current player 1 for the next 
+					}
+					preview=pos;
+				}
+				
+				if ($index%7!=0){
+					$grille[0] = Modele.grille[0]
+				}
+			},
+			restore : function(){
+				var backup = $.cookie("backup");
+				o.loadStory(backup);
+			},			
+			save : function(){
+				$.cookie("backup",  Modele.backup)
+			},
+			graphique : function (colorNumber) {
+				return o.tabColor[colorNumber];
+			},
+			undo : function(){
+				if (Modele.isGameFinish()){
+					darkWinningPos(false);
+					Modele.isGameFinish(false);
+				}
+				threadIsntUsed = true;
+				var pos=Modele.undo();
+				$grille[pos] = 0;
+				IA.boolSmart.pop();
+				if (o.isBotActive && Modele.getPlayer()==1 ){
+					if (Modele.backup.length%2==0){
+						o.undo();
+					}else{
+						// if there is a problem with the player who have to play change the player
+						Modele.setPlayer(2);
+					}
+				}
+				o.popup.deplier(false);
+			},
+			fallenPion : function(pos){
+				if (o.modeCreator){
+					o.grilleCreator[pos] = $keyCode - 96 ;return //96 -> 0
+				}
+				if (!Modele.isGameFinish()){
+					stackPosition.push(pos);
+				}	
+				else{
+					stackPosition=[]
+				}
+				loopThreatAnimation();
+			},						
+			keydown : function(event){
+				event.preventDefault();
+				$keyCode = event.which;
+				if (o.modeCreator){
+					return ;
+				}		
+				//play at the number push on keyboard
+				//numerical number (0 to 9)
+				if ( $keyCode > 47 && $keyCode < 58){
+					o.fallenPion( $keyCode - 48);return
+				}			
+				if (event.which == 90 && event.ctrlKey){
+					o.undo();return
+				}
+				//right key and left key change the preview  
+				if ( $keyCode ==37|| $keyCode==39){
+					var inc = $keyCode - 38;
+					var nextPos=preview;
+					var i = 7;
+					do{
+						nextPos = mod(nextPos + inc,7);						
+					}while( +Modele.grille[nextPos] && i--)
+					o.preview(nextPos);
+					return;
+				}
+				//top arrow
+				if ( $keyCode==38){
+					o.undo();
+					o.preview();return
+				}
+				//bottom arrow
+				if ( $keyCode==40){
+					o.preview(o.fallenPion(preview));
+				}
+			},
+			scrollInPx : function(lg){
+				var init= $(window).scrollTop();
+				$(window).scrollTop(init-lg);
+			},
+			touchStart : function(element){
+				o.displayScroll="block";
+				lastY=event.touches[0].clientY;
+				o.touchMove(element);
+			},
+			touchMove : function(element){   	
+				if (o.popup.isDisp()){
+					return false;
+				}
+				var width = element.P4.width();
+				var pos= (event.touches.length>=1) ? event.touches[0].pageX : -1;
+				if (pos<0) return false;
+				pos=(pos-element.P4.offset().left)*7/width;
+				pos=Math.floor(pos);
+				o.preview(pos);			
+				event.preventDefault();
+			},
+			touchEnd : function(element){
+				if (o.popup.isDisp()){
+					return false;
+				}
+				event.preventDefault();
+				o.fallenPion(preview);
+			},
+			reverseIsBotActive : function(){
+				o.reverse("isBotActive");
+				if (Modele.backup.length%2 == 0){
+					o.undo();
+				}
+			}
+		})
+				
+		o.init();
+		$grille.safeClone(Modele.grille);		
+	
 });
 
 
 
 
 
-app.directive('mytOuchstart', [function() {
+app.directive('mytOuchstart', function() {
 		return function(scope, element, attr) {
 			MyScopeAccess.P4=element;
 			element.on('touchstart', function(event) { 
@@ -417,9 +418,9 @@ app.directive('mytOuchstart', [function() {
 				});
 			});
 		}			
-	}])
+	})
 
-	app.directive('mytOuchmove', [function() {
+	app.directive('mytOuchmove', function() {
 		return function(scope, element, attr) {
 			MyScopeAccess.P4=element;
 			element.on('touchmove', function(event) { 
@@ -428,9 +429,9 @@ app.directive('mytOuchstart', [function() {
 				});
 			});
 		}
-	}])
+	})
 
-	app.directive('mytOuchend', [function() {
+	app.directive('mytOuchend', function() {
 		return function(scope, element, attr) {
 			if  (!MyScopeAccess){
 				return false
@@ -442,6 +443,6 @@ app.directive('mytOuchstart', [function() {
 				});
 			});
 		};
-	}])
+	})
 
 	
