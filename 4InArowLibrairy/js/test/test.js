@@ -9,6 +9,31 @@ describe("myFunction", function() {
 			});
 		}
 		
+		
+		it("joueEn24", function(){
+		Modele.setModel([
+			"0110001",
+			"0220002",
+			"0220001",
+			"0110002",
+			"0120201",
+			"1121202",
+		])
+		expect(IA.p4BlockEasy(32,true)).toEqual(25);
+		});
+		 
+		it("joueEn24", function(){
+		Modele.setModel([
+		"0100000",
+		"0220100",
+		"0112200",
+		"0221100",
+		"0212100",
+		"1121220",
+		])
+		expect(IA.p4BlockEasy(32,true)).toEqual(10);
+		});
+
 		it("joueEn24", function(){
 		Modele.setModel([
         "0000000",
@@ -21,6 +46,19 @@ describe("myFunction", function() {
 		expect(IA.p4BlockEasy(32,true)).toEqual(17);
 		});
 		
+		it("joueEn24", function(){
+		Modele.setModel([
+			"0021100",
+			"0012200",
+			"0022100",
+			"0011200",
+			"0012120",
+			"0221211",
+		 ])
+		var p= IA.p4BlockEasy(5,true)
+		expect(p).not.toEqual(39);
+		expect(p).not.toEqual(26);
+		});
 			
 		it("joueEn24", function(){
 		Modele.setModel( [

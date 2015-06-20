@@ -4322,7 +4322,7 @@ var mesModele=
       ],
       "playAt":1
    },
-   {
+  /* {
       "tab":[
          [
             "00450",
@@ -4330,7 +4330,7 @@ var mesModele=
          ]
       ],
       "playAt":4
-   },
+   },*/
    {
       "tab":[
          [
@@ -4730,9 +4730,18 @@ var mesModele=
          ]
       ],
       "playAt":0
-   }
+   },
+	{
+		"tab":[
+			[
+			"0550",
+			"0880",
+			"e556",
+			]
+		],
+		"playAt": 3
+	}
 ]
-
 
 
 var tabFonction=[];
