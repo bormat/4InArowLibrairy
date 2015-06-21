@@ -104,13 +104,6 @@
 <article id="post-86" class="post-86 page type-page status-publish hentry">
 	<header class="entry-header"><h1 class="entry-title">puissance 4 IA</h1></header><!-- .entry-header -->
 	<div class="entry-content">
-		<p><!--EN MAINTENANCE : Etat fonctionnel<br />
-Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</p>
-<div style="text-align: center;"><strong><span style="color: #ff0000;">Le jeu étant souvent mis à jour il est conseillé de vider son cache (ctrl+ maj + suppr) pour profiter  des dernières corrections de bug et améliorations sur la difficulté du jeu .</span></strong></div>
-<p>--><br>
-<script id="importScripts" type="text/javascript" data-main="http://bormat2.free.fr/4InArowLibrairy/main.js" src="./robot puissance 4 _ Devellopement Web_files/require.js"></script><script src="./robot puissance 4 _ Devellopement Web_files/load.js"></script></p>
-<!-- ngView:  -->
-
 
 <link href='http://fonts.googleapis.com/css?family=Ubuntu:700' rel='stylesheet' type='text/css'>
 <link href='css/theme.css' 		rel='stylesheet' type='text/css'>
@@ -127,8 +120,8 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 <script src="js/angular.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-animate.js"></script>
 <script src="js/slider.js"></script>
-
 <script src="js/controleurJeu.js"></script>
+<script src="js/directive.js"></script>
 <script src="js/keyboardManager.js"></script>
 <script src="js/keyboardService.js"></script>
 
@@ -136,8 +129,7 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 <link href="http://www.directiv.es/application/html/js/prajwalkman/angular-slider/angular-slider.min.css" type="text/css" rel="stylesheet">
 <link href='http://fonts.googleapis.com/css?family=Ubuntu:700' rel='stylesheet' type='text/css'>
 
-<script > var dif=100;
-</script>
+<script > var dif=100; </script>
 
 
 
@@ -186,7 +178,7 @@ Site en refonte il ressemblera bientôt à quelque chose dans intervalle 0h-2h</
 	
 	
 	
-		<div ng-if="modeCreator" style="width:100%;">
+		<div ng-show="modeCreator" style="width:100%;">
 			bonjour devellopeur ou pro du puissance 4 voici la grille représentant votre modele<br>
 			ligne début<input type="number" ng-model="minLine"><br/>
 			ligne fin<input type="number" ng-model="maxLine"><br/>
