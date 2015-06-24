@@ -9,24 +9,9 @@
 	<!--[if lt IE 9]>
 	<script src="http://bormat2.free.fr/wordpress4/wp-content/themes/twentyfourteen/js/html5.js"></script>
 	<![endif]-->
-	<script src="./robot puissance 4 _ Devellopement Web_files/jquery.min.js"> </script><style type="text/css"></style>
+
 	<script>
-		$( document ).ready(function(){
-			var positionElementInPage = $(".nav-menu").offset().top;
-			$(window).scroll(
-			function() {
-				if ($(window).scrollTop() >= 194) {
-					$(".nav-menu").addClass("floatable");
-					if ($(window).scrollTop() > "242" ) {
-						$(".nav-menu").addClass("floatable2");
-					}else{
-						$(".nav-menu").removeClass("floatable2");
-					}
-				} else {
-					$(".nav-menu").removeClass("floatable");
-				}
-			});
-		})
+	
 	</script>
 	<link rel="alternate" type="application/rss+xml" title="robot puissance 4 » Flux" href="http://bormat2.free.fr/wordpress4/index.php/feed">
 <link rel="alternate" type="application/rss+xml" title="robot puissance 4 » Flux des commentaires" href="http://bormat2.free.fr/wordpress4/index.php/comments/feed">
@@ -40,8 +25,7 @@
 <!--[if lt IE 9]>
 <link rel='stylesheet' id='twentyfourteen-ie-css'  href='http://bormat2.free.fr/wordpress4/wp-content/themes/twentyfourteen/css/ie.css?ver=20131205' type='text/css' media='all' />
 <![endif]-->
-<script type="text/javascript" src="./robot puissance 4 _ Devellopement Web_files/jquery.js"></script>
-<script type="text/javascript" src="./robot puissance 4 _ Devellopement Web_files/jquery-migrate.min.js"></script>
+
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://bormat2.free.fr/wordpress4/xmlrpc.php?rsd">
 <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://bormat2.free.fr/wordpress4/wp-includes/wlwmanifest.xml"> 
 <meta name="generator" content="WordPress 4.0">
@@ -105,23 +89,19 @@
 	<header class="entry-header"><h1 class="entry-title">puissance 4 IA</h1></header><!-- .entry-header -->
 	<div class="entry-content">
 
-<link href='http://fonts.googleapis.com/css?family=Ubuntu:700' rel='stylesheet' type='text/css'>
 <link href='css/theme.css' 		rel='stylesheet' type='text/css'>
 <link href='css/index_1.css' 	rel='stylesheet' type='text/css'>
 
 
-<script src="http://code.jquery.com/jquery-1.11.3.js"></script>
-<script src="js/jqueryCookie.js"></script>
 <script src="js/myRules.js"></script>
 <script src="js/keyboard.js"></script>
 <script src="js/tableauDeModele.js"></script>
 <script src="js/Modele.js"></script>
 <script src="js/IA.js"></script>
 <script src="js/angular.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-animate.js"></script>
 <script src="js/slider.js"></script>
 <script src="js/controleurJeu.js"></script>
-<script src="js/directive.js"></script>
+<!--script src="js/directive.js"></script-->
 <script src="js/keyboardManager.js"></script>
 <script src="js/keyboardService.js"></script>
 
@@ -134,112 +114,12 @@
 
 
 
-<div id="app"   ng-class ="{'fullscreen': fen.disp != 'play', stopselect:1}" ng-app="myApp" ng-controller="myCtrl">
-<div style="width:100%;height:100%;" ng-click="fen.disp = 'play';popup.deplier()"></div>
-<div  ng-click="$event.stopPropagation()" id="applet"  tabindex="0"  ng-class ="{ 'fullscreen': fen.disp != 'play'}" autofocus ng-keydown="keydown($event)">
+<div id="app"    ng-app="myApp" ng-controller="myCtrl">
 
-<input id="undo" 	ng-show="fen.disp != 'play'" ng-click="undo()"			value="annuler" type="button" />
-<input id="paramP4" ng-show="fen.disp != 'play'" ng-click="displayOption()" value="option" 	type="button" />
 
-<div  myt-ouchstart="touchStart(this)"  myt-ouchmove="touchMove(this)" myt-ouchend="touchEnd(this)" id="p4" >
-	<!-- 42 pions-->
-	<span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in goodGrille() track by $index" ng-mouseover="preview($index)" ng-mouseleave="endPreview($index);" my-touchstart="alert('start')"  >
-		<img   ng-style="{'backgroundColor':graphique(pion)}" src="http://bormat2.free.fr/4InArowLibrairy/images/1px.png"/>
-		<br ng-if="$index%7==6" />
-	</span>
-	<!-- rejouer -->
-	<span  ng-show="Modele.isGameFinish()&& !whyItIsFinish" class ="replay" ng-click="init()"  ></span>
-	<span  ng-show="Modele.isGameFinish() && !whyItIsFinish " ng-click="init();" id="white">
-		<p id="rejouer" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)">rejouer</p>
-		<img  src="file:///C:/Users/matheoBB/Documents/reload.png"/>
-	</span>
-	
-	
-	
-	<div  class="colum" ng-click="fen.disp = 'option'; whyItIsFinish = true;popup.deplier(false);$event.stopPropagation()"  ng-class="popup.getClass()" >
-		<div ng-show ="fen.disp == 'message'" id="message" class="colum2" >
-				{{message}}
-		</div>	
-		<div ng-show = "fen.disp == 'option'" class="colum2" >
-			<input id="Input3"  ng-style="{'width': InputWidth[0]}" value="sauvegarder" ng-click="save()" type="button"/>
-			<input id="Input4" value="restaurer" ng-click="restore()" type="button"/>
-			<input id="Input5" value="rejouer" ng-click="init()" type="button"/>
-			<input id="Input6" ng-value="'mode pressé '+(animation2 ? 'off' : 'on')" ng-click="reverse('animation2')" type="button"/>
-			<input id="Input1" value="annuler" ng-click="undo()" type="button">
-			<input id="Input2" ng-value=" isBotActive ? 'robot Actif' : '(ro)bot Désactivé' " ng-click="reverseIsBotActive()" type="button"/>
-			<input id="Input7" value="mode devellopeur switch" ng-click="modeleCreator()" type="button">
-		</div>
-	</div>
+
 </div>		
-	<div  ng-click="fen.stayOpen = !0"  ng-show="fen.disp != 'play'" id="sliderID">
-		  <slider ng-mousedown="fen.clic=false" floor="0" ceiling="100" step="1" precision="2" ng-model="IA.dif"></slider>
-	</div>
-	
-	
-	
-	
-		<div ng-show="modeCreator" style="width:100%;">
-			bonjour devellopeur ou pro du puissance 4 voici la grille représentant votre modele<br>
-			ligne début<input type="number" ng-model="minLine"><br/>
-			ligne fin<input type="number" ng-model="maxLine"><br/>
-			colone début <input type="number" ng-model="minCol"><br/>
-			colone fin<input type="number" ng-model="maxCol"><br/>
-			[<br>
-			[<br>
-			<em ng-if="maxCol>=$index%7 && minCol<=$index%7 && minLine<=$index/7  && maxLine>$index/7-2" ng-repeat="pion in goodGrille() track by $index"><em ng-if="$index%7==minCol%7"></em>{{pion}}<em ng-if="$index%7==maxCol%7">",<br/></em></em>],5</br>],
-			<br/>
-			<strong>choisir avec le clavier avant de cliquer :</strong><br>
-			//1 jaune<br>
-			//2 rouge<br>
-			//3 jaune impaire<br>
-			//4 jaune paire<br>
-			//5 tous dans le tableau de 42 cases<br>
-			//6 tout sauf 0 dans le tableau de 42 cases<br>
-			//7 rouge impaire<br>
-			//8 rouge paire<br>
-			//9 tous meme hors tableau de 42 case : <br><br>
-			
-			<strong>les options suivantes sont pour les cases vides exclusivement :</strong> <br>
-			//h rouge ne gagne pas a cette case <br>
-			//g jaune gagne à cette case <br>
-			//e et il n'y a pas de paire gagnant rouge j2 sur cette colonne (une case case rouge est dite gagnante si elle est sur une ligne paire en partant du bas avec l'indice 1 et qu'aucune case impaire où jaune pouvant directement gagner n'est au dessous)<br>
-			//i les rouges gagnent à cette case contraire de h<br>
-			//j jaune ne gagne pas à cette case inverse de g<br>
-			//. combiner de  j et i ouais  ils ont un point en commun haha ok je sort<br>
-			//r combiner de e et g jaune gagne à cette case et pas de rouge ligne paire gagnant en dessous (option en cour de disparition )<br>
-			//f combiner de g et h jaune gagne à cette ligne rouge ne gagne pas a cette ligne (option en cour de disparition )<br>
-			//z diff de 1 <br>
-			//y diff de 2 <br>
-			
-			
-		</div>
-	</div>	
-	
-	<style> 
-		#app.fullscreen  {	
-			background: rgba(0,0,0,0.8);
-			position:fixed;
-			top:0;
-			left:0;
-			width:100%;
-			height:100%;
-			z-index:4;
-		}
-		
-		#applet.fullscreen {
-			position:absolute;
-			top:50%;
-			left:50%;
-			margin-top:0;
-			width:40%;
-			width: 90vmin;
-			width: 90vm;
-			transform: translate(-50%,-50%);
-		}	
-	</style>
-</div>
 
-<br>
 
 
 

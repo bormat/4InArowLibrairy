@@ -1,8 +1,7 @@
 "use strict"
-
 forOf = (obj, func) ->
     keys = Object.keys(obj)
-    for i in [0..keys.length-1]
+    for i  til keys.length
         o = keys[i]
         func obj[o], o, obj
 
@@ -27,21 +26,15 @@ IA = window.IA =
     inadvisables: []
     pos: -1
     modelId: 0
-    setDif: (dif) ->
-        IA.dif = dif
-
-    
-    #ne pas Modele.play dessous un endroit ou on gagnerais en jouant au dessus 
+    boolSmart: []
+    isModelfound:  false
     notUnderMe: (inadvisables) ->
-        
-        # ne pas Modele.play dessous un endroit ou l'on gagne 
         i = 0
-
         while i < 7
             Modele.nextPlayer()
             position = Modele.play(i, true)
             
-            #on la mit en fictif avec le parametre true    mais il faut qu'il reste dans la Modele.grille 
+            #on la mit en fictif avec le parametre true    mais il faut qu'il reste dans la grille 
             Modele.grille[position] = "2"
             Modele.nextPlayer()
             Modele.play i, true
@@ -52,96 +45,92 @@ IA = window.IA =
             #rajouter la position en déconseillé 
             inadvisables.push position    if position >= 0    if position isnt inadvisables.at(-1) and position >= 0    if Modele.isGameFinish()
             i++
-
     
     #retourne ou Modele.play sinon -1
     ifPlayHereGiveMeExactPos: (posJoueur) ->
         posJoueur = parseInt(posJoueur)
         posJoueur = Modele.play(posJoueur, true)
         if ~posJoueur
-            cond1 = ~IA.forbids.indexOf(posJoueur)
-            cond2 = ~IA.inadvisables.indexOf(posJoueur)
+            cond1 = ~@forbids.indexOf(posJoueur)
+            cond2 = ~@inadvisables.indexOf(posJoueur)
             unless cond1 or cond2
-                IA.isModelfound = true
+                @isModelfound = true
                 posJoueur = Modele.play(posJoueur, true)
-                IA.pos = posJoueur
+                @pos = posJoueur
                 return (posJoueur)
-        IA.pos = -1
+        @pos = -1
 
     positionOfSym: (pos, length, sym) ->
         pos += sym and (length + ~pos)%%7 - pos % 7
 
     fillsWinningPos: ->
 
-        for o in [0..6]
-            IA.winningYellowPairs[o]= -1;
-            IA.winningRedPairs[o]= -1;
-            IA.winningYellowOdds[o]= -1;
-            IA.winningRedOdds[o]= -1;
+        for o to 6
+            @winningYellowPairs[o]= -1;
+            @winningRedPairs[o]= -1;
+            @winningYellowOdds[o]= -1;
+            @winningRedOdds[o]= -1;
                 
         o = 42
         while o > 0
             if +Modele.grille[o] == 0
               Modele.grille[o] = 1
-              trouvePlayerImpaire = IA.winningYellowOdds[o % 7]
-              trouveBotPaire = IA.winningRedPairs[o % 7]
-              trouvePlayerPaire = IA.winningYellowPairs[o % 7]
-              trouveBotImpaire = IA.winningRedOdds[o % 7]
-              if o // 7 % 2 == 1 and +trouvePlayerImpaire == -1 and Modele.isGameFinish(o)
-                IA.winningYellowOdds[o % 7] = o
-              else if (o // 7) % 2 == 0 and trouvePlayerPaire == -1 and Modele.isGameFinish(o)
-                IA.winningYellowPairs[o % 7] = o
+              trouvePlayerImpaire = @winningYellowOdds[o % 7]
+              trouveBotPaire = @winningRedPairs[o % 7]
+              trouvePlayerPaire = @winningYellowPairs[o % 7]
+              trouveBotImpaire = @winningRedOdds[o % 7]
+              if ~~(o / 7) % 2 == 1 and +trouvePlayerImpaire == -1 and Modele.isGameFinish(o)
+                @winningYellowOdds[o % 7] = o
+              else if ~~(o / 7) % 2 == 0 and trouvePlayerPaire == -1 and Modele.isGameFinish(o)
+                @winningYellowPairs[o % 7] = o
               Modele.grille[o] = 2
-              if (o // 7) % 2 == 0 and trouveBotPaire == -1 and Modele.isGameFinish(o)
-                IA.winningRedPairs[o % 7] = o
-              else if (o // 7) % 2 == 1 and trouveBotImpaire == -1 and Modele.isGameFinish(o)
-                IA.winningRedOdds[o % 7] = o
+              if ~~(o / 7) % 2 == 0 and trouveBotPaire == -1 and Modele.isGameFinish(o)
+                @winningRedPairs[o % 7] = o
+              else if ~~(o / 7) % 2 == 1 and trouveBotImpaire == -1 and Modele.isGameFinish(o)
+                @winningRedOdds[o % 7] = o
               Modele.grille[o] = 0
             o--
         return 
 
     playAllPos: (u) ->
-        IA.pos = -1
+        @pos = -1
         i = u - 7
 
-        while i < u and IA.pos < 0
-            IA.ifPlayHereGiveMeExactPos i
+        while i < u and @pos < 0
+            @ifPlayHereGiveMeExactPos i
             i++
 
     playWithoutModel: ->
         firstTurn = true
         alert;
         loop
-            IA.playAllPos IA.posJoueur
-            if ~IA.pos and firstTurn #si une position est jouable
+            @playAllPos @posJoueur
+            if ~@pos and firstTurn #si une position est jouable
                 loop #ttque qu'une position est jouable on interdit celles qui amenent au badmodel
-                    (if stopLoop1 = true then break)  unless IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
-                    IA.playAllPos(IA.posJoueur)
-                    break unless ~IA.pos
+                    (if stopLoop1 = true then break)  unless @wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, @pos)
+                    @playAllPos(@posJoueur)
+                    break unless ~@pos
                 break    if stopLoop1
                 firstTurn = false
-            break unless (IA.inadvisables.pop()? or IA.forbids.pop()?) and IA.pos < 0
-
-    boolSmart: []
-    isModelfound:  false
+            break unless (@inadvisables.pop()? or @forbids.pop()?) and @pos < 0    
     winInTwoTurn: (playerTurn) ->
-       for i in [0..6]
+        for i  to 6
             Modele.setPlayer playerTurn
-            IA.pos = Modele.play(i, true)
-            if (if playerTurn is 1 then IA.forbids.indexOf(IA.pos) < 0 else not IA.comparerLigne("g", IA.pos - 7))
-                position2 = IA.pos
-                Modele.grille[IA.pos] = playerTurn
+            @pos = Modele.play(i, true)
+            if (if playerTurn is 1 then @forbids.indexOf(@pos) < 0 else not @comparerLigne("g", @pos - 7))
+                position2 = @pos
+                Modele.grille[@pos] = playerTurn
                 cptGagnerDirect = 0
                 o = 0
 
                 while o < 7
-                    IA.pos = Modele.play(o, true)
-                    if Modele.isGameFinish() and ~IA.pos
+                    @pos = Modele.play(o, true)
+                    if Modele.isGameFinish() and ~@pos
                         cptGagnerDirect++
                         
                         #si il y a une position gagnante au dessus d'une autre 
                         WinnerPos = (if Modele.getPlayer() is 1 then "g" else "i")
-                        otherPlayerWinOnMe = (if (Modele.getPlayer() is 1) then false else IA.comparerLigne("g", IA.pos))
+                        otherPlayerWinOnMe = (if (Modele.getPlayer() is 1) then false else @comparerLigne("g", @pos))
                         if (cptGagnerDirect is 1 and IA.comparerLigne(WinnerPos, IA.pos - 7)) or (cptGagnerDirect > 1 and not otherPlayerWinOnMe)
                             Modele.grille[position2] = 0
                             IA.pos = i
@@ -153,7 +142,7 @@ IA = window.IA =
         IA.pos = -1
 
     gagnerDirect: ->
-        for i in [0..7]
+        for i to 7
             IA.pos = Modele.play(i, true)
             if Modele.isGameFinish()
                 Modele.isGameFinish false
@@ -165,27 +154,27 @@ IA = window.IA =
         j = 0
         IA.pos5 = 48
         IA.modelId = 0
-        pos2 = do 
-            rec = ->
-                TabOfTab = [ attaque, defense, miniDef, mesModele ]
-                while j < TabOfTab.length
-                    loop
-                        break    unless IA.modelId < TabOfTab[j].length
-                        position3 = IA.modeledetectorAndAnswer(TabOfTab[j])
-                        IA.modelId #=param.modelID
-                        if ~position3
-                            IA.ifPlayHereGiveMeExactPos position3
-                            if ~IA.pos
-                                isPosBad = IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
-                                rec() if isPosBad
-                                return IA.pos
-                            IA.pos5--
-                        IA.modelId = param.modelID = ++IA.modelId
-                    IA.modelId = param.modelID = 0
-                    IA.pos5 = 48
-                    j++
-                IA.pos5 = "notFound"
-                -1
+        do rec = ->
+            TabOfTab = [ attaque, defense, miniDef, mesModele ]
+            while j < TabOfTab.length
+                loop
+                    break if  IA.modelId >= TabOfTab[j].length
+                    position3 = IA.modeledetectorAndAnswer(TabOfTab[j])
+                    IA.modelId #=param.modelID
+                    if ~position3
+                        IA.ifPlayHereGiveMeExactPos position3
+                        if ~IA.pos
+                            isPosBad = IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
+                            rec() if isPosBad
+                            return IA.pos
+                        IA.pos5--
+                    IA.modelId = param.modelID = ++IA.modelId
+                IA.modelId = param.modelID = 0
+                IA.pos5 = 48
+                j++
+            IA.pos5 = "notFound"
+            -1
+
 
     falseOrModelIfFound: (param) ->
          if param.isModelfound then param else off
@@ -198,24 +187,22 @@ IA = window.IA =
             if IA.pos < 0
                 IA.isModelfound = false
                 break
-            param = IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
-            IA.isModelfound = not param.isModelfound
+            param = IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, @pos)
+            @isModelfound = not param.isModelfound
             break unless i++
             param.isModelfound and i < 7
-
     wontBecomeLikeThisModel: (TabWontBecomeLikeThisModel, player, posBot) ->
         return {} if posBot < 0
         param = undefined
         posBot = Modele.play(posBot, true)
         Modele.grille[posBot] = player
-        for i in [0..6]
+        for i to 6
             pos = Modele.play(i, true)
             Modele.grille[pos] = 2
             if ~pos
-                IA.isModelfound = not forOfSome(TabWontBecomeLikeThisModel, (mod) ->
-                    param = IA.structModelDetector(mod, 48)
-                    true    if param.isModelfound
-                )
+                for mod in TabWontBecomeLikeThisModel
+                    param = @structModelDetector(mod, 48)
+                    break if param.isModelfound
                 Modele.grille[pos] = 0
                 if IA.isModelfound
                     IA.inadvisables.push parseInt(posBot)
@@ -225,7 +212,7 @@ IA = window.IA =
         param
 
     futureIWant: (param, ModelInStruct, pos) ->
-        for j in [0..6]
+        for j from 0 to 6
             break if param.isModelfound
             pos3 = Modele.play(j, true)
             if ~pos3
@@ -244,48 +231,49 @@ IA = window.IA =
         else
             findAt = {}
         IA.modele = modele
-        IA.param = isModelfound: false
+        @param = isModelfound: false
         tab = []
-        while IA.modelId < modele.length and IA.param.isModelfound is false
-            tab = IA.getListOfMatchingPos(findAt)
+        while @modelId < modele.length and @param.isModelfound is false
+            tab = @getListOfMatchingPos(findAt)
             findAt.modelID++
-            IA.modelId = findAt.modelID
-        IA.pos = tab[0]
+            @modelId = findAt.modelID
+        @pos = tab[0]
         findAt.modelID--
-        IA.modelId--
-        IA.isModelfound = IA.param.isModelfound
-        IA.pos = (if IA.isModelfound then IA.pos else -1)
+        @modelId--
+        @isModelfound = @param.isModelfound
+        @pos = (if @isModelfound then @pos else -1)
+
 
     findModel: (ModelInStruct, pos) ->
-        param = {}
+        var param
         IA.currMod = ModelInStruct.tab
         IA.isModelfound = false
-        unless ModelInStruct.hasOwnProperty("logicalOperator")
-            forOfSome IA.currMod, (mod) ->
-                param = IA.modeleDetector3(mod, pos)
-                true    if param.isModelfound
-
-        else # by default it is the operator or between Model else do the next code
+        if not ModelInStruct.logicalOperator
+            for mod in  @currMod
+                param := @modeleDetector3(mod, pos)
+                break if param.isModelfound
+        else
             otherOption = {}
-            length = (if (ModelInStruct.hasOwnProperty("sym")) then 1 else 2)
+            length = if ModelInStruct.sym then 1 else 2
             j = 0
-
-            while j < length and IA.isModelfound is false
-                otherOption.sym = Boolean(j)    if ModelInStruct.hasOwnProperty("sameSym") and length is 2
-                stringToEVal = "param="
+            for j til length
+                break if IA.isModelfound
+                ModelInStruct
+                    otherOption.sym = !!j if ..sameSym and !..sameSym or !..sym
+                stringToEVal = 'param='
                 logicalOperator = ModelInStruct.logicalOperator
                 i = 0
-
                 while i < logicalOperator.length - 1
-                    stringToEVal += logicalOperator[i] + " IA.falseOrModelIfFound(IA.modeleDetector3(ModelInStruct.tab[" + i + "],pos,otherOption)) "
+                    stringToEVal += logicalOperator[i] + 
+                    " IA.falseOrModelIfFound(IA.modeleDetector3(
+                        ModelInStruct.tab[#i],
+                        pos,otherOption)) "
                     i++
                 stringToEVal += logicalOperator[i]
                 eval stringToEVal
                 IA.isModelfound = param.isModelfound
-                j++
         IA.currMod = ModelInStruct.tab
         param
-
     structModelDetector: (ModelInStruct, pos) ->
         param = {}
         IA.currMod = ModelInStruct.theTab
@@ -390,6 +378,8 @@ IA = window.IA =
     beginToEnd: (begin) ->
         begin + IA.currMod.length * 7 - 7
 
+
+    
     findForbiddenAndNotRecommandedPosition: ->
         IA.forbids.length = IA.inadvisables.length = 0
         IA.dontHelpJ2 IA.forbids
@@ -434,18 +424,18 @@ IA = window.IA =
                 break
 
     isModeleBottomFlat: (oneModele) ->
-        forOfSome oneModele.at(-1), (pos) ->
-            true    if pos isnt "a" and pos isnt "9"
-
+        tab = (for pos in oneModele[*-1] 
+            break if pos isnt "a" and pos isnt "9"
+        )
+        return tab.length-1 == oneModele[*-1]
 
     modeleDetector4: (oneModeleAndTheAnswer, position) ->
         r = IA.modeleDetector3(oneModeleAndTheAnswer[0], position)
-        IA.pos = r.pos
-        IA.playAt = oneModeleAndTheAnswer[1]
-        IA.currMod = oneModeleAndTheAnswer[0]
-        IA.pos = -1    unless r.isModelfound
+        @pos = r.pos
+        @playAt = oneModeleAndTheAnswer[1]
+        @currMod = oneModeleAndTheAnswer[0]
+        @pos = -1    unless r.isModelfound
         r
-
     modeleDetector3: (oneModele, position, otherOption) ->
         sym = true
         dontChangeSym = false
@@ -461,22 +451,24 @@ IA = window.IA =
         stopLoopCond = ->
             posSym = posOneModeleSym2[sym].pos
             pos = posOneModeleSym2[not sym].pos
-            posOneModeleSym2[sym].isModelfound or otherOption.hasOwnProperty("samepos") or (posSym < 0 and pos < 0) or (dontChangeSym and posSym < 0)
+            posOneModeleSym2[sym].isModelfound or
+            otherOption.hasOwnProperty("samepos") or
+            posSym < 0 and pos < 0 or 
+            dontChangeSym and posSym < 0
 
         loop
-            poses = posOneModeleSym2[sym] = IA.modeleDectector1(oneModele, posOneModeleSym2[sym].pos, sym)
-            unless poses.isModelfound
-                
+            poses = posOneModeleSym2[sym] = @modeleDectector1(oneModele, posOneModeleSym2[sym].pos, sym)
+            unless poses.isModelfound                
                 #if we haven't the place to find the model at this pos go back until we have the place
                 poses.pos = Math.min(Math.ceil(poses.pos / 7) * 7 - oneModele[0].length, poses.pos - 1)
                 sym = not dontChangeSym and not sym
             break unless not stopLoopCond()
-        IA.isModelfound = posOneModeleSym2[sym].isModelfound
+        @isModelfound = posOneModeleSym2[sym].isModelfound
         
-        #IA.currMod = oneModele;
+        #@currMod = oneModele;
         pos: posOneModeleSym2[sym].pos - 7 * (oneModele.length - 1)
         sym: sym
-        isModelfound: IA.isModelfound
+        isModelfound: @isModelfound
         theTab: oneModele
 
     modeleDectector1: (oneModele, posOneModele, sym) ->
@@ -494,123 +486,107 @@ IA = window.IA =
                 )
         pos: posOneModele
         isModelfound: false
+    topToBottom: (pos, length) -> pos + length * 7 - 7
+    bottomToTop: (pos, length) -> pos + ~length * 7
+    comparerCaractere : (a, +car, impaire) ->
+        a is 'a' or 
+        a is 'y' and car isnt 2 or
+        a is 'z' and car isnt 1 or 
+        car ~= a or 
+        a ~= 9 and 
+        car isnt 0 or
+        a ~= 6 and
+        car in [1, 2] or 
+        a ~= 5 and
+        car in [0,1,2] or 
+        if impaire 
+            a ~= 8 and car ~= 2 or a ~= 4 and car ~= 1 
+        else 
+            car ~= 1 and a ~= 3 or a ~= 7 and car ~= 2
 
-    topToBottom: (pos, length) ->
-        pos + length * 7 - 7
-
-    bottomToTop: (pos, length) ->
-        pos + ~length * 7
-
-    p4BlockEasy: (posJoueur, retournerPosition) ->
-        IA.posJoueur = posJoueur
-        findAt = undefined
-        botSmart = undefined
-        return (false)    if Modele.isGameFinish()
-        if parseInt(IA.dif) / 100 + Math.random() > 1 #dif is choose by player with slider
-            IA.boolSmart.push "true" #play smartly
+    p4BlockEasy : (posJoueur, retournerPosition) ->
+        return (false) if Modele.isGameFinish()
+        if parseInt(@dif) / 100 + Math.random() > 1 #dif is choose by player with slider
+            IA
+                ..boolSmart[*] = "true" #play smartly
+                ..fillsWinningPos()
+            IA <<<
+                posJoueur : posJoueur
+                isModelfound : off
+                pos : -1
+                modelId : 0
+                pos5 : 48
             Modele.setPlayer 1
-            IA.fillsWinningPos()
-            IA.isModelfound = false
-            IA.pos = -1
-            IA.modelId = 0
-            findAt = modelID: 0
-            IA.pos5 = 48
-            [
-                ->IA.gagnerDirect() 
-                ->IA.bloquerDirect()
-                ->IA.findForbiddenAndNotRecommandedPosition(), 
-                IA.winInTwoTurn.bind(IA, 1), 
-                IA.modeledetectorAndAnswer.bind(IA, perfectModele, #i pour debug
-                    modelID: 0
-                ), 
-                ->
-                    IA.modelId = 0
-                    IA.pos5 = 48
-                    IA.playAvecModele()
-                , IA.playWithoutModel.bind(IA, posJoueur)
-            ].some (func, i) ->
-                func()
-                ~IA.pos
-        else
-            
+            findAt = modelID : 0
+            IA      
+                for func in [
+                    ->..gagnerDirect() 
+                    ->..bloquerDirect()
+                    ->..findForbiddenAndNotRecommandedPosition(), 
+                    ->..winInTwoTurn(1), 
+                    ->..modeledetectorAndAnswer(perfectModele, modelID: 0 ) 
+                    ->
+                        ..modelId = 0
+                        ..pos5 = 48
+                        ..playAvecModele()
+                    ->..playWithoutModel(posJoueur)
+                ]
+                    func();
+                    break if ~@pos
+        else            
             #push that we don't play in 100% mode    and take a pos randomly
-            IA.boolSmart.push "false"
-            IA.pos = (Math.random() * 7)//1
-        Modele.play IA.pos, retournerPosition
-
-Array::has = (variable) ->
-    ~@indexOf(variable)
-
-IA.comparerCaractere = (a,car,impaire)->  
-    car *= 1 ; 
-    if(isNaN(a))
-        a == 'a' or 
-        a == 'y' && car != 2 or
-        a == 'z' && car !=1
-    else
-        a = +a        
-        car == a || 
-        a == 9 && car !=0 ||
-        a == 6 && car in [1,2] ||
-        a == 5 && car in [1,2,0] ||
-        (if impaire 
-           a == 8 && car == 2 || a == 4 && car == 1
-        else
-            (car == 1 && a ==3 || (a==7 && car == 2) )
-        )
-              
-
-IA.comparerLigne = (modligne, o) ->
-    `var gotonextif`
-    `var a`
-    if o < 0
-        return false
-    cont = true
-    i = o
-    while i < modligne.length + o and cont
-        a = modligne.charAt(i - o)
-        a = '' + a
-        b = Modele.grille[i]
+            IA
+                ..boolSmart[*] = "false"
+                ..pos = ~~(Math.random() * 7)
+        Modele.play(IA.pos, retournerPosition)
+    comparerLigne : (modligne, o) ->
         if o < 0
             return false
-        impaire = (i // 7) % 2
-        if Modele.grille[i] == 0 
-            gotonextif = false
-            if a in ['q','p']
-                cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7]
-            else if 't' == a 
-                cont = IA.inadvisables.indexOf(i) + 1
-            else if a == 'r'
-                cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] or IA.winningYellowOdds[i % 7] == -1
-                cont = cont and IA.winningRedPairs[i % 7] <= i
-                Modele.grille[i] = 1
-                cont = cont and Modele.isGameFinish(i)
-            else if a in ['.','f'] 
-                Modele.grille[i] = 1
-                cont = cont and Modele.isGameFinish(i)
-                cont = !cont  if a == '.'
-                if cont
+        cont = true
+        i = o
+        while i < modligne.length + o and cont
+            a = modligne.charAt(i - o)
+            a = '' + a
+            b = Modele.grille[i]
+            if o < 0
+                return false
+            impaire = ~~(i / 7) % 2
+            if Modele.grille[i] == 0 
+                gotonextif = false
+                if a in ['q','p']
+                    cont = @winningRedPairs[i % 7] < @winningYellowOdds[i % 7]
+                else if 't' == a 
+                    cont = @inadvisables.indexOf(i) + 1
+                else if a == 'r'
+                    cont = @winningRedPairs[i % 7] < @winningYellowOdds[i % 7] or @winningYellowOdds[i % 7] == -1
+                    cont = cont and @winningRedPairs[i % 7] <= i
+                    Modele.grille[i] = 1
+                    cont = cont and Modele.isGameFinish(i)
+                else if a in ['.','f'] 
+                    Modele.grille[i] = 1
+                    cont = cont and Modele.isGameFinish(i)
+                    != cont  if a == '.'
+                    if cont
+                        Modele.grille[i] = 2
+                        cont = Modele.isGameFinish(i)
+                        cont = !cont if  a == 'f'
+                else if a in ['e','r','w']
+                        cont = @winningRedPairs[i % 7] < @winningYellowOdds[i % 7] or @winningYellowOdds[i % 7] == -1
+                        cont = @winningRedPairs[i % 7] <= i if cont
+                else if  a in ['g','j','.','f']
+                    Modele.grille[i] = 1
+                    cont = cont and Modele.isGameFinish(i)
+                else if a in ['h','i'] 
                     Modele.grille[i] = 2
                     cont = Modele.isGameFinish(i)
-                    cont = !cont if  a == 'f'
-
-            else if a in ['e','r','w']
-                    cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] or IA.winningYellowOdds[i % 7] == -1
-                    cont = IA.winningRedPairs[i % 7] <= i if cont
-            else if  a in ['g','j','.','f']
-                Modele.grille[i] = 1
-                cont = cont and Modele.isGameFinish(i)
-            else if a in ['h','i'] 
-                Modele.grille[i] = 2
-                cont = Modele.isGameFinish(i)
+                else
+                    gotonextif = true
+                != cont if a in ['p','h','w','j']
+                Modele.grille[i] = 0
             else
                 gotonextif = true
-            cont = !cont if a in ['p','h','w','j']
-            Modele.grille[i] = 0
-        else
-            gotonextif = true
-        if gotonextif
-            cont = IA.comparerCaractere(a, b, impaire) 
-        return cont  if cont and i > modligne.length - 2 + o
-        i++
-    return
+            if gotonextif
+                cont = @comparerCaractere(a, b, impaire) 
+            return cont  if cont and i > modligne.length - 2 + o
+            i++
+        return
