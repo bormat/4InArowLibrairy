@@ -19,14 +19,6 @@ forOfSome = (obj, func) ->
 
 IA = window.IA =
     dif: 100
-    winningRedPairs: []
-    winningYellowOdds: []
-    winningRedOdds: []
-    winningYellowPairs: []
-    forbids: []
-    inadvisables: []
-    pos: -1
-    modelId: 0
     setDif: (dif) ->
         IA.dif = dif
 
@@ -69,7 +61,7 @@ IA = window.IA =
         IA.pos = -1
 
     positionOfSym: (pos, length, sym) ->
-        pos += sym and (length + ~pos)%%7 - pos % 7
+        pos += sym and mod(length + ~pos, 7) - pos % 7
 
     fillsWinningPos: ->
 
@@ -79,26 +71,25 @@ IA = window.IA =
             IA.winningYellowOdds[o]= -1;
             IA.winningRedOdds[o]= -1;
                 
-        o = 42
-        while o > 0
-            if +Modele.grille[o] == 0
-              Modele.grille[o] = 1
-              trouvePlayerImpaire = IA.winningYellowOdds[o % 7]
-              trouveBotPaire = IA.winningRedPairs[o % 7]
-              trouvePlayerPaire = IA.winningYellowPairs[o % 7]
-              trouveBotImpaire = IA.winningRedOdds[o % 7]
-              if o // 7 % 2 == 1 and +trouvePlayerImpaire == -1 and Modele.isGameFinish(o)
-                IA.winningYellowOdds[o % 7] = o
-              else if (o // 7) % 2 == 0 and trouvePlayerPaire == -1 and Modele.isGameFinish(o)
-                IA.winningYellowPairs[o % 7] = o
-              Modele.grille[o] = 2
-              if (o // 7) % 2 == 0 and trouveBotPaire == -1 and Modele.isGameFinish(o)
-                IA.winningRedPairs[o % 7] = o
-              else if (o // 7) % 2 == 1 and trouveBotImpaire == -1 and Modele.isGameFinish(o)
-                IA.winningRedOdds[o % 7] = o
-              Modele.grille[o] = 0
-            o--
-        return 
+        for o in [0..41]
+            if Modele.grille[o] == 0
+                Modele.grille[o] = 1;
+                trouvePlayerImpaire = IA.winningYellowOdds[o%7]
+                trouveBotPaire = IA.winningRedPairs[o%7]
+                trouvePlayerPaire = IA.winningYellowPairs[o%7]
+                trouveBotImpaire = IA.winningRedOdds[o%7]
+                if ( Math.floor(o/7)%2==1 && trouvePlayerImpaire== -1 && Modele.isGameFinish(o))              
+                    IA.winningYellowOdds[o%7] = o
+                else if ( Math.floor(o/7)%2==0 && trouvePlayerPaire== -1 && Modele.isGameFinish(o))           
+                    IA.winningYellowPairs[o%7] = o
+                Modele.grille[o]=2
+                if ((Math.floor(o/7)%2)==0 && trouveBotPaire==-1 && Modele.isGameFinish(o))
+                    IA.winningRedPairs[o%7]=o
+                else if ( (Math.floor(o/7)%2)==1 && trouveBotImpaire==-1 && Modele.isGameFinish(o))
+                        IA.winningRedOdds[o%7]=o
+                Modele.grille[o]=0
+        null     
+    
 
     playAllPos: (u) ->
         IA.pos = -1
@@ -123,7 +114,7 @@ IA = window.IA =
             break unless (IA.inadvisables.pop()? or IA.forbids.pop()?) and IA.pos < 0
 
     boolSmart: []
-    isModelfound:  false
+    isModelfound: -> false
     winInTwoTurn: (playerTurn) ->
        for i in [0..6]
             Modele.setPlayer playerTurn
@@ -456,8 +447,10 @@ IA = window.IA =
         posOneModeleSym2 =
             true:
                 pos: position
+
             false:
                 pos: position
+
         stopLoopCond = ->
             posSym = posOneModeleSym2[sym].pos
             pos = posOneModeleSym2[not sym].pos
@@ -515,28 +508,43 @@ IA = window.IA =
             IA.modelId = 0
             findAt = modelID: 0
             IA.pos5 = 48
-            [
-                ->IA.gagnerDirect() 
-                ->IA.bloquerDirect()
-                ->IA.findForbiddenAndNotRecommandedPosition(), 
-                IA.winInTwoTurn.bind(IA, 1), 
-                IA.modeledetectorAndAnswer.bind(IA, perfectModele, #i pour debug
-                    modelID: 0
-                ), 
-                ->
-                    IA.modelId = 0
-                    IA.pos5 = 48
-                    IA.playAvecModele()
-                , IA.playWithoutModel.bind(IA, posJoueur)
-            ].some (func, i) ->
+            
+            #0
+            
+            #1
+            
+            #2
+            
+            #3
+            
+            #4
+            
+            #5
+            [ IA.gagnerDirect, IA.bloquerDirect, IA.findForbiddenAndNotRecommandedPosition, IA.winInTwoTurn.bind(IA, 1), IA.modeledetectorAndAnswer.bind(IA, perfectModele, #i pour debug
+                modelID: 0
+            ), ->
+                IA.modelId = 0
+                IA.pos5 = 48
+                IA.playAvecModele()
+            , IA.playWithoutModel.bind(IA, posJoueur) ].some (func, i) ->
                 func()
                 ~IA.pos
+
         else
             
             #push that we don't play in 100% mode    and take a pos randomly
             IA.boolSmart.push "false"
-            IA.pos = (Math.random() * 7)//1
+            IA.pos = Math.floor(Math.random() * 7)
         Modele.play IA.pos, retournerPosition
+
+    winningRedPairs: []
+    winningYellowOdds: []
+    winningRedOdds: []
+    winningYellowPairs: []
+    forbids: []
+    inadvisables: []
+    pos: -1
+    modelId: 0
 
 Array::has = (variable) ->
     ~@indexOf(variable)
@@ -573,44 +581,58 @@ IA.comparerLigne = (modligne, o) ->
         b = Modele.grille[i]
         if o < 0
             return false
-        impaire = (i // 7) % 2
-        if Modele.grille[i] == 0 
-            gotonextif = false
-            if a in ['q','p']
-                cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7]
-            else if 't' == a 
-                cont = IA.inadvisables.indexOf(i) + 1
-            else if a == 'r'
-                cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] or IA.winningYellowOdds[i % 7] == -1
-                cont = cont and IA.winningRedPairs[i % 7] <= i
-                Modele.grille[i] = 1
-                cont = cont and Modele.isGameFinish(i)
-            else if a in ['.','f'] 
-                Modele.grille[i] = 1
-                cont = cont and Modele.isGameFinish(i)
-                cont = !cont  if a == '.'
-                if cont
-                    Modele.grille[i] = 2
-                    cont = Modele.isGameFinish(i)
-                    cont = !cont if  a == 'f'
-
-            else if a in ['e','r','w']
-                    cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] or IA.winningYellowOdds[i % 7] == -1
-                    cont = IA.winningRedPairs[i % 7] <= i if cont
-            else if  a in ['g','j','.','f']
-                Modele.grille[i] = 1
-                cont = cont and Modele.isGameFinish(i)
-            else if a in ['h','i'] 
-                Modele.grille[i] = 2
-                cont = Modele.isGameFinish(i)
-            else
-                gotonextif = true
-            cont = !cont if a in ['p','h','w','j']
-            Modele.grille[i] = 0
-        else
+        impaire = Math.floor(i / 7) % 2
+        if Modele.grille[i] == 0
             gotonextif = true
-        if gotonextif
-            cont = IA.comparerCaractere(a, b, impaire) 
+            switch a
+                when 'q', 'p', 'e', 'r', 'w', 'g', 'j', '.', 'f', 'h', 'i', 't'
+                    if a in ['q','p','e','r','w','g','j','.','f','h','i','t']
+                        gotonextif = false
+                        if a in ['q','p']
+                            cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7]
+                            if a == 'p'
+                                cont = !cont
+                        else if 't' == a 
+                            cont = IA.inadvisables.indexOf(i) + 1
+                        else if a == 'r'
+                            cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] or IA.winningYellowOdds[i % 7] == -1
+                            cont = cont and IA.winningRedPairs[i % 7] <= i
+                            Modele.grille[i] = 1
+                            cont = cont and Modele.isGameFinish(i)
+                        else if a in ['.','f'] 
+                            Modele.grille[i] = 1
+                            cont = cont and Modele.isGameFinish(i)
+                            if a == '.'
+                                cont = !cont
+                            if cont
+                                contin = true
+                                Modele.grille[i] = 2
+                                cont = Modele.isGameFinish(i)
+                                if  a == 'f'
+                                    cont = !cont
+                        else
+                            if a in ['e','r','w']
+                                cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] or IA.winningYellowOdds[i % 7] == -1
+                                cont = cont and IA.winningRedPairs[i % 7] <= i
+                                if a == 'w'
+                                    cont = !cont
+                            else if  a in ['g','j','.','f']
+                                Modele.grille[i] = 1
+                                cont = cont and Modele.isGameFinish(i)
+                                if a == 'j' 
+                                    cont = !cont
+                            else if a in ['h','i'] 
+                                Modele.grille[i] = 2
+                                cont = Modele.isGameFinish(i)
+                                if a == 'h' or a == 'f'
+                                    cont = !cont
+                        
+                        contin = false;
+                    ;
+
+            ;
+            Modele.grille[i] = 0
+        cont = IA.comparerCaractere(a, b, impaire) if Modele.grille[i] != 0 or gotonextif
         return cont  if cont and i > modligne.length - 2 + o
         i++
     return
