@@ -9,7 +9,6 @@
 	<!--[if lt IE 9]>
 	<script src="http://bormat2.free.fr/wordpress4/wp-content/themes/twentyfourteen/js/html5.js"></script>
 	<![endif]-->
-	<script src="./robot puissance 4 _ Devellopement Web_files/jquery.min.js"> </script><style type="text/css"></style>
 	<script>
 		$( document ).ready(function(){
 			var positionElementInPage = $(".nav-menu").offset().top;
@@ -40,8 +39,8 @@
 <!--[if lt IE 9]>
 <link rel='stylesheet' id='twentyfourteen-ie-css'  href='http://bormat2.free.fr/wordpress4/wp-content/themes/twentyfourteen/css/ie.css?ver=20131205' type='text/css' media='all' />
 <![endif]-->
-<script type="text/javascript" src="./robot puissance 4 _ Devellopement Web_files/jquery.js"></script>
-<script type="text/javascript" src="./robot puissance 4 _ Devellopement Web_files/jquery-migrate.min.js"></script>
+
+
 <link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://bormat2.free.fr/wordpress4/xmlrpc.php?rsd">
 <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://bormat2.free.fr/wordpress4/wp-includes/wlwmanifest.xml"> 
 <meta name="generator" content="WordPress 4.0">
@@ -110,7 +109,6 @@
 <link href='css/index_1.css' 	rel='stylesheet' type='text/css'>
 
 
-<script src="http://code.jquery.com/jquery-1.11.3.js"></script>
 <script src="js/jqueryCookie.js"></script>
 <script src="js/myRules.js"></script>
 <script src="js/keyboard.js"></script>
@@ -118,10 +116,9 @@
 <script src="js/Modele.js"></script>
 <script src="js/IA.js"></script>
 <script src="js/angular.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-animate.js"></script>
 <script src="js/slider.js"></script>
 <script src="js/controleurJeu.js"></script>
-<script src="js/directive.js"></script>
+<!--script src="js/directive.js"></script-->
 <script src="js/keyboardManager.js"></script>
 <script src="js/keyboardService.js"></script>
 
@@ -148,8 +145,8 @@
 		<br ng-if="$index%7==6" />
 	</span>
 	<!-- rejouer -->
-	<span  ng-show="Modele.isGameFinish()&& !whyItIsFinish" class ="replay" ng-click="init()"  ></span>
-	<span  ng-show="Modele.isGameFinish() && !whyItIsFinish " ng-click="init();" id="white">
+	<span  ng-show="Modele.isGameFinish()&& !whyItIsFinish || fen.disp == 'message'" class ="replay" ng-click="init()"  ></span>
+	<span  ng-show="Modele.isGameFinish() && !whyItIsFinish || fen.disp == 'message'" ng-click="init();" id="white">
 		<p id="rejouer" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)">rejouer</p>
 		<img  src="file:///C:/Users/matheoBB/Documents/reload.png"/>
 	</span>
