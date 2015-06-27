@@ -2,418 +2,404 @@
 (function(){
   window.app = angular.module('myApp', ['uiSlider']);
   window.app.controller('myCtrl', function($scope, $timeout){
-    var o, DeplierClass, anim, callbackPlayer, darkWinningPos, message, preview, time, threadIsntUsed;
-    o = $scope;
-    DeplierClass = void 8;
-    anim = void 8;
-    callbackPlayer = void 8;
-    darkWinningPos = void 8;
-    message = void 8;
-    preview = void 8;
-    o.stackPosition = void 8;
-    time = void 8;
-    threadIsntUsed = true;
-    window.MyScopeAccess = $scope;
-    DeplierClass = (function(){
-      DeplierClass.displayName = 'DeplierClass';
-      var prototype = DeplierClass.prototype, constructor = DeplierClass;
-      function DeplierClass(bool){
-        this[0] = bool;
-      }
-      prototype.deplier = function(bool){
-        bool == null && (bool = !this[0]);
-        return this[0] = bool;
-      };
-      prototype.getClass = function(){
-        if (this[0]) {
-          return 'optionVisible';
-        } else {
-          return 'optionInvisible';
+    return (function(){
+      var o, DeplierClass, this$ = this;
+      window.o = o = $scope;
+      DeplierClass = (function(){
+        DeplierClass.displayName = 'DeplierClass';
+        var prototype = DeplierClass.prototype, constructor = DeplierClass;
+        function DeplierClass(it){
+          this[0] = it;
         }
-      };
-      prototype.isDisp = function(){
-        return this[0];
-      };
-      return DeplierClass;
-    }());
-    anim = function(pos, player, callback){
-      var anim2;
-      anim2 = void 8;
-      anim2 = function(i){
-        var clickOnUndo;
-        clickOnUndo = void 8;
-        if (i > 6) {
-          o.$grille[i - 7] = 0;
-        }
-        o.$grille[i] = player;
-        clickOnUndo = +Modele.grille[pos] === 0;
-        if (clickOnUndo) {
-          o.$grille[i] = 0;
-          if (callback) {
-            callback();
-          }
-          o.$digest();
-          return;
-        }
-        if (i < pos) {
-          return $timeout(function(){
-            return anim2(i + 7);
-          }, time);
-        } else {
-          if (callback) {
-            return $timeout(callback, time + 1);
-          }
-        }
-      };
-      $timeout(function(){
-        return anim2(pos % 7);
-      });
-      if (!(pos % 7)) {
-        return o.$grille[0] = Modele.grille[0];
-      }
-    };
-    callbackPlayer = function(){
-      var callbackBotIfActiveElsePlayer1, posBot;
-      callbackBotIfActiveElsePlayer1 = void 8;
-      posBot = void 8;
-      callbackBotIfActiveElsePlayer1 = function(){
-        threadIsntUsed = true;
-        if (Modele.isGameFinish()) {
-          o.$messageF();
-        }
-        return o.loopThreatAnimation();
-      };
-      if (o.isBotActive) {
-        IA.setDif(o.cost);
-        posBot = IA.p4BlockEasy(pos, false);
-        return anim(posBot, 1, callbackBotIfActiveElsePlayer1);
-      } else {
-        return callbackBotIfActiveElsePlayer1();
-      }
-    };
-    darkWinningPos = function(dark){
-      var f, i, colorNumber, results$ = [];
-      f = Modele.winInfo;
-      if (!f) {
-        return false;
-      }
-      i = f.pion1;
-      colorNumber = o.$grille[i];
-      if (dark) {
-        colorNumber = colorNumber === 1 ? 4 : 8;
-      }
-      for (;;) {
-        o.$grille[i] = colorNumber;
-        i += f.dir;
-        if (i > f.pion2) {
-          break;
-        }
-      }
-      return results$;
-    };
-    o.$messageF = function(egality){
-      o.fen.disp = 'message';
-      o.whyItIsFinish = false;
-      if (egality) {
-        o.message = 'ceci est une égalité mais pas une victoire';
-      } else {
-        darkWinningPos(true);
-      }
-      if (Modele.isHumanTurn()) {
-        if (IA.boolSmart.indexOf('off') + 1) {
-          o.message = 'bravo vous avez gagné    augmentez un peu le niveau';
-        } else {
-          o.message = 'bravo vous avez gagné   envoyer votre historique par commentaire pour améliorer le jeu';
-        }
-      } else {
-        o.message = 'Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents';
-      }
-      o.popup.deplier(true);
-      return o.$digest();
-    };
-    o.o = o;
-    o.loopThreatAnimation = function(){
-      var pos;
-      pos = void 8;
-      if (Modele.isGameFinish()) {
-        o.stackPosition.length = 0;
-        threadIsntUsed = true;
-        return;
-      }
-      if (o.stackPosition.length) {
-        if (threadIsntUsed) {
-          threadIsntUsed = false;
-          time = o.animation2 ? 50 : 0;
-          pos = Modele.play(o.stackPosition.shift());
-          if (pos < 0) {
-            threadIsntUsed = true;
-          }
-          if (Modele.isGameFinish()) {
-            o.$messageF();
+        prototype.deplier = function(it){
+          it == null && (it = !this[0]);
+          return this[0] = it;
+        };
+        prototype.getClass = function(){
+          if (this[0]) {
+            return 'optionVisible';
           } else {
-            if (Modele.grille.indexOf(0) < 0) {
-              message('égalité');
-              threadIsntUsed = true;
-            }
+            return 'optionInvisible';
           }
-          return anim(pos, Modele.getPlayer(1), callbackPlayer);
+        };
+        prototype.isDisp = function(){
+          return this[0];
+        };
+        return DeplierClass;
+      }());
+      o.threadIsntUsed = true;
+      o.stackPosition = [];
+      o.isBotActive = true;
+      o.modeCreator = false;
+      o.whyItIsFinish = false;
+      o.animation2 = true;
+      o.popup = new DeplierClass;
+      o.IA = IA;
+      o.Modele = Modele;
+      o.fen = {
+        disp: 'play',
+        stayOpen: true
+      };
+      o.mode = 'normal';
+      o.cost = 100;
+      o.grille = [];
+      o.message = 'ça va commencer';
+      o.endGameMessage = true;
+      o.minLine = 0;
+      o.maxLine = 5;
+      o.minCol = 0;
+      o.maxCol = 6;
+      o.tabColor = {
+        '-30': 'rgb(255,0,234)',
+        0: 'white',
+        1: 'rgb(255,251,0)',
+        2: 'rgb(255,0,0)',
+        3: 'rgb(205,209,77)',
+        4: 'rgb(160,166,0)',
+        5: 'rgb(255,162,0)',
+        6: 'rgb(99,99,99)',
+        7: 'rgb(255,128,128)',
+        8: 'rgb(140,0,0)',
+        9: 'rgb(0,255,221)'
+      };
+      o.darkWinningPos = function(dark){
+        var f, i, colorNumber, results$ = [];
+        f = Modele.winInfo;
+        if (!f) {
+          return false;
         }
-      }
-    };
-    o.tabColor = {
-      '-30': 'rgb(255,0,234)',
-      0: 'white',
-      1: 'rgb(255,251,0)',
-      2: 'rgb(255,0,0)',
-      3: 'rgb(205,209,77)',
-      4: 'rgb(160,166,0)',
-      5: 'rgb(255,162,0)',
-      6: 'rgb(99,99,99)',
-      7: 'rgb(255,128,128)',
-      8: 'rgb(140,0,0)',
-      9: 'rgb(0,255,221)'
-    };
-    o.endPreview = function($index){
-      if (Modele.grille[$index % 7] === 0) {
-        return o.$grille[$index % 7] = 0;
-      }
-    };
-    o.stackPosition = [];
-    o.isBotActive = true;
-    o.modeCreator = false;
-    o.whyItIsFinish = false;
-    o.animation2 = true;
-    o.popup = new DeplierClass;
-    o.IA = IA;
-    o.Modele = Modele;
-    o.fen = {
-      disp: 'play',
-      stayOpen: true
-    };
-    o.mode = 'normal';
-    o.cost = 100;
-    o.grille = [];
-    o.message = 'ça va commencer';
-    o.endGameMessage = true;
-    o.minLine = 0;
-    o.maxLine = 5;
-    o.minCol = 0;
-    o.maxCol = 6;
-    o.clickOnBlack = function(){
-      o.fen.disp = 'play';
-      return o.popup.deplier(false);
-    };
-    o.reverse = function(aString){
-      return o[aString] = !o[aString];
-    };
-    o.alert = function(text){
-      return alert(text);
-    };
-    o.optionDisp = function(){
-      if (o.optionsWidth === optionsWidthInit) {
-        return 'block';
-      } else {
-        return 'none';
-      }
-    };
-    o.loadStory = function(grille2){
-      if (!grille2) {
-        return false;
-      }
-      Modele.restore(grille2);
-      if (!(Modele.backup.length % 2)) {
-        o.undo();
-      }
-      o.$grille.safeClone(Modele.grille);
-      return Modele.setPlayer(2);
-    };
-    o.load = function(grille2){
-      Modele.setModel(grille2);
-      return o.$grille.safeClone(Modele.grille);
-    };
-    o.modeleCreator = function(){
-      if (!o.modeCreator) {
-        o.endPreview(preview);
-        o.grilleCreator = o.$grille.slice();
-        o.grilleCreator[Modele.backup.at(-1)] = 0;
-      }
-      return o.reverse('modeCreator');
-    };
-    o.goodGrille = function(){
-      if (o.modeCreator) {
-        return o.grilleCreator;
-      } else {
-        return o.$grille;
-      }
-    };
-    o.displayOption = function(){
-      if (!(o.endGameMessage && o.popup.isDisp())) {
-        o.popup.deplier();
-      }
-      o.endGameMessage = false;
-      return o.fen.disp = 'option';
-    };
-    o.init = function(){
-      o.popup.deplier(false);
-      threadIsntUsed = true;
-      Modele.playAgain();
-      o.endGameMessage = false;
-      o.fen.disp = 'option';
-      return o.$grille = Modele.grille.slice();
-    };
-    o.deplier = function(columClass, bool){
-      if (bool !== void 8) {
-        return o[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
-      } else {
-        return o[columClass] = o[columClass] === 'optionVisible' ? 'optionInvisible' : 'optionVisible';
-      }
-    };
-    o.preview = function($index){
-      var pos;
-      pos = void 8;
-      if (o.modeCreator) {
-        return false;
-      }
-      if (preview !== void 8) {
-        o.endPreview(preview);
-      }
-      pos = ($index + 7) % 7;
-      if (!isNaN(pos)) {
-        if (o.$grille[pos] === 0) {
-          o.$grille[pos] = Modele.getPlayer(0);
+        i = f.pion1;
+        colorNumber = this.$grille[i];
+        if (dark) {
+          colorNumber = colorNumber === 1 ? 4 : 8;
         }
-        preview = pos;
-      }
-      if ($index % 7 !== 0) {
-        return o.$grille[0] = Modele.grille[0];
-      }
-    };
-    o.restore = function(){
-      var backup;
-      backup = void 8;
-      backup = $.cookie('backup');
-      return o.loadStory(backup);
-    };
-    o.save = function(){
-      return $.cookie('backup', Modele.backup);
-    };
-    o.graphique = function(colorNumber){
-      return o.tabColor[colorNumber];
-    };
-    o.undo = function(){
-      var pos;
-      pos = void 8;
-      if (Modele.isGameFinish()) {
-        WinningPos(false);
-        Modele.isGameFinish(false);
-      }
-      threadIsntUsed = true;
-      pos = Modele.undo();
-      o.$grille[pos] = 0;
-      IA.boolSmart.pop();
-      if (o.isBotActive && Modele.getPlayer() === 1) {
-        if (Modele.backup.length % 2 === 0) {
-          o.undo();
-        } else {
-          Modele.setPlayer(2);
-        }
-      }
-      return o.popup.deplier(false);
-    };
-    o.fallenPion = function(pos){
-      if (o.modeCreator) {
-        o.grilleCreator[pos] = o.$keyCode - 96;
-      }
-      if (!Modele.isGameFinish()) {
-        o.stackPosition.push(pos);
-      } else {
-        o.stackPosition = [];
-      }
-      return o.loopThreatAnimation();
-    };
-    o.keydown = function(event){
-      var i, inc, nextPos;
-      i = void 8;
-      inc = void 8;
-      nextPos = void 8;
-      event.preventDefault();
-      if (o.modeCreator) {
-        return;
-      }
-      o.$keyCode = event.which;
-      if (o.$keyCode > 47 && o.$keyCode < 58) {
-        o.fallenPion(o.$keyCode - 48);
-        return;
-      }
-      if (event.which === 90 && event.ctrlKey) {
-        o.undo();
-        return;
-      }
-      if (o.$keyCode === 37 || o.$keyCode === 39) {
-        inc = o.$keyCode - 38;
-        nextPos = preview;
-        i = 7;
         for (;;) {
-          nextPos = mod(nextPos + inc, 7);
-          if (!(+Modele.grille[nextPos] && i--)) {
+          this.$grille[i] = colorNumber;
+          i += f.dir;
+          if (i > f.pion2) {
             break;
           }
         }
-        o.preview(nextPos);
-        return;
-      }
-      if (o.$keyCode === 38) {
-        o.undo();
-        o.preview();
-        return;
-      }
-      if (o.$keyCode === 40) {
-        return o.preview(o.fallenPion(preview));
-      }
-    };
-    o.scrollInPx = function(lg){
-      return $(window).scrollTop($(window).scrollTop() - lg);
-    };
-    o.touchStart = function(element){
-      o.displayScroll = 'block';
-      o.lastY = event.touches[0].clientY;
-      return o.touchMove(element);
-    };
-    o.touchMove = function(element){
-      var pos, width;
-      pos = void 8;
-      width = void 8;
-      if (o.popup.isDisp()) {
-        return off_;
-      }
-      width = element.P4.width();
-      pos = event.touches.length >= 1
-        ? event.touches[0].pageX
-        : -1;
-      if (pos < 0) {
-        return false;
-      }
-      pos = (pos - element.P4.offset().left) * 7 / width;
-      pos = Math.floor(pos);
-      o.preview(pos);
-      return event.preventDefault();
-    };
-    o.touchEnd = function(element){
-      if (o.popup.isDisp()) {
-        return true;
-      }
-      event.preventDefault();
-      return o.fallenPion(preview);
-    };
-    o.reverseIsBotActive = function(){
-      o.reverse('isBotActive');
-      if (Modele.backup.length % 2 === 0) {
-        return o.undo();
-      }
-    };
-    o.init();
-    o.popup.deplier(true);
-    o.fen.disp = 'message';
-    return o.$grille.safeClone(Modele.grille);
+        return results$;
+      };
+      o.$messageF = function(egality){
+        this.fen.disp = 'message';
+        this.whyItIsFinish = false;
+        if (egality) {
+          this.message = 'ceci est une égalité mais pas une victoire';
+        } else {
+          this.darkWinningPos(true);
+        }
+        if (Modele.isHumanTurn()) {
+          if (IA.boolSmart.indexOf('off') + 1) {
+            this.message = 'bravo vous avez gagné    augmentez un peu le niveau';
+          } else {
+            this.message = 'bravo vous avez gagné   envoyer votre historique par commentaire pour améliorer le jeu';
+          }
+        } else {
+          this.message = 'Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents';
+        }
+        this.popup.deplier(true);
+        return this.$digest();
+      };
+      o.anim = function(pos, player, callback){
+        var anim2, this$ = this;
+        anim2 = function(i){
+          var clickOnUndo;
+          clickOnUndo = void 8;
+          if (i > 6) {
+            this$.$grille[i - 7] = 0;
+          }
+          this$.$grille[i] = player;
+          clickOnUndo = +Modele.grille[pos] === 0;
+          if (clickOnUndo) {
+            this$.$grille[i] = 0;
+            if (callback) {
+              callback();
+            }
+            this$.$digest();
+            return;
+          }
+          if (i < pos) {
+            return $timeout(function(){
+              return anim2(i + 7);
+            }, this$.time);
+          } else if (callback) {
+            return $timeout(callback, this$.time + 1);
+          }
+        };
+        $timeout(function(){
+          return anim2(pos % 7);
+        });
+        if (!(pos % 7)) {
+          return this.$grille[0] = Modele.grille[0];
+        }
+      };
+      o.endPreview = function($index){
+        if (Modele.grille[$index % 7] === 0) {
+          return this.$grille[$index % 7] = 0;
+        }
+      };
+      o.loopThreatAnimation = function(){
+        var pos, this$ = this;
+        pos = void 8;
+        if (Modele.isGameFinish()) {
+          this.stackPosition.length = 0;
+          this.threadIsntUsed = true;
+          return;
+        }
+        if (this.stackPosition.length) {
+          if (this.threadIsntUsed) {
+            this.threadIsntUsed = false;
+            this.time = this.animation2 ? 50 : 0;
+            pos = Modele.play(this.stackPosition.shift());
+            if (pos < 0) {
+              this.threadIsntUsed = true;
+            }
+            if (Modele.isGameFinish()) {
+              this.$messageF();
+            } else {
+              if (Modele.grille.indexOf(0) < 0) {
+                this.messageF('égalité');
+                this.threadIsntUsed = true;
+              }
+            }
+            return this.anim(pos, Modele.getPlayer(1), function(){
+              var callbackBotIfActiveElsePlayer1, posBot;
+              callbackBotIfActiveElsePlayer1 = function(){
+                this$.threadIsntUsed = true;
+                if (Modele.isGameFinish()) {
+                  this$.$messageF();
+                }
+                return this$.loopThreatAnimation();
+              };
+              if (this$.isBotActive) {
+                IA.setDif(this$.cost);
+                posBot = IA.p4BlockEasy(pos, false);
+                return this$.anim(posBot, 1, callbackBotIfActiveElsePlayer1);
+              } else {
+                return callbackBotIfActiveElsePlayer1();
+              }
+            });
+          }
+        }
+      };
+      o.clickOnBlack = function(){
+        this.fen.disp = 'play';
+        return this.popup.deplier(false);
+      };
+      o.reverse = function(aString){
+        return o[aString] = !o[aString];
+      };
+      o.alert = function(text){
+        return alert(text);
+      };
+      o.optionDisp = function(){
+        if (this.optionsWidth === optionsWidthInit) {
+          return 'block';
+        } else {
+          return 'none';
+        }
+      };
+      o.loadStory = function(grille2){
+        if (!grille2) {
+          return false;
+        }
+        Modele.restore(grille2);
+        if (!(Modele.backup.length % 2)) {
+          this.undo();
+        }
+        this.$grille.safeClone(Modele.grille);
+        return Modele.setPlayer(2);
+      };
+      o.load = function(grille2){
+        Modele.setModel(grille2);
+        return this.$grille.safeClone(Modele.grille);
+      };
+      o.modeleCreator = function(){
+        if (!this.modeCreator) {
+          this.endPreview(this.preview);
+          this.grilleCreator = this.$grille.slice();
+          this.grilleCreator[Modele.backup.at(-1)] = 0;
+        }
+        return this.reverse('modeCreator');
+      };
+      o.goodGrille = function(){
+        if (this.modeCreator) {
+          return this.grilleCreator;
+        } else {
+          return this.$grille;
+        }
+      };
+      o.displayOption = function(){
+        if (!(this.endGameMessage && this.popup.isDisp())) {
+          this.popup.deplier();
+        }
+        this.endGameMessage = false;
+        return this.fen.disp = 'option';
+      };
+      o.init = function(){
+        this.popup.deplier(false);
+        this.threadIsntUsed = true;
+        Modele.playAgain();
+        this.endGameMessage = false;
+        this.fen.disp = 'option';
+        return this.$grille = Modele.grille.slice();
+      };
+      o.deplier = function(columClass, bool){
+        if (bool !== void 8) {
+          return o[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
+        } else {
+          return o[columClass] = o[columClass] === 'optionVisible' ? 'optionInvisible' : 'optionVisible';
+        }
+      };
+      o.previewF = function($index){
+        var pos;
+        pos = void 8;
+        if (this.modeCreator) {
+          return false;
+        }
+        if (this.preview !== void 8) {
+          this.endPreview(this.preview);
+        }
+        pos = ($index + 7) % 7;
+        if (!isNaN(pos)) {
+          if (this.$grille[pos] === 0) {
+            this.$grille[pos] = Modele.getPlayer(0);
+          }
+          this.preview = pos;
+        }
+        if ($index % 7 !== 0) {
+          return this.$grille[0] = Modele.grille[0];
+        }
+      };
+      o.restore = function(){
+        var backup;
+        backup = void 8;
+        backup = $.cookie('backup');
+        return this.loadStory(backup);
+      };
+      o.save = function(){
+        return $.cookie('backup', Modele.backup);
+      };
+      o.graphique = function(colorNumber){
+        return this.tabColor[colorNumber];
+      };
+      o.undo = function(){
+        var pos;
+        pos = void 8;
+        if (Modele.isGameFinish()) {
+          WinningPos(false);
+          Modele.isGameFinish(false);
+        }
+        this.threadIsntUsed = true;
+        pos = Modele.undo();
+        this.$grille[pos] = 0;
+        IA.boolSmart.pop();
+        if (this.isBotActive && Modele.getPlayer() === 1) {
+          if (Modele.backup.length % 2 === 0) {
+            this.undo();
+          } else {
+            Modele.setPlayer(2);
+          }
+        }
+        return this.popup.deplier(false);
+      };
+      o.fallenPion = function(pos){
+        if (this$.modeCreator) {
+          this$.grilleCreator[pos] = this$.$keyCode - 96;
+        }
+        if (!Modele.isGameFinish()) {
+          this$.stackPosition.push(pos);
+        } else {
+          this$.stackPosition = [];
+        }
+        return this$.loopThreatAnimation();
+      };
+      o.keydown = function(event){
+        var i, inc, nextPos;
+        i = void 8;
+        inc = void 8;
+        nextPos = void 8;
+        event.preventDefault();
+        if (this.modeCreator) {
+          return;
+        }
+        this.$keyCode = event.which;
+        if (this.$keyCode > 47 && this.$keyCode < 58) {
+          this.fallenPion(this.$keyCode - 48);
+          return;
+        }
+        if (event.which === 90 && event.ctrlKey) {
+          this.undo();
+          return;
+        }
+        if (this.$keyCode === 37 || this.$keyCode === 39) {
+          inc = this.$keyCode - 38;
+          nextPos = this.preview;
+          i = 7;
+          for (;;) {
+            nextPos = mod(nextPos + inc, 7);
+            if (!(+Modele.grille[nextPos] && i--)) {
+              break;
+            }
+          }
+          this.previewF(nextPos);
+          return;
+        }
+        if (this.$keyCode === 38) {
+          this.undo();
+          this.previewF();
+          return;
+        }
+        if (this.$keyCode === 40) {
+          return this.previewF(this.fallenPion(this.preview));
+        }
+      };
+      o.scrollInPx = function(lg){
+        return $(window).scrollTop($(window).scrollTop() - lg);
+      };
+      o.touchStart = function(element){
+        this.displayScroll = 'block';
+        this.lastY = event.touches[0].clientY;
+        return this.touchMove(element);
+      };
+      o.touchMove = function(element){
+        var pos, width;
+        pos = void 8;
+        width = void 8;
+        if (this.popup.isDisp()) {
+          return off_;
+        }
+        width = element.P4.width();
+        pos = event.touches.length >= 1
+          ? event.touches[0].pageX
+          : -1;
+        if (pos < 0) {
+          return false;
+        }
+        pos = (pos - element.P4.offset().left) * 7 / width;
+        pos = Math.floor(pos);
+        this.previewF(pos);
+        return event.preventDefault();
+      };
+      o.touchEnd = function(element){
+        if (this.popup.isDisp()) {
+          return true;
+        }
+        event.preventDefault();
+        return this.fallenPion(this.preview);
+      };
+      o.reverseIsBotActive = function(){
+        this.reverse('isBotActive');
+        if (Modele.backup.length % 2 === 0) {
+          return this.undo();
+        }
+      };
+      this.init();
+      this.popup.deplier(true);
+      this.fen.disp = 'message';
+      return this.$grille.safeClone(Modele.grille);
+    }.call($scope));
   });
 }).call(this);

@@ -28,16 +28,18 @@
   };
   IA = window.IA = {
     dif: 100,
-    boolSmart: [],
     setDif: function(dif){
       return IA.dif = dif;
     },
     playAvecModele: function(){
-      var j, pos2, rec;
+      var param, j, pos2, rec;
+      param = {
+        modelID: 0
+      };
       j = 0;
       IA.pos5 = 48;
       IA.modelId = 0;
-      return pos2 = (rec = function(){
+      return pos2 = rec = function(){
         var TabOfTab, position3, isPosBad;
         TabOfTab = [attaque, defense, miniDef, mesModele];
         while (j < TabOfTab.length) {
@@ -58,15 +60,15 @@
               }
               IA.pos5--;
             }
-            IA.modelId = ++IA.modelId;
+            IA.modelId = param.modelID = ++IA.modelId;
           }
-          IA.modelId = 0;
+          IA.modelId = param.modelID = 0;
           IA.pos5 = 48;
           j++;
         }
         IA.pos5 = "notFound";
         return -1;
-      })();
+      };
     },
     notUnderMe: function(inadvisables){
       var i, position, results$ = [];
@@ -147,29 +149,47 @@
       return results$;
     },
     playAllPos: function(u){
-      var i;
+      var i, results$ = [];
       IA.pos = -1;
       i = u - 7;
       while (i < u && IA.pos < 0) {
         IA.ifPlayHereGiveMeExactPos(i);
-        i++;
+        results$.push(i++);
       }
-      return ~IA.pos;
+      return results$;
     },
     playWithoutModel: function(){
-      var firstTurn;
+      var firstTurn, stopLoop1, results$ = [];
       firstTurn = true;
-      loop1: do {
+      alert;
+      for (;;) {
         IA.playAllPos(IA.posJoueur);
-        if (IA.pos > 0 && firstTurn) {
-          do {
-            if (!IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)) {
-              break loop1;
+        if (~IA.pos && firstTurn) {
+          for (;;) {
+            if (stopLoop1 = true) {
+              if (!IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)) {
+                break;
+              }
             }
-          } while (IA.playAllPos(IA.posJoueur));
+            IA.playAllPos(IA.posJoueur);
+            if (!~IA.pos) {
+              break;
+            }
+          }
+          if (stopLoop1) {
+            break;
+          }
           firstTurn = false;
         }
-      } while ((IA.inadvisables.pop() != null || IA.forbids.pop() != null) && IA.pos < 0);
+        if (!((IA.inadvisables.pop() != null || IA.forbids.pop() != null) && IA.pos < 0)) {
+          break;
+        }
+      }
+      return results$;
+    },
+    boolSmart: [],
+    isModelfound: function(){
+      return false;
     },
     winInTwoTurn: function(playerTurn){
       var i$, i, position2, cptGagnerDirect, o, WinnerPos, otherPlayerWinOnMe;
@@ -224,6 +244,27 @@
       } else {
         return false;
       }
+    },
+    giveMeACheckedPosition: function(functionWhoReturnFalseOrPosToCheck){
+      var i, param, results$ = [];
+      i = 0;
+      param = {
+        isModelfound: false
+      };
+      for (;;) {
+        IA.pos = functionWhoReturnFalseOrPosToCheck();
+        if (IA.pos < 0) {
+          IA.isModelfound = false;
+          break;
+        }
+        param = IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos);
+        IA.isModelfound = !param.isModelfound;
+        if (!i++) {
+          break;
+        }
+        results$.push(param.isModelfound && i < 7);
+      }
+      return results$;
     },
     wontBecomeLikeThisModel: function(TabWontBecomeLikeThisModel, player, posBot){
       var param, i$, i, pos;
@@ -421,10 +462,10 @@
       IA.param = IA.structModelDetector(model, IA.pos5);
       IA.currMod = IA.param.theTab;
       IA.pos = IA.param.pos;
-      IA.currMod = IA.currMod ? Array.isArray(IA.currMod[0])
+      IA.currMod = Array.isArray(IA.currMod[0])
         ? IA.currMod[0]
-        : IA.currMod : void 8;
-      if (IA.isModelfound === true) {
+        : IA.currMod ? IA.currMod : void 8;
+      if (IA.isModelfound == true) {
         if (Array.isArray(IA.playAt)) {
           u = 0;
           while (u < IA.playAt.length) {
@@ -652,72 +693,96 @@
     }
   };
   IA.comparerLigne = function(modligne, o){
-    var cont, i, a, b, impaire;
+    var cont, i, a, b, impaire, gotonextif, contin;
     if (o < 0) {
       return false;
     }
     cont = true;
     i = o;
     while (i < modligne.length + o && cont) {
+      a = modligne.charAt(i - o);
+      a = '' + a;
+      b = Modele.grille[i];
       if (o < 0) {
         return false;
       }
-      a = modligne.charAt(i - o);
-      b = Modele.grille[i];
       impaire = Math.floor(i / 7) % 2;
-      cont = null;
-      if (Modele.grille[i] == 0) {
-        switch (false) {
-        case !in$(a, 'pq'):
-          cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7];
-          break;
-        case a != 't':
-          cont = IA.inadvisables.indexOf(i) + 1;
-          break;
-        case a != 'r':
-          cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] || IA.winningYellowOdds[i % 7] == -1;
-          cont && (cont = IA.winningRedPairs[i % 7] <= i);
-          Modele.grille[i] = 1;
-          cont && (cont = Modele.isGameFinish(i));
-          break;
-        case !in$(a, 'f.'):
-          Modele.grille[i] = 1;
-          cont = Modele.isGameFinish(i);
-          if ('f' == a) {
-            cont = !cont;
+      if (Modele.grille[i] === 0) {
+        gotonextif = true;
+        switch (a) {
+        case 'q':
+        case 'p':
+        case 'e':
+        case 'r':
+        case 'w':
+        case 'g':
+        case 'j':
+        case '.':
+        case 'f':
+        case 'h':
+        case 'i':
+        case 't':
+          if (a === 'q' || a === 'p' || a === 'e' || a === 'r' || a === 'w' || a === 'g' || a === 'j' || a === '.' || a === 'f' || a === 'h' || a === 'i' || a === 't') {
+            gotonextif = false;
+            if (a === 'q' || a === 'p') {
+              cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7];
+              if (a === 'p') {
+                cont = !cont;
+              }
+            } else if ('t' === a) {
+              cont = IA.inadvisables.indexOf(i) + 1;
+            } else if (a === 'r') {
+              cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] || IA.winningYellowOdds[i % 7] === -1;
+              cont = cont && IA.winningRedPairs[i % 7] <= i;
+              Modele.grille[i] = 1;
+              cont = cont && Modele.isGameFinish(i);
+            } else if (a === '.' || a === 'f') {
+              Modele.grille[i] = 1;
+              cont = cont && Modele.isGameFinish(i);
+              if (a === '.') {
+                cont = !cont;
+              }
+              if (cont) {
+                contin = true;
+                Modele.grille[i] = 2;
+                cont = Modele.isGameFinish(i);
+                if (a === 'f') {
+                  cont = !cont;
+                }
+              }
+            } else {
+              if (a === 'e' || a === 'r' || a === 'w') {
+                cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] || IA.winningYellowOdds[i % 7] === -1;
+                cont = cont && IA.winningRedPairs[i % 7] <= i;
+                if (a === 'w') {
+                  cont = !cont;
+                }
+              } else if (a === 'g' || a === 'j' || a === '.' || a === 'f') {
+                Modele.grille[i] = 1;
+                cont = cont && Modele.isGameFinish(i);
+                if (a === 'j') {
+                  cont = !cont;
+                }
+              } else if (a === 'h' || a === 'i') {
+                Modele.grille[i] = 2;
+                cont = Modele.isGameFinish(i);
+                if (a === 'h' || a === 'f') {
+                  cont = !cont;
+                }
+              }
+            }
+            contin = false;
           }
-          if (!cont) {
-            Modele.grille[i] = 2;
-            cont = Modele.isGameFinish(i);
-          }
-          break;
-        case !in$(a, 'erw'):
-          cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] || IA.winningYellowOdds[i % 7] == -1;
-          cont = cont && IA.winningRedPairs[i % 7] <= i;
-          break;
-        case !in$(a, 'gj'):
-          Modele.grille[i] = 1;
-          cont = Modele.isGameFinish(i);
-          break;
-        case !in$(a, 'hi'):
-          Modele.grille[i] = 2;
-          cont = Modele.isGameFinish(i);
-        }
-        if (in$(a, 'hpwfj')) {
-          cont = !cont;
         }
         Modele.grille[i] = 0;
       }
-      cont == null && (cont = IA.comparerCaractere(a, b, impaire));
+      if (Modele.grille[i] !== 0 || gotonextif) {
+        cont = IA.comparerCaractere(a, b, impaire);
+      }
       if (cont && i > modligne.length - 2 + o) {
         return cont;
       }
       i++;
     }
   };
-  function in$(x, xs){
-    var i = -1, l = xs.length >>> 0;
-    while (++i < l) if (x === xs[i]) return true;
-    return false;
-  }
 }).call(this);

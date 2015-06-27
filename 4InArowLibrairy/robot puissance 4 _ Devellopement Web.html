@@ -140,7 +140,7 @@
 
 <div  myt-ouchstart="touchStart(this)"  myt-ouchmove="touchMove(this)" myt-ouchend="touchEnd(this)" id="p4" >
 	<!-- 42 pions-->
-	<span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in goodGrille() track by $index" ng-mouseover="preview($index)" ng-mouseleave="endPreview($index);" my-touchstart="alert('start')"  >
+	<span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in goodGrille() track by $index" ng-mouseover="previewF($index)" ng-mouseleave="endPreview($index);" my-touchstart="alert('start')"  >
 		<img   ng-style="{'backgroundColor':graphique(pion)}" src="http://bormat2.free.fr/4InArowLibrairy/images/1px.png"/>
 		<br ng-if="$index%7==6" />
 	</span>
