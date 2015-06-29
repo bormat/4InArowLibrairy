@@ -117,7 +117,6 @@ IA = window.IA =
     falseOrModelIfFound: (param) -> if ~IA.playAt then param else false
     wontBecomeLikeThisModel: (TabWontBecomeLikeThisModel, player, posBot) ->
         return {} if posBot < 0
-        param = void
         posBot = Modele.play posBot, true
         Modele.grille[posBot] = player
         for i to 6
@@ -125,7 +124,7 @@ IA = window.IA =
             Modele.grille[pos] = 2
             if ~pos
                 for mod in TabWontBecomeLikeThisModel
-                    param := IA.structModelDetector2 mod, 48
+                    param = !!IA.structModelDetector2 mod, 48
                     if ~IA.playAt
                         break
                 Modele.grille[pos] = 0
@@ -160,12 +159,11 @@ IA = window.IA =
     
 
     findModel2: (ModelInStruct, pos) ->
-        param = {}
         IA.currMod = ModelInStruct.tab
         if not ModelInStruct.logicalOperator
             for mod in IA.currMod
-                param := IA.modeleDetector3 mod, pos
-                break if ~param.pos
+                param = IA.modeleDetector3 mod, pos
+                break if ~IA.posMod
         else
             otherOption = {}
             length = if ModelInStruct.hasOwnProperty 'sym' then 1 else 2
@@ -193,7 +191,7 @@ IA = window.IA =
                 IA.playAt= -1
                 {}
             else
-                IA.futureIWant param, ModelInStruct, pos
+                IA.futureIWant {}, ModelInStruct, pos
         if (~ IA.playAt)
             param.theModelISelf = ModelInStruct
             exept = ModelInStruct.exept
@@ -242,17 +240,17 @@ IA = window.IA =
         tabPosInBigGrille = []
         model = IA.modele[IA.modelId]
         p = IA.structModelDetector2 model, IA.pos5
-        [IA.currMod, IA.pos,theModelISelf,sym] = [p.theTab,p.pos,p.theModelISelf,p.sym]
+        [IA.currMod, IA.pos,sym] = [p.theTab,p.pos,IA.sym]
         IA.currMod = if IA.currMod
             if Array.isArray IA.currMod.0 then IA.currMod.0 else IA.currMod 
         if ~IA.playAt
             if Array.isArray IA.playAt
                 u = 0
                 while u < IA.playAt.length
-                    tabPosInBigGrille[*] = addPosOkToGroup(IA.playAt[u],theModelISelf)
+                    tabPosInBigGrille[*] = addPosOkToGroup(IA.playAt[u],model)
                     u++
             else
-                tabPosInBigGrille[*] = addPosOkToGroup(IA.playAt,theModelISelf)
+                tabPosInBigGrille[*] = addPosOkToGroup(IA.playAt,model)
             IA.pos5 = IA.beginToEnd IA.pos
         else
             IA.pos5 = 48
@@ -266,7 +264,6 @@ IA = window.IA =
         IA.dontHelpJ2 IA.forbids
         IA.detectBadPositionAlgorythme!
         IA.pos5 = 48
-        IA.param = {isModelfound: false}
         tabForbids = [modPosDeconseille, interditUnPeu]
         for IA.modele in tabForbids
             IA.modelId = 0
@@ -315,7 +312,9 @@ IA = window.IA =
                 sym = not dontChangeSym and not sym
             if !!stopLoopCond! then break
         IA.isModelfound = posOneModeleSym[sym].isModelfound
+        IA.posMod = if IA.isModelfound then posOneModeleSym[sym].pos - 7 * (oneModele.length - 1) else -1
         IA.playAt =  IA.isModelfound && on || -1
+        IA.sym = sym
         {
             pos: if IA.isModelfound then posOneModeleSym[sym].pos - 7 * (oneModele.length - 1) else -1
             sym: sym

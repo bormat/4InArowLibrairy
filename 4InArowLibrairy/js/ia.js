@@ -198,11 +198,10 @@
       }
     },
     wontBecomeLikeThisModel: function(TabWontBecomeLikeThisModel, player, posBot){
-      var param, i$, i, pos, j$, len$, mod;
+      var i$, i, pos, j$, len$, mod, param;
       if (posBot < 0) {
         return {};
       }
-      param = void 8;
       posBot = Modele.play(posBot, true);
       Modele.grille[posBot] = player;
       for (i$ = 0; i$ <= 6; ++i$) {
@@ -212,7 +211,7 @@
         if (~pos) {
           for (j$ = 0, len$ = TabWontBecomeLikeThisModel.length; j$ < len$; ++j$) {
             mod = TabWontBecomeLikeThisModel[j$];
-            param = IA.structModelDetector2(mod, 48);
+            param = !!IA.structModelDetector2(mod, 48);
             if (~IA.playAt) {
               break;
             }
@@ -268,14 +267,13 @@
         : -1;
     },
     findModel2: function(ModelInStruct, pos){
-      var param, i$, ref$, len$, mod, otherOption, length, j, stringToEVal, logicalOperator, j$, to$, i;
-      param = {};
+      var i$, ref$, len$, mod, param, otherOption, length, j, stringToEVal, logicalOperator, j$, to$, i;
       IA.currMod = ModelInStruct.tab;
       if (!ModelInStruct.logicalOperator) {
         for (i$ = 0, len$ = (ref$ = IA.currMod).length; i$ < len$; ++i$) {
           mod = ref$[i$];
           param = IA.modeleDetector3(mod, pos);
-          if (~param.pos) {
+          if (~IA.posMod) {
             break;
           }
         }
@@ -312,7 +310,7 @@
       if (ModelInStruct.mode == 'futur') {
         param = ~IA.playAt
           ? (IA.playAt = -1, {})
-          : IA.futureIWant(param, ModelInStruct, pos);
+          : IA.futureIWant({}, ModelInStruct, pos);
       }
       if (~IA.playAt) {
         param.theModelISelf = ModelInStruct;
@@ -374,7 +372,7 @@
       return Modele.setPlayer(1);
     },
     getListOfMatchingPos: function(){
-      var addPosOkToGroup, tabPosInBigGrille, model, p, ref$, theModelISelf, sym, u;
+      var addPosOkToGroup, tabPosInBigGrille, model, p, ref$, sym, u;
       addPosOkToGroup = function(posRelativeToModele, theModelISelf){
         if ((theModelISelf != null ? theModelISelf.mode : void 8) == 'futur') {
           return IA.playAt;
@@ -385,7 +383,7 @@
       tabPosInBigGrille = [];
       model = IA.modele[IA.modelId];
       p = IA.structModelDetector2(model, IA.pos5);
-      ref$ = [p.theTab, p.pos, p.theModelISelf, p.sym], IA.currMod = ref$[0], IA.pos = ref$[1], theModelISelf = ref$[2], sym = ref$[3];
+      ref$ = [p.theTab, p.pos, IA.sym], IA.currMod = ref$[0], IA.pos = ref$[1], sym = ref$[2];
       IA.currMod = IA.currMod ? Array.isArray(IA.currMod[0])
         ? IA.currMod[0]
         : IA.currMod : void 8;
@@ -393,11 +391,11 @@
         if (Array.isArray(IA.playAt)) {
           u = 0;
           while (u < IA.playAt.length) {
-            tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt[u], theModelISelf);
+            tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt[u], model);
             u++;
           }
         } else {
-          tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt, theModelISelf);
+          tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt, model);
         }
         IA.pos5 = IA.beginToEnd(IA.pos);
       } else {
@@ -414,9 +412,6 @@
       IA.dontHelpJ2(IA.forbids);
       IA.detectBadPositionAlgorythme();
       IA.pos5 = 48;
-      IA.param = {
-        isModelfound: false
-      };
       tabForbids = [modPosDeconseille, interditUnPeu];
       for (i$ = 0, len$ = tabForbids.length; i$ < len$; ++i$) {
         IA.modele = tabForbids[i$];
@@ -489,7 +484,11 @@
         }
       }
       IA.isModelfound = posOneModeleSym[sym].isModelfound;
+      IA.posMod = IA.isModelfound
+        ? posOneModeleSym[sym].pos - 7 * (oneModele.length - 1)
+        : -1;
       IA.playAt = IA.isModelfound && true || -1;
+      IA.sym = sym;
       return {
         pos: IA.isModelfound
           ? posOneModeleSym[sym].pos - 7 * (oneModele.length - 1)
