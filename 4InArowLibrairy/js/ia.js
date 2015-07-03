@@ -12,7 +12,7 @@
       IA.pos5 = 48;
       IA.modelId = 0;
       return pos2 = (rec = function(){
-        var TabOfTab, position3, isPosBad;
+        var TabOfTab, position3;
         TabOfTab = [attaque, defense, miniDef, mesModele];
         while (j < TabOfTab.length) {
           for (;;) {
@@ -24,8 +24,8 @@
             if (~position3) {
               IA.ifPlayHereGiveMeExactPos(position3);
               if (~IA.pos) {
-                isPosBad = IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos);
-                if (isPosBad) {
+                IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos);
+                if (~IA.playAt) {
                   rec();
                 }
                 return IA.pos;
@@ -136,7 +136,8 @@
         IA.playAllPos(IA.posJoueur);
         if (IA.pos > 0 && firstTurn) {
           do {
-            if (!IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)) {
+            IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos);
+            if (IA.playAt < 0) {
               return;
             }
           } while (IA.playAllPos(IA.posJoueur));
@@ -190,15 +191,8 @@
       }
       return IA.pos = -1;
     },
-    falseOrModelIfFound: function(param){
-      if (~IA.playAt) {
-        return param;
-      } else {
-        return false;
-      }
-    },
     wontBecomeLikeThisModel: function(TabWontBecomeLikeThisModel, player, posBot){
-      var i$, i, pos, j$, len$, mod, param;
+      var i$, i, pos, j$, len$, mod;
       if (posBot < 0) {
         return {};
       }
@@ -211,7 +205,7 @@
         if (~pos) {
           for (j$ = 0, len$ = TabWontBecomeLikeThisModel.length; j$ < len$; ++j$) {
             mod = TabWontBecomeLikeThisModel[j$];
-            param = !!IA.structModelDetector2(mod, 48);
+            !!IA.structModelDetector2(mod, 48);
             if (~IA.playAt) {
               break;
             }
@@ -223,10 +217,9 @@
           }
         }
       }
-      Modele.grille[posBot] = 0;
-      return param;
+      return Modele.grille[posBot] = 0;
     },
-    futureIWant: function(param, ModelInStruct, pos){
+    futureIWant: function(a, ModelInStruct, pos){
       var i$, j, pos3;
       for (i$ = 0; i$ <= 6; ++i$) {
         j = i$;
@@ -236,22 +229,18 @@
         pos3 = Modele.play(j, true);
         if (~pos3) {
           Modele.grille[pos3] = 1;
-          param = IA.findModel2(ModelInStruct, pos);
+          IA.findModel2(ModelInStruct, pos);
           Modele.grille[pos3] = 0;
         }
       }
       if (~IA.playAt) {
         IA.currMod = ModelInStruct.tab;
-        IA.playAt = pos3;
+        return IA.playAt = pos3;
       }
-      return param;
     },
     modeledetectorAndAnswer: function(modele){
       var tab;
       IA.modele = modele;
-      IA.param = {
-        isModelfound: false
-      };
       tab = [];
       while (IA.modelId < modele.length) {
         tab = IA.getListOfMatchingPos();
@@ -267,65 +256,60 @@
         : -1;
     },
     findModel2: function(ModelInStruct, pos){
-      var i$, ref$, len$, mod, param, otherOption, length, j, stringToEVal, logicalOperator, j$, to$, i;
+      var otherOption, stringToEVal, logicalOperator, i$, to$, i, length, j;
       IA.currMod = ModelInStruct.tab;
       if (!ModelInStruct.logicalOperator) {
-        for (i$ = 0, len$ = (ref$ = IA.currMod).length; i$ < len$; ++i$) {
-          mod = ref$[i$];
-          param = IA.modeleDetector3(mod, pos);
-          if (~IA.posMod) {
-            break;
-          }
-        }
+        return IA.currMod.some(function(mod){
+          return IA.modeleDetector3(mod, pos);
+        });
       } else {
         otherOption = {};
-        length = ModelInStruct.hasOwnProperty('sym') ? 1 : 2;
+        stringToEVal = '';
+        logicalOperator = ModelInStruct.logicalOperator;
+        for (i$ = 0, to$ = logicalOperator.length - 2; i$ <= to$; ++i$) {
+          i = i$;
+          stringToEVal += logicalOperator[i] + ("IA.modeleDetector3(ModelInStruct.tab[" + i + "],pos,otherOption)");
+        }
+        stringToEVal += logicalOperator[logicalOperator.length - 1];
+        length = ModelInStruct.sym ? 1 : 2;
         for (i$ = 0; i$ < length; ++i$) {
           j = i$;
           if (ModelInStruct.hasOwnProperty('sameSym') && length == 2) {
             otherOption.sym = !!j;
           }
-          stringToEVal = 'param=';
-          logicalOperator = ModelInStruct.logicalOperator;
-          for (j$ = 0, to$ = logicalOperator.length - 2; j$ <= to$; ++j$) {
-            i = j$;
-            stringToEVal += logicalOperator[i] + ("IA.falseOrModelIfFound(IA.modeleDetector3(ModelInStruct.tab[" + i + "],pos,otherOption))");
-          }
-          stringToEVal += logicalOperator[logicalOperator.length - 1];
           eval(stringToEVal);
-          if (~IA.playAt) {
-            break;
-          }
         }
+        return null;
       }
-      IA.currMod = ModelInStruct.tab;
-      return param;
     },
     structModelDetector2: function(ModelInStruct, pos){
-      var param, exept;
-      param = {};
+      var posMod, exept;
       IA.playAt = -1;
       IA.currMod = ModelInStruct.theTab;
-      param = IA.findModel2(ModelInStruct, pos);
+      IA.findModel2(ModelInStruct, pos);
       if (ModelInStruct.mode == 'futur') {
-        param = ~IA.playAt
-          ? (IA.playAt = -1, {})
-          : IA.futureIWant({}, ModelInStruct, pos);
+        if (~IA.playAt) {
+          IA.playAt = -1;
+          ({});
+        } else {
+          IA.futureIWant({}, ModelInStruct, pos);
+        }
       }
+      posMod = IA.posMod;
       if (~IA.playAt) {
-        param.theModelISelf = ModelInStruct;
+        IA.struct = ModelInStruct;
         exept = ModelInStruct.exept;
         if (exept) {
-          exept.sym = param.sym;
+          exept.sym = IA.sym;
           IA.structModelDetector2(exept, 48);
+          IA.currMod = ModelInStruct.tab;
           IA.playAt = IA.playAt >= 0 && -1 || true;
         }
         if (~IA.playAt && ModelInStruct.playAt != null) {
           IA.playAt = ModelInStruct.playAt;
         }
       }
-      IA.currMod = ModelInStruct.theTab;
-      return param;
+      return IA.posMod = posMod;
     },
     bloquerDirect: function(){
       var i$, i;
@@ -372,18 +356,19 @@
       return Modele.setPlayer(1);
     },
     getListOfMatchingPos: function(){
-      var addPosOkToGroup, tabPosInBigGrille, model, p, ref$, sym, u;
-      addPosOkToGroup = function(posRelativeToModele, theModelISelf){
-        if ((theModelISelf != null ? theModelISelf.mode : void 8) == 'futur') {
+      var addPosOkToGroup, tabPosInBigGrille, model, u;
+      addPosOkToGroup = function(posRelativeToModele){
+        var ref$;
+        if (((ref$ = IA.struct) != null ? ref$.mode : void 8) == 'futur') {
           return IA.playAt;
         } else {
-          return IA.pos + IA.positionOfSym(posRelativeToModele, IA.currMod[0].length, sym);
+          return IA.pos + IA.positionOfSym(posRelativeToModele, IA.currMod[0].length, IA.sym);
         }
       };
       tabPosInBigGrille = [];
       model = IA.modele[IA.modelId];
-      p = IA.structModelDetector2(model, IA.pos5);
-      ref$ = [p.theTab, p.pos, IA.sym], IA.currMod = ref$[0], IA.pos = ref$[1], sym = ref$[2];
+      IA.structModelDetector2(model, IA.pos5);
+      IA.pos = IA.posMod;
       IA.currMod = IA.currMod ? Array.isArray(IA.currMod[0])
         ? IA.currMod[0]
         : IA.currMod : void 8;
@@ -391,11 +376,11 @@
         if (Array.isArray(IA.playAt)) {
           u = 0;
           while (u < IA.playAt.length) {
-            tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt[u], model);
+            tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt[u]);
             u++;
           }
         } else {
-          tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt, model);
+          tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt);
         }
         IA.pos5 = IA.beginToEnd(IA.pos);
       } else {
@@ -489,14 +474,7 @@
         : -1;
       IA.playAt = IA.isModelfound && true || -1;
       IA.sym = sym;
-      return {
-        pos: IA.isModelfound
-          ? posOneModeleSym[sym].pos - 7 * (oneModele.length - 1)
-          : -1,
-        sym: sym,
-        isModelfound: IA.isModelfound,
-        theTab: oneModele
-      };
+      return IA.isModelfound;
     },
     modeleDectector1: function(oneModele, posOneModele, sym){
       var i$, to$, i, line;

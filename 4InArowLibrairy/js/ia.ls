@@ -14,12 +14,12 @@ IA = window.IA =
                     loop
                         break unless IA.modelId < TabOfTab[j].length
                         position3 = IA.modeledetectorAndAnswer(TabOfTab[j])
-                        IA.modelId #=param.modelID
+                        IA.modelId 
                         if ~position3
                             IA.ifPlayHereGiveMeExactPos position3
                             if ~IA.pos
-                                isPosBad = IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
-                                rec() if isPosBad
+                                IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
+                                rec() if ~IA.playAt
                                 return IA.pos
                             IA.pos5--
                         IA.modelId++
@@ -80,7 +80,8 @@ IA = window.IA =
             IA.playAllPos(IA.posJoueur)
             if IA.pos > 0 and firstTurn #si une position est jouable
                 do #ttque qu'une position est jouable on interdit celles qui amenent au badmodel
-                    return if(!IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos))
+                    IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
+                    return if(IA.playAt < 0)
                 while IA.playAllPos(IA.posJoueur);
                 firstTurn = false;
         while((IA.inadvisables.pop()?  || IA.forbids.pop()? )&& IA.pos<0);
@@ -114,7 +115,6 @@ IA = window.IA =
                 Modele.isGameFinish false
                 return true
         IA.pos = -1
-    falseOrModelIfFound: (param) -> if ~IA.playAt then param else false
     wontBecomeLikeThisModel: (TabWontBecomeLikeThisModel, player, posBot) ->
         return {} if posBot < 0
         posBot = Modele.play posBot, true
@@ -124,7 +124,7 @@ IA = window.IA =
             Modele.grille[pos] = 2
             if ~pos
                 for mod in TabWontBecomeLikeThisModel
-                    param = !!IA.structModelDetector2 mod, 48
+                    !!IA.structModelDetector2 mod, 48
                     if ~IA.playAt
                         break
                 Modele.grille[pos] = 0
@@ -132,22 +132,19 @@ IA = window.IA =
                     IA.inadvisables.push parseInt posBot
                     break
         Modele.grille[posBot] = 0
-        param
-    futureIWant: (param, ModelInStruct, pos) ->
+    futureIWant: (a, ModelInStruct, pos) ->
         for j to 6
             break if ~IA.playAt
             pos3 = Modele.play j, true
             if ~pos3
                 Modele.grille[pos3] = 1
-                param = IA.findModel2 ModelInStruct, pos
+                IA.findModel2 ModelInStruct, pos
                 Modele.grille[pos3] = 0
         if ~IA.playAt
             IA.currMod = ModelInStruct.tab
             IA.playAt = pos3
-        param
     modeledetectorAndAnswer: (modele) ->
         IA.modele = modele
-        IA.param = {isModelfound: false}
         tab = []
         while IA.modelId < modele.length 
             tab = IA.getListOfMatchingPos!
@@ -156,53 +153,47 @@ IA = window.IA =
         IA.pos = tab.0
         IA.modelId--
         IA.pos = if ~IA.playAt then IA.pos else -1
-    
-
     findModel2: (ModelInStruct, pos) ->
         IA.currMod = ModelInStruct.tab
         if not ModelInStruct.logicalOperator
-            for mod in IA.currMod
-                param = IA.modeleDetector3 mod, pos
-                break if ~IA.posMod
+            IA.currMod.some (mod) -> IA.modeleDetector3 mod, pos
         else
             otherOption = {}
-            length = if ModelInStruct.hasOwnProperty 'sym' then 1 else 2
+            stringToEVal = ''
+            logicalOperator = ModelInStruct.logicalOperator                
+            for i to logicalOperator.length - 2
+                stringToEVal += logicalOperator[i] + "IA.modeleDetector3(ModelInStruct.tab[#i],pos,otherOption)"
+            stringToEVal += logicalOperator[*-1]
+
+            length = if ModelInStruct.sym then 1 else 2
             for j til length 
                 otherOption.sym = !!j if (ModelInStruct.hasOwnProperty 'sameSym') and length ~= 2
-                stringToEVal = 'param='
-                logicalOperator = ModelInStruct.logicalOperator                
-                for i to logicalOperator.length - 2
-                    stringToEVal += logicalOperator[i] + "IA.falseOrModelIfFound(IA.modeleDetector3(ModelInStruct.tab[#i],pos,otherOption))"
-                stringToEVal += logicalOperator[*-1]
                 eval stringToEVal
-                break if ~IA.playAt
-
-        IA.currMod = ModelInStruct.tab
-        param
+            null
 
     #playAt < 0  is model not found but on terminal call it is the position relative to model 
     structModelDetector2: (ModelInStruct, pos) ->
-        param = {}
         IA.playAt = -1
         IA.currMod = ModelInStruct.theTab
-        param = IA.findModel2 ModelInStruct, pos
+        IA.findModel2 ModelInStruct, pos
         if ModelInStruct.mode ~= 'futur'
-            param = if ~IA.playAt
+            if ~IA.playAt
                 IA.playAt= -1
                 {}
             else
                 IA.futureIWant {}, ModelInStruct, pos
+        posMod = IA.posMod
         if (~ IA.playAt)
-            param.theModelISelf = ModelInStruct
+            IA.struct = ModelInStruct
             exept = ModelInStruct.exept
             if exept
-                exept.sym = param.sym
+                exept.sym = IA.sym
                 IA.structModelDetector2(exept, 48)
+                IA.currMod = ModelInStruct.tab;
                 IA.playAt = IA.playAt >= 0 && -1 || on
             if ~IA.playAt  && ModelInStruct.playAt? 
                 IA.playAt = ModelInStruct.playAt
-        IA.currMod = ModelInStruct.theTab
-        param
+        IA.posMod = posMod
     bloquerDirect: ->
         Modele.nextPlayer!
         for i to 6
@@ -231,26 +222,26 @@ IA = window.IA =
             Modele.grille[pos] = 0
         Modele.setPlayer 1
     getListOfMatchingPos : ->
-        addPosOkToGroup = (posRelativeToModele, theModelISelf) ->
-            if theModelISelf?mode ~= 'futur' 
+        addPosOkToGroup = (posRelativeToModele) ->
+            if IA.struct?mode ~= 'futur' 
                 IA.playAt
             else 
-                IA.pos + IA.positionOfSym posRelativeToModele, IA.currMod.0.length, sym
+                IA.pos + IA.positionOfSym posRelativeToModele, IA.currMod.0.length, IA.sym
 
         tabPosInBigGrille = []
         model = IA.modele[IA.modelId]
-        p = IA.structModelDetector2 model, IA.pos5
-        [IA.currMod, IA.pos,sym] = [p.theTab,p.pos,IA.sym]
+        IA.structModelDetector2 model, IA.pos5
+        IA.pos = IA.posMod
         IA.currMod = if IA.currMod
             if Array.isArray IA.currMod.0 then IA.currMod.0 else IA.currMod 
         if ~IA.playAt
             if Array.isArray IA.playAt
                 u = 0
                 while u < IA.playAt.length
-                    tabPosInBigGrille[*] = addPosOkToGroup(IA.playAt[u],model)
+                    tabPosInBigGrille[*] = addPosOkToGroup(IA.playAt[u])
                     u++
             else
-                tabPosInBigGrille[*] = addPosOkToGroup(IA.playAt,model)
+                tabPosInBigGrille[*] = addPosOkToGroup(IA.playAt)
             IA.pos5 = IA.beginToEnd IA.pos
         else
             IA.pos5 = 48
@@ -312,15 +303,10 @@ IA = window.IA =
                 sym = not dontChangeSym and not sym
             if !!stopLoopCond! then break
         IA.isModelfound = posOneModeleSym[sym].isModelfound
-        IA.posMod = if IA.isModelfound then posOneModeleSym[sym].pos - 7 * (oneModele.length - 1) else -1
+        IA.posMod = if IA.isModelfound then   posOneModeleSym[sym].pos - 7 * (oneModele.length - 1) else -1
         IA.playAt =  IA.isModelfound && on || -1
         IA.sym = sym
-        {
-            pos: if IA.isModelfound then posOneModeleSym[sym].pos - 7 * (oneModele.length - 1) else -1
-            sym: sym
-            IA.isModelfound
-            theTab: oneModele
-        }
+        IA.isModelfound
     #pos is the position bottom left of wher our model is found in the real game
     modeleDectector1: (oneModele, posOneModele, sym) ->
         for i from 1 to oneModele.length 
