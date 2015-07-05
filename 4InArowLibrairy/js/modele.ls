@@ -1,3 +1,4 @@
+
 class Disc
 	(pos) ->
 		@pos = pos
@@ -8,37 +9,34 @@ class Disc
 		loop
 			pos = newPos
 			newPos = pos + dir
-			break if not ((Disc.distance pos, newPos) <= 1 and Modele.grille[newPos] ~= @initColorNumber)
+			break if not ((@distance pos, newPos) <= 1 and Modele.grille[newPos] ~= @initColorNumber) #stop if color different or out of range
 		pos
 
-Disc.distance = (disc1, disc2, xOrY) ->
-		distX = disc2 % 7 - disc1 % 7
-		with Math.floor
-			distY = ..(disc2 / 7) - ..(disc1 / 7)
-		with Math.abs
-			return Math.max ..(distX), ..(distY)
-	
+	distance :(disc1, disc2, xOrY) ->
+		Math
+			..floor
+				distY = ..(disc2 / 7) - ..(disc1 / 7)
+			..abs
+				return ..(disc2 % 7 - disc1 % 7) >? ..(distY)
+	getLoopIf4InARow: (dir) ->
+
+
+
 	
 window.Modele = Modele = {
 	isGameFinish: ->
-		isGameFinish = void
+		var isGameFinish
 		@isGameFinish = (pos) ->
-			if not (pos ~= ``undefined``)
-				if typeof pos ~= 'boolean'
+			return off if pos < 0
+			if (pos?)
+				if typeof pos is \boolean
 					isGameFinish := pos
 				else
-					return false if pos < 0
 					disc = new Disc pos
-					[1 6 7 8]some ((direction) ->
-						start1 = disc.goToDir -direction
-						start2 = disc.goToDir direction
-						if isGameFinish := (Disc.distance start1, start2) >= 3
-							Modele.winInfo = {
-								pion1: start1
-								pion2: start2
-								dir: direction
-							}
-							true)
+					[1 6 7 8]some (dir) ->
+						disc~goToDir
+							Modele.winningPos = [i for i from ..(-dir) to  ..(dir) by dir]
+						isGameFinish = 	Modele.winningPos.length > 3
 			isGameFinish
 	play: (position, test) ->
 		position %= 7

@@ -6,10 +6,11 @@
     playAt: -1,
     dif: 100,
     boolSmart: [],
-    playAvecModele: function(){
+    found: false,
+    playWithModel: function(){
       var j, pos2, rec;
       j = 0;
-      IA.pos5 = 48;
+      IA.posModBot = 48;
       IA.modelId = 0;
       return pos2 = (rec = function(){
         var TabOfTab, position3;
@@ -25,20 +26,20 @@
               IA.ifPlayHereGiveMeExactPos(position3);
               if (~IA.pos) {
                 IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos);
-                if (~IA.playAt) {
+                if (!IA.found) {
                   rec();
                 }
                 return IA.pos;
               }
-              IA.pos5--;
+              IA.posModBot--;
             }
             IA.modelId++;
           }
           IA.modelId = 0;
-          IA.pos5 = 48;
+          IA.posModBot = 48;
           j++;
         }
-        IA.pos5 = "notFound";
+        IA.posModBot = "notFound";
         return -1;
       })();
     },
@@ -48,10 +49,10 @@
         i = i$;
         Modele.nextPlayer();
         position = Modele.play(i, true);
-        Modele.grille[position] = '2';
+        Modele.grille[position] = 2;
         Modele.nextPlayer();
         Modele.play(i, true);
-        Modele.grille[position] = '0';
+        Modele.grille[position] = 0;
         if (Modele.isGameFinish()) {
           if (position !== inadvisables.at(-1) && position >= 0) {
             if (position >= 0) {
@@ -77,7 +78,8 @@
       return IA.pos = -1;
     },
     positionOfSym: function(pos, length, sym){
-      return pos += sym && mod(length + ~pos, 7) - pos % 7;
+      var ref$;
+      return pos += sym && ((((length + ~pos)) % (ref$ = 7) + ref$) % ref$) - pos % 7;
     },
     fillsWinningPos: function(){
       var i$, o, trouvePlayerImpaire, trouveBotPaire, trouvePlayerPaire, trouveBotImpaire, results$ = [];
@@ -137,7 +139,7 @@
         if (IA.pos > 0 && firstTurn) {
           do {
             IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos);
-            if (IA.playAt < 0) {
+            if (IA.found) {
               return;
             }
           } while (IA.playAllPos(IA.posJoueur));
@@ -193,9 +195,6 @@
     },
     wontBecomeLikeThisModel: function(TabWontBecomeLikeThisModel, player, posBot){
       var i$, i, pos, j$, len$, mod;
-      if (posBot < 0) {
-        return {};
-      }
       posBot = Modele.play(posBot, true);
       Modele.grille[posBot] = player;
       for (i$ = 0; i$ <= 6; ++i$) {
@@ -205,38 +204,40 @@
         if (~pos) {
           for (j$ = 0, len$ = TabWontBecomeLikeThisModel.length; j$ < len$; ++j$) {
             mod = TabWontBecomeLikeThisModel[j$];
-            !!IA.structModelDetector2(mod, 48);
-            if (~IA.playAt) {
+            IA.found = !!IA.structModelDetector2(mod, 48);
+            if (IA.found) {
               break;
             }
           }
           Modele.grille[pos] = 0;
-          if (~IA.playAt) {
+          if (IA.found) {
             IA.inadvisables.push(parseInt(posBot));
             break;
           }
         }
       }
-      return Modele.grille[posBot] = 0;
+      Modele.grille[posBot] = 0;
+      return IA.found = !IA.found;
     },
     futureIWant: function(a, ModelInStruct, pos){
       var i$, j, pos3;
       for (i$ = 0; i$ <= 6; ++i$) {
         j = i$;
-        if (~IA.playAt) {
+        if (IA.found) {
           break;
         }
         pos3 = Modele.play(j, true);
         if (~pos3) {
           Modele.grille[pos3] = 1;
-          IA.findModel2(ModelInStruct, pos);
+          IA.found = IA.findModel2(ModelInStruct, pos);
           Modele.grille[pos3] = 0;
         }
       }
-      if (~IA.playAt) {
+      if (IA.found) {
         IA.currMod = ModelInStruct.tab;
-        return IA.playAt = pos3;
+        IA.playAt = pos3;
       }
+      return IA.found;
     },
     modeledetectorAndAnswer: function(modele){
       var tab;
@@ -245,22 +246,22 @@
       while (IA.modelId < modele.length) {
         tab = IA.getListOfMatchingPos();
         IA.modelId++;
-        if (~IA.playAt) {
+        if (IA.found) {
           break;
         }
       }
-      IA.pos = tab[0];
       IA.modelId--;
-      return IA.pos = ~IA.playAt
-        ? IA.pos
+      return IA.pos = IA.found
+        ? tab[0]
         : -1;
     },
     findModel2: function(ModelInStruct, pos){
       var otherOption, stringToEVal, logicalOperator, i$, to$, i, length, j;
       IA.currMod = ModelInStruct.tab;
+      IA.found = false;
       if (!ModelInStruct.logicalOperator) {
         return IA.currMod.some(function(mod){
-          return IA.modeleDetector3(mod, pos);
+          return IA.found = IA.modeleDetector3(mod, pos);
         });
       } else {
         otherOption = {};
@@ -277,39 +278,40 @@
           if (ModelInStruct.hasOwnProperty('sameSym') && length == 2) {
             otherOption.sym = !!j;
           }
-          eval(stringToEVal);
+          IA.found = eval(stringToEVal);
         }
-        return null;
+        return IA.found;
       }
     },
     structModelDetector2: function(ModelInStruct, pos){
       var posMod, exept;
       IA.playAt = -1;
-      IA.currMod = ModelInStruct.theTab;
-      IA.findModel2(ModelInStruct, pos);
+      IA.found = IA.findModel2(ModelInStruct, pos);
       if (ModelInStruct.mode == 'futur') {
-        if (~IA.playAt) {
+        if (IA.found) {
           IA.playAt = -1;
-          ({});
+          IA.found = !IA.found;
         } else {
-          IA.futureIWant({}, ModelInStruct, pos);
+          IA.found = IA.futureIWant({}, ModelInStruct, pos);
         }
       }
       posMod = IA.posMod;
-      if (~IA.playAt) {
+      if (IA.found) {
         IA.struct = ModelInStruct;
         exept = ModelInStruct.exept;
         if (exept) {
           exept.sym = IA.sym;
-          IA.structModelDetector2(exept, 48);
+          IA.found = IA.structModelDetector2(exept, 48);
           IA.currMod = ModelInStruct.tab;
-          IA.playAt = IA.playAt >= 0 && -1 || true;
+          IA.playAt = IA.found && -1 || true;
+          IA.found = !IA.found;
         }
-        if (~IA.playAt && ModelInStruct.playAt != null) {
+        if (IA.found && ModelInStruct.playAt != null) {
           IA.playAt = ModelInStruct.playAt;
         }
       }
-      return IA.posMod = posMod;
+      IA.posMod = posMod;
+      return IA.found;
     },
     bloquerDirect: function(){
       var i$, i;
@@ -330,11 +332,11 @@
       for (i$ = 0; i$ <= 6; ++i$) {
         i = i$;
         position = Modele.play(i, true);
-        Modele.grille[position] = '1';
+        Modele.grille[position] = 1;
         Modele.nextPlayer();
         Modele.play(i, true);
         Modele.nextPlayer();
-        Modele.grille[position] = '0';
+        Modele.grille[position] = 0;
         if (Modele.isGameFinish() && position !== $forbids[$forbids.length - 1] && position >= 0) {
           results$.push($forbids.push(position));
         }
@@ -356,35 +358,31 @@
       return Modele.setPlayer(1);
     },
     getListOfMatchingPos: function(){
-      var addPosOkToGroup, tabPosInBigGrille, model, u;
+      var addPosOkToGroup, tabPosInBigGrille, model, posRelativeToModele, ref$;
       addPosOkToGroup = function(posRelativeToModele){
-        var ref$;
-        if (((ref$ = IA.struct) != null ? ref$.mode : void 8) == 'futur') {
-          return IA.playAt;
-        } else {
-          return IA.pos + IA.positionOfSym(posRelativeToModele, IA.currMod[0].length, IA.sym);
-        }
+        return IA.posMod + IA.positionOfSym(posRelativeToModele, IA.currMod[0].length, IA.sym);
       };
       tabPosInBigGrille = [];
       model = IA.modele[IA.modelId];
-      IA.structModelDetector2(model, IA.pos5);
+      IA.found = IA.structModelDetector2(model, IA.posModBot);
       IA.pos = IA.posMod;
-      IA.currMod = IA.currMod ? Array.isArray(IA.currMod[0])
-        ? IA.currMod[0]
-        : IA.currMod : void 8;
-      if (~IA.playAt) {
-        if (Array.isArray(IA.playAt)) {
-          u = 0;
-          while (u < IA.playAt.length) {
-            tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt[u]);
-            u++;
-          }
-        } else {
-          tabPosInBigGrille[tabPosInBigGrille.length] = addPosOkToGroup(IA.playAt);
-        }
-        IA.pos5 = IA.beginToEnd(IA.pos);
+      IA.currMod = IA.currMod[0];
+      if (IA.found) {
+        tabPosInBigGrille = Array.isArray(IA.playAt)
+          ? (function(){
+            var i$, ref$, len$, results$ = [];
+            for (i$ = 0, len$ = (ref$ = IA.playAt).length; i$ < len$; ++i$) {
+              posRelativeToModele = ref$[i$];
+              results$.push(addPosOkToGroup(posRelativeToModele));
+            }
+            return results$;
+          }())
+          : [((ref$ = IA.struct) != null ? ref$.mode : void 8) == 'futur'
+            ? IA.playAt
+            : addPosOkToGroup(IA.playAt)];
+        IA.posModBot = IA.beginToEnd(IA.posMod);
       } else {
-        IA.pos5 = 48;
+        IA.posModBot = 48;
       }
       return tabPosInBigGrille;
     },
@@ -396,19 +394,19 @@
       IA.forbids.length = IA.inadvisables.length = 0;
       IA.dontHelpJ2(IA.forbids);
       IA.detectBadPositionAlgorythme();
-      IA.pos5 = 48;
+      IA.posModBot = 48;
       tabForbids = [modPosDeconseille, interditUnPeu];
       for (i$ = 0, len$ = tabForbids.length; i$ < len$; ++i$) {
         IA.modele = tabForbids[i$];
         IA.modelId = 0;
         while (IA.modelId < IA.modele.length) {
           tab = IA.getListOfMatchingPos();
-          if (IA.playAt < 0) {
-            IA.pos5 = 48;
+          if (!IA.found) {
+            IA.posModBot = 48;
             IA.modelId++;
           } else {
             Array.prototype.push.apply(IA.inadvisables, tab);
-            IA.pos5--;
+            IA.posModBot--;
           }
         }
       }
@@ -418,7 +416,7 @@
     DeleteException: function(){
       var position, pos, results$ = [];
       IA.modelId = 0;
-      IA.pos5 = 48;
+      IA.posModBot = 48;
       while (IA.modelId < mesModele.length) {
         IA.modeledetectorAndAnswer(tabException);
         if (~IA.pos) {
@@ -428,7 +426,7 @@
             IA.inadvisables.splice(pos, 1);
             pos = IA.inadvisables.indexOf(position);
           }
-          results$.push(IA.pos5--);
+          results$.push(IA.posModBot--);
         } else {
           break;
         }
@@ -436,7 +434,7 @@
       return results$;
     },
     modeleDetector3: function(oneModele, pos, otherOption){
-      var sym, dontChangeSym, posOneModeleSym, stopLoopCond, poses;
+      var sym, dontChangeSym, posOneModeleSym, stopLoopCond, poses, isModelfound;
       sym = true;
       dontChangeSym = false;
       otherOption = otherOption || {};
@@ -468,13 +466,14 @@
           break;
         }
       }
-      IA.isModelfound = posOneModeleSym[sym].isModelfound;
-      IA.posMod = IA.isModelfound
-        ? posOneModeleSym[sym].pos - 7 * (oneModele.length - 1)
-        : -1;
-      IA.playAt = IA.isModelfound && true || -1;
-      IA.sym = sym;
-      return IA.isModelfound;
+      IA.posMod = IA.playAt = -1;
+      isModelfound = posOneModeleSym[sym].isModelfound;
+      if (isModelfound) {
+        IA.posMod = posOneModeleSym[sym].pos - 7 * (oneModele.length - 1);
+        IA.playAt = isModelfound;
+        IA.sym = sym;
+      }
+      return isModelfound;
     },
     modeleDectector1: function(oneModele, posOneModele, sym){
       var i$, to$, i, line;
@@ -518,7 +517,7 @@
         findAt = {
           modelID: 0
         };
-        IA.pos5 = 48;
+        IA.posModBot = 48;
         [
           function(){
             return IA.gagnerDirect();
@@ -533,8 +532,8 @@
             return IA.modeledetectorAndAnswer(perfectModele);
           }, function(){
             IA.modelId = 0;
-            IA.pos5 = 48;
-            return IA.playAvecModele();
+            IA.posModBot = 48;
+            return IA.playWithModel();
           }, function(){
             return IA.playWithoutModel(posJoueur);
           }

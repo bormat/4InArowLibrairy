@@ -63,20 +63,13 @@
         9: 'rgb(0,255,221)'
       };
       o.darkWinningPos = function(dark){
-        var f, i, colorNumber, results$ = [];
-        f = Modele.winInfo;
-        if (!f) {
-          return false;
-        }
-        i = f.pion1;
-        colorNumber = this.$grille[i];
-        if (dark) {
-          colorNumber = colorNumber === 1 ? 4 : 8;
-        }
+        var ref$, dir, pion1, pion2, colorNumber, results$ = [];
+        ref$ = Modele.winInfo, dir = ref$.dir, pion1 = ref$.pion1, pion2 = ref$.pion2;
+        colorNumber = this.Modele.grille[pion1] * (dark * 4) || 1;
         for (;;) {
-          this.$grille[i] = colorNumber;
-          i += f.dir;
-          if (i > f.pion2) {
+          this.$grille[pion1] = colorNumber;
+          pion1 += dir;
+          if (pion1 > pion2) {
             break;
           }
         }
@@ -174,7 +167,7 @@
                 return this$.loopThreatAnimation();
               };
               if (this$.isBotActive) {
-                IA.setDif(this$.cost);
+                IA.dif = this$.cost;
                 posBot = IA.p4BlockEasy(pos, false);
                 return this$.anim(posBot, 1, callbackBotIfActiveElsePlayer1);
               } else {
@@ -287,9 +280,9 @@
       };
       o.undo = function(){
         var pos;
-        pos = void 8;
+        this.fen.disp = 'option';
         if (Modele.isGameFinish()) {
-          WinningPos(false);
+          this.darkWinningPos(false);
           Modele.isGameFinish(false);
         }
         this.threadIsntUsed = true;
@@ -306,26 +299,25 @@
         return this.popup.deplier(false);
       };
       o.fallenPion = function(pos){
+        var ref$;
         if (this$.modeCreator) {
-          this$.grilleCreator[pos] = this$.$keyCode - 96;
-        }
-        if (!Modele.isGameFinish()) {
-          this$.stackPosition.push(pos);
+          return this$.grilleCreator[pos] = this$.$keyCode - 96;
         } else {
-          this$.stackPosition = [];
+          if (!Modele.isGameFinish()) {
+            (ref$ = this$.stackPosition)[ref$.length] = pos;
+          } else {
+            this$.stackPosition = [];
+          }
+          return this$.loopThreatAnimation();
         }
-        return this$.loopThreatAnimation();
       };
       o.keydown = function(event){
-        var i, inc, nextPos;
-        i = void 8;
-        inc = void 8;
-        nextPos = void 8;
+        var inc, nextPos, i;
         event.preventDefault();
+        this.$keyCode = event.which;
         if (this.modeCreator) {
           return;
         }
-        this.$keyCode = event.which;
         if (this.$keyCode > 47 && this.$keyCode < 58) {
           this.fallenPion(this.$keyCode - 48);
           return;

@@ -14,49 +14,47 @@
       for (;;) {
         pos = newPos;
         newPos = pos + dir;
-        if (!(Disc.distance(pos, newPos) <= 1 && Modele.grille[newPos] == this.initColorNumber)) {
+        if (!(this.distance(pos, newPos) <= 1 && Modele.grille[newPos] == this.initColorNumber)) {
           break;
         }
       }
       return pos;
     };
+    prototype.distance = function(disc1, disc2, xOrY){
+      var x$, y$, distY, z$, ref$, ref1$;
+      x$ = Math;
+      y$ = x$.floor;
+      distY = y$(disc2 / 7) - y$(disc1 / 7);
+      z$ = x$.abs;
+      return (ref$ = z$(disc2 % 7 - disc1 % 7)) > (ref1$ = z$(distY)) ? ref$ : ref1$;
+      return x$;
+    };
+    prototype.getLoopIf4InARow = function(dir){};
     return Disc;
   }());
-  Disc.distance = function(disc1, disc2, xOrY){
-    var distX, x$, distY, y$;
-    distX = disc2 % 7 - disc1 % 7;
-    x$ = Math.floor;
-    distY = x$(disc2 / 7) - x$(disc1 / 7);
-    y$ = Math.abs;
-    return Math.max(y$(distX), y$(distY));
-    return y$;
-  };
   window.Modele = Modele = {
     isGameFinish: function(){
       var isGameFinish;
-      isGameFinish = void 8;
       return this.isGameFinish = function(pos){
         var disc;
-        if (!(pos == undefined)) {
-          if (typeof pos == 'boolean') {
+        if (pos < 0) {
+          return false;
+        }
+        if (pos != null) {
+          if (typeof pos === 'boolean') {
             isGameFinish = pos;
           } else {
-            if (pos < 0) {
-              return false;
-            }
             disc = new Disc(pos);
-            [1, 6, 7, 8].some(function(direction){
-              var start1, start2;
-              start1 = disc.goToDir(-direction);
-              start2 = disc.goToDir(direction);
-              if (isGameFinish = Disc.distance(start1, start2) >= 3) {
-                Modele.winInfo = {
-                  pion1: start1,
-                  pion2: start2,
-                  dir: direction
-                };
-                return true;
+            [1, 6, 7, 8].some(function(dir){
+              var x$, res$, i$, to$, i, isGameFinish;
+              x$ = bind$(disc, 'goToDir');
+              res$ = [];
+              for (i$ = x$(-dir), to$ = x$(dir); dir < 0 ? i$ >= to$ : i$ <= to$; i$ += dir) {
+                i = i$;
+                res$.push(i);
               }
+              Modele.winningPos = res$;
+              return isGameFinish = Modele.winningPos.length > 3;
             });
           }
         }
@@ -185,4 +183,7 @@
     }
   };
   Modele.init();
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);
