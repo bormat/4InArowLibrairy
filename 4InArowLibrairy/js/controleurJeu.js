@@ -63,13 +63,20 @@
         9: 'rgb(0,255,221)'
       };
       o.darkWinningPos = function(dark){
-        var ref$, dir, pion1, pion2, colorNumber, results$ = [];
-        ref$ = Modele.winInfo, dir = ref$.dir, pion1 = ref$.pion1, pion2 = ref$.pion2;
-        colorNumber = this.Modele.grille[pion1] * (dark * 4) || 1;
+        var f, i, colorNumber, results$ = [];
+        f = Modele.winInfo;
+        if (!f) {
+          return false;
+        }
+        i = f.pion1;
+        colorNumber = this.$grille[i];
+        if (dark) {
+          colorNumber = colorNumber === 1 ? 4 : 8;
+        }
         for (;;) {
-          this.$grille[pion1] = colorNumber;
-          pion1 += dir;
-          if (pion1 > pion2) {
+          this.$grille[i] = colorNumber;
+          i += f.dir;
+          if (i > f.pion2) {
             break;
           }
         }
@@ -167,7 +174,7 @@
                 return this$.loopThreatAnimation();
               };
               if (this$.isBotActive) {
-                IA.dif = this$.cost;
+                IA.setDif(this$.cost);
                 posBot = IA.p4BlockEasy(pos, false);
                 return this$.anim(posBot, 1, callbackBotIfActiveElsePlayer1);
               } else {
@@ -280,9 +287,9 @@
       };
       o.undo = function(){
         var pos;
-        this.fen.disp = 'option';
+        pos = void 8;
         if (Modele.isGameFinish()) {
-          this.darkWinningPos(false);
+          WinningPos(false);
           Modele.isGameFinish(false);
         }
         this.threadIsntUsed = true;
@@ -299,25 +306,26 @@
         return this.popup.deplier(false);
       };
       o.fallenPion = function(pos){
-        var ref$;
         if (this$.modeCreator) {
-          return this$.grilleCreator[pos] = this$.$keyCode - 96;
-        } else {
-          if (!Modele.isGameFinish()) {
-            (ref$ = this$.stackPosition)[ref$.length] = pos;
-          } else {
-            this$.stackPosition = [];
-          }
-          return this$.loopThreatAnimation();
+          this$.grilleCreator[pos] = this$.$keyCode - 96;
         }
+        if (!Modele.isGameFinish()) {
+          this$.stackPosition.push(pos);
+        } else {
+          this$.stackPosition = [];
+        }
+        return this$.loopThreatAnimation();
       };
       o.keydown = function(event){
-        var inc, nextPos, i;
+        var i, inc, nextPos;
+        i = void 8;
+        inc = void 8;
+        nextPos = void 8;
         event.preventDefault();
-        this.$keyCode = event.which;
         if (this.modeCreator) {
           return;
         }
+        this.$keyCode = event.which;
         if (this.$keyCode > 47 && this.$keyCode < 58) {
           this.fallenPion(this.$keyCode - 48);
           return;
