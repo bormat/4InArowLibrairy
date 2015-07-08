@@ -45,16 +45,9 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			9: 'rgb(0,255,221)'
 		}
 		darkWinningPos : (dark) ->
-			f = Modele.winInfo
-			return false if not f
-			i = f.pion1
-			colorNumber = @$grille[i]
-			if dark 
-				colorNumber = if colorNumber is 1 then 4 else 8
-			loop
+			colorNumber = @Modele.grille[pion1] * (dark * 4) || 1 # 1 or 2 => if dark 4 or 8 
+			for i in Modele.winInfo
 				@$grille[i] = colorNumber
-				i += f.dir
-				break if (i > f.pion2)  
 		$messageF : (egality) ->
 			@fen.disp = 'message'
 			@whyItIsFinish = false
@@ -109,7 +102,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 						@$messageF!
 					else
 						if (Modele.grille.indexOf 0) < 0
-							@messageF('égalité')
+							@$messageF('égalité')
 							@threadIsntUsed := true
 					@anim pos, (Modele.getPlayer 1),  ~>
 						callbackBotIfActiveElsePlayer1 = ~>
@@ -118,7 +111,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 							@loopThreatAnimation!
 
 						if @isBotActive
-							IA.setDif @cost
+							IA.dif = @cost
 							posBot = IA.p4BlockEasy pos, false
 							@anim posBot, 1, callbackBotIfActiveElsePlayer1
 						else
@@ -179,9 +172,9 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 		save: -> $.cookie 'backup', Modele.backup
 		graphique: (colorNumber) -> @tabColor[colorNumber]
 		undo: ->
-			pos = void
+			@fen.disp = 'option'
 			if Modele.isGameFinish!
-				WinningPos false
+				@darkWinningPos false
 				Modele.isGameFinish false
 			@threadIsntUsed := true
 			pos = Modele.undo!
@@ -190,16 +183,18 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			if @isBotActive && Modele.getPlayer! is 1 then if Modele.backup.length % 2 is 0 then @undo! else Modele.setPlayer 2
 			@popup.deplier false
 		fallenPion: (pos) ~>
-			@grilleCreator[pos] = @$keyCode - 96 if @modeCreator
-			if not Modele.isGameFinish! then @stackPosition.push pos else @stackPosition := []
-			@loopThreatAnimation!
+			if @modeCreator
+				@grilleCreator[pos] = @$keyCode - 96 
+			else 
+				if not Modele.isGameFinish!
+					@stackPosition[*] = pos
+				else 
+					@stackPosition = []
+				@loopThreatAnimation!
 		keydown: (event) ->
-			i = void
-			inc = void
-			nextPos = void
 			event.preventDefault!
-			return  if @modeCreator
-			@$keyCode := event.which
+			@$keyCode = event.which
+			return if @modeCreator
 			if @$keyCode > 47 && @$keyCode < 58
 				@fallenPion @$keyCode - 48
 				return 

@@ -6,57 +6,50 @@
     var prototype = Disc.prototype, constructor = Disc;
     function Disc(pos){
       this.pos = pos;
-      this.initColorNumber = Modele.grille[this.pos];
+      this.color = Modele.grille[this.pos];
     }
     prototype.goToDir = function(dir){
-      var newPos, pos;
-      newPos = this.pos;
+      var tab;
+      tab = [this.pos];
       for (;;) {
-        pos = newPos;
-        newPos = pos + dir;
-        if (!(Disc.distance(pos, newPos) <= 1 && Modele.grille[newPos] == this.initColorNumber)) {
+        tab[tab.length] = tab[tab.length - 1] + dir;
+        if (Modele.grille[tab[tab.length - 1]] != this.color) {
+          break;
+        }
+        if (this.distance(tab[tab.length - 2], tab[tab.length - 1]) > 1) {
           break;
         }
       }
-      return pos;
+      return tab[tab.length - 2];
+    };
+    prototype.distance = function(d1, d2){
+      return Math.abs(d1 % 7 - d2 % 7 || ~(d1 / 7) - ~(d2 / 7));
     };
     return Disc;
   }());
-  Disc.distance = function(disc1, disc2, xOrY){
-    var distX, x$, distY, y$;
-    distX = disc2 % 7 - disc1 % 7;
-    x$ = Math.floor;
-    distY = x$(disc2 / 7) - x$(disc1 / 7);
-    y$ = Math.abs;
-    return Math.max(y$(distX), y$(distY));
-    return y$;
-  };
   window.Modele = Modele = {
     isGameFinish: function(){
       var isGameFinish;
-      isGameFinish = void 8;
       return this.isGameFinish = function(pos){
-        var disc;
-        if (!(pos == undefined)) {
-          if (typeof pos == 'boolean') {
+        var f;
+        if (pos < 0) {
+          return false;
+        }
+        if (pos != null) {
+          if (typeof pos === 'boolean') {
             isGameFinish = pos;
           } else {
-            if (pos < 0) {
-              return false;
-            }
-            disc = new Disc(pos);
-            [1, 6, 7, 8].some(function(direction){
-              var start1, start2;
-              start1 = disc.goToDir(-direction);
-              start2 = disc.goToDir(direction);
-              if (isGameFinish = Disc.distance(start1, start2) >= 3) {
-                Modele.winInfo = {
-                  pion1: start1,
-                  pion2: start2,
-                  dir: direction
-                };
-                return true;
+            Modele.grille[-1] = null;
+            f = bind$(new Disc(pos), 'goToDir');
+            [1, 6, 7, 8].some(function(dir){
+              var res$, i$, to$, ridx$;
+              res$ = [];
+              for (i$ = f(-dir), to$ = f(dir); dir < 0 ? i$ >= to$ : i$ <= to$; i$ += dir) {
+                ridx$ = i$;
+                res$.push(ridx$);
               }
+              Modele.winInfo = res$;
+              return isGameFinish = Modele.winInfo.length > 2;
             });
           }
         }
@@ -75,10 +68,11 @@
       return -1;
     },
     mettrePion: mettrePion = function(position, test){
+      var ref$;
       Modele.grille[position] = Modele.getPlayer();
       if (!test) {
         Modele.nextPlayer();
-        Modele.backup.push(position);
+        (ref$ = Modele.backup)[ref$.length] = position;
       }
       Modele.isGameFinish(position);
       if (test) {
@@ -118,18 +112,17 @@
       return Modele.setGrille(Modele.modelToArray(tab));
     },
     modelToArray: function(tab){
-      var tab2, lengthLine, i, o;
+      var tab2, lengthLine;
       tab2 = [];
       lengthLine = tab[0].length;
-      i = 0;
-      while (i < tab.length) {
-        o = 0;
-        while (o < lengthLine) {
-          tab2.push(tab[i][o]);
-          o++;
+      tab.forEach(function(tabI){
+        var i$, to$, o, results$ = [];
+        for (i$ = 0, to$ = lengthLine; i$ < to$; ++i$) {
+          o = i$;
+          results$.push(tab2.push(tabI[o]));
         }
-        i++;
-      }
+        return results$;
+      });
       return tab2;
     },
     loadTab: function(tab, emplacement){
@@ -185,4 +178,7 @@
     }
   };
   Modele.init();
+  function bind$(obj, key, target){
+    return function(){ return (target || obj)[key].apply(obj, arguments) };
+  }
 }).call(this);
