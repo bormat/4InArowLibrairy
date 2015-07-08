@@ -45,12 +45,9 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			9: 'rgb(0,255,221)'
 		}
 		darkWinningPos : (dark) ->
-			{dir, pion1, pion2} = Modele.winInfo
 			colorNumber = @Modele.grille[pion1] * (dark * 4) || 1 # 1 or 2 => if dark 4 or 8 
-			loop
-				@$grille[pion1] = colorNumber
-				pion1 += dir
-				break if (pion1 > pion2)  
+			for i in Modele.winInfo
+				@$grille[i] = colorNumber
 		$messageF : (egality) ->
 			@fen.disp = 'message'
 			@whyItIsFinish = false
@@ -105,7 +102,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 						@$messageF!
 					else
 						if (Modele.grille.indexOf 0) < 0
-							@messageF('égalité')
+							@$messageF('égalité')
 							@threadIsntUsed := true
 					@anim pos, (Modele.getPlayer 1),  ~>
 						callbackBotIfActiveElsePlayer1 = ~>

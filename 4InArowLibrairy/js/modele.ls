@@ -1,29 +1,20 @@
+#please learn what ~ does in js
 
 class Disc
 	(pos) ->
 		@pos = pos
-		@initColorNumber = Modele.grille[@pos]
-	
+		@color = Modele.grille[@pos]	
 	goToDir: (dir) ->
-		newPos = @pos
+		tab=[@pos]
 		loop
-			pos = newPos
-			newPos = pos + dir
-			break if not ((@distance pos, newPos) <= 1 and Modele.grille[newPos] ~= @initColorNumber) #stop if color different or out of range
-		pos
+			tab[*] = tab[*-1] + dir
+			break if Modele.grille[tab[*-1]] !~= @color 
+			break if (@distance(tab[*-2], tab[*-1]) > 1)
+		tab[*-2]
+	distance : (d1, d2) -> Math.abs d1 % 7 - d2 % 7 || ~(d1 / 7) - ~(d2 / 7)
+		
 
-	distance :(disc1, disc2, xOrY) ->
-		Math
-			..floor
-				distY = ..(disc2 / 7) - ..(disc1 / 7)
-			..abs
-				return ..(disc2 % 7 - disc1 % 7) >? ..(distY)
-	getLoopIf4InARow: (dir) ->
-
-
-
-	
-window.Modele = Modele = {
+window.Modele = Modele =
 	isGameFinish: ->
 		var isGameFinish
 		@isGameFinish = (pos) ->
@@ -32,11 +23,11 @@ window.Modele = Modele = {
 				if typeof pos is \boolean
 					isGameFinish := pos
 				else
-					disc = new Disc pos
+					Modele.grille[-1] = null 
+					f = (new Disc(pos))~goToDir
 					[1 6 7 8]some (dir) ->
-						disc~goToDir
-							Modele.winningPos = [i for i from ..(-dir) to  ..(dir) by dir]
-						isGameFinish = 	Modele.winningPos.length > 3
+						Modele.winInfo = [f(-dir) to f(dir) by dir]
+						isGameFinish := Modele.winInfo.length > 2 #4-1-1
 			isGameFinish
 	play: (position, test) ->
 		position %= 7
@@ -50,7 +41,7 @@ window.Modele = Modele = {
 		Modele.grille[position] = Modele.getPlayer!
 		if not test
 			Modele.nextPlayer!
-			Modele.backup.push position
+			Modele.backup.* = position
 		Modele.isGameFinish position
 		if test then Modele.grille[position] = 0
 		Modele.isGameFinish!
@@ -78,13 +69,9 @@ window.Modele = Modele = {
 	modelToArray: (tab) ->
 		tab2 = []
 		lengthLine = tab.0.length
-		i = 0
-		while i < tab.length
-			o = 0
-			while o < lengthLine
-				tab2.push tab[i][o]
-				o++
-			i++
+		tab.forEach (tabI)->
+			for o til lengthLine
+				tab2.push tabI[o]
 		tab2
 	loadTab: (tab, emplacement) -> Modele.grille = Modele.modelToArray tab
 	nextPlayer: -> Modele.joueur = if Modele.joueur ~= 1 then 2 else 1
@@ -116,6 +103,5 @@ window.Modele = Modele = {
 	saveGame: ->
 		$.cookie 'grille', JSON.stringify Modele.backup
 		$.cookie 'boolSmart', JSON.stringify IA.boolSmart
-}
 
 Modele.init!
