@@ -1,11 +1,15 @@
+describe("myFunction", function() {
+		afterEach(function() {
+			Modele.isGameFinish(false);
+		});
 		function testor(tab,pos,identifier){
-			QUnit.test(identifier+"shouldBeAt"+pos, function(assert){
+			it(identifier+"shouldBeAt"+pos, function(){
 				Modele.setModel(tab);
-				assert.ok(IA.p4BlockEasy(pos-1,true) == pos);
+				expect(IA.p4BlockEasy(pos-1,true)).toEqual(pos);
 			});
 		}
-		QUnit.test("joueEn24", function(assert){
-			Modele.isGameFinish(false)
+	
+		it("joueEn24", function(){
 			Modele.setModel([
 			"0000000",
 			"0000000",
@@ -14,9 +18,9 @@
 			"2020100",
 			"2011200",
 			])
-			assert.ok(IA.p4BlockEasy(32,true) == 25);
+			expect(IA.p4BlockEasy(32,true)).toEqual(25);
 		});
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 			Modele.setModel([
 			"0122001",
 			"2211002",
@@ -25,10 +29,10 @@
 			"2212101",
 			"1121211",
 			])
-			assert.ok(IA.p4BlockEasy(32,true) == 0);
+			expect(IA.p4BlockEasy(32,true)).toEqual(0);
 		});
 		
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 		Modele.setModel([
 			"0110001",
 			"0220002",
@@ -37,10 +41,10 @@
 			"0120201",
 			"1121202",
 		])
-		assert.ok(IA.p4BlockEasy(32,true) == 25);
+		expect(IA.p4BlockEasy(32,true)).toEqual(25);
 		});
 		 
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 		Modele.setModel([
 		"0100000",
 		"0220100",
@@ -49,10 +53,10 @@
 		"0212100",
 		"1121220",
 		])
-		assert.ok(IA.p4BlockEasy(32,true) == 10);
+		expect(IA.p4BlockEasy(32,true)).toEqual(10);
 		});
 
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 		Modele.setModel([
         "0000000",
         "0000002",
@@ -61,10 +65,10 @@
         "0002101",
         "2101202",
         ])
-		assert.ok(IA.p4BlockEasy(32,true) == 17);
+		expect(IA.p4BlockEasy(32,true)).toEqual(17);
 		});
 		
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 		Modele.setModel([
 			"0021100",
 			"0012200",
@@ -74,11 +78,11 @@
 			"0221211",
 		 ])
 		var p= IA.p4BlockEasy(5,true)
-		assert.ok(p != 39);
-		assert.ok(p != 26);
+		expect(p).not.toEqual(39);
+		expect(p).not.toEqual(26);
 		});
 			
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 		Modele.setModel( [
         "0000000",
         "0000000",
@@ -87,10 +91,10 @@
         "0000100",
         "2011220",
         ])
-		assert.ok(IA.p4BlockEasy(32,true) == 30);
+		expect(IA.p4BlockEasy(32,true)).toEqual(30);
 		});
 			
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 		Modele.setModel(
 		  [
         "0120200",
@@ -100,11 +104,11 @@
         "2212102",
         "1121211",
         ])
-		assert.ok(IA.p4BlockEasy(0,true) != 24);
+		expect(IA.p4BlockEasy(0,true)).not.toEqual(24);
 		});
 		
 
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 		Modele.setModel(
 		[
         "2020100",
@@ -114,9 +118,9 @@
         "1222100",
         "1121220",
       ])
-		assert.ok(IA.p4BlockEasy(0,true) == 24);
+		expect(IA.p4BlockEasy(0,true)).toEqual(24);
 		});
-		QUnit.test("test", function(assert){
+		it("test", function(){
 			Modele.setModel([
 			"0000000",
 			"0020100",
@@ -125,9 +129,9 @@
 			"0212100",
 			"1121220",
 			])
-			assert.ok(IA.p4BlockEasy(1,true) == 10);
+			expect(IA.p4BlockEasy(1,true)).toEqual(10);
 		});
-		QUnit.test("test", function(assert){
+		it("test", function(){
 			Modele.setModel([
 			"0100000",
 			"0202100",
@@ -136,10 +140,10 @@
 			"0212100",
 			"1121220",
 			])
-			assert.ok(IA.p4BlockEasy(1,true) == 9);
+			expect(IA.p4BlockEasy(1,true)).toEqual(9);
 		});
 		
-		QUnit.test("test", function(assert){
+		it("test", function(){
 			Modele.setModel([
 			"0011200",
 			"0222100",
@@ -148,11 +152,11 @@
 			"1212100",
 			"1121220",
 			])
-			assert.ok(IA.p4BlockEasy(1,true) == 21);
+			expect(IA.p4BlockEasy(1,true)).toEqual(21);
 		});
 
 		
-		QUnit.test("test", function(assert){
+		it("test", function(){
 			Modele.setModel(
 			[
 			"0011200",
@@ -162,27 +166,27 @@
 			"0212100",
 			"1121220",
 			])
-			assert.ok(IA.p4BlockEasy(4,true) != 41);
+			expect(IA.p4BlockEasy(4,true)).not.toEqual(41);
 		});
 		
 		
-		/*QUnit.test("shouldBe", function(assert){
-		 	assert.ok(IA.testerSiContenu3(4,6) == 3);
+		/*it("shouldBe", function(){
+		 	expect(IA.testerSiContenu3(4,6)).toEqual(3);
 		}); 
-		QUnit.test("shouldBe", function(assert){
-		 	assert.ok(IA.testerSiContenu3(4,42) == 38);
+		it("shouldBe", function(){
+		 	expect(IA.testerSiContenu3(4,42)).toEqual(38);
 		}); 
-		QUnit.test("shouldBe", function(assert){
-		 	assert.ok(IA.testerSiContenu3(4,3) == 2);
+		it("shouldBe", function(){
+		 	expect(IA.testerSiContenu3(4,3)).toEqual(2);
 		}); 
-		QUnit.test("shouldBe", function(assert){
-		 	assert.ok(IA.testerSiContenu3(1,6) == 5);
+		it("shouldBe", function(){
+		 	expect(IA.testerSiContenu3(1,6)).toEqual(5);
 		}); 
-		QUnit.test("shouldBe", function(assert){
-		 	assert.ok(IA.testerSiContenu3(6,5) == 1);
+		it("shouldBe", function(){
+		 	expect(IA.testerSiContenu3(6,5)).toEqual(1);
 		}); 
 		*/
-QUnit.test("shouldBe", function(assert){
+it("shouldBe", function(){
 			Modele.setModel([
 			"0002000",
 			"0001000",
@@ -191,10 +195,10 @@ QUnit.test("shouldBe", function(assert){
 			"0102012",
 			"0121221",
 	 ])
-		 	assert.ok(IA.p4BlockEasy(6,true) != 26);
+		 	expect(IA.p4BlockEasy(6,true)).not.toEqual(26);
 		}); 
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel([
 			"0000000",
 			"0000000",
@@ -203,10 +207,10 @@ QUnit.test("shouldBe", function(assert){
 			"0002012",
 			"0001122",
 			])
-			assert.ok(IA.p4BlockEasy(3,true) == 10);
+			expect(IA.p4BlockEasy(3,true)).toEqual(10);
 		})
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel([
         "0120200",
         "0210100",
@@ -215,11 +219,11 @@ QUnit.test("shouldBe", function(assert){
         "2212100",
         "1121211",
         ])
-		assert.ok(IA.p4BlockEasy(6,true) != 33);
+		expect(IA.p4BlockEasy(6,true)).not.toEqual(33);
 		})
 
 		
-QUnit.test("shouldBe", function(assert){
+it("shouldBe", function(){
 			Modele.setModel([
         "0000000",
         "0000011",
@@ -228,9 +232,9 @@ QUnit.test("shouldBe", function(assert){
         "0021012",
         "0211122",
 	 ])
-		 	assert.ok(IA.p4BlockEasy(3,true) == 35);
+		 	expect(IA.p4BlockEasy(3,true)).toEqual(35);
 		});  
-	 QUnit.test("shouldBe", function(assert){
+	 it("shouldBe", function(){
 		Modele.setModel(
 			[
         "0000000",
@@ -240,10 +244,10 @@ QUnit.test("shouldBe", function(assert){
         "0211120",
         "1121220",
         ])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 10);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(10);
 	}); 
 		
-	 QUnit.test("shouldBe", function(assert){
+	 it("shouldBe", function(){
 		Modele.setModel([
 			"0000000",
 			"0000000",
@@ -253,12 +257,12 @@ QUnit.test("shouldBe", function(assert){
 			"0021212",
 			]
 		)
-		assert.ok(IA.p4BlockEasy(6,true) == 18);
+		expect(IA.p4BlockEasy(6,true)).toEqual(18);
 	}); 
 	
 		
 		
-	QUnit.test("shouldBe", function(assert){
+	it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"1120000",
@@ -268,9 +272,9 @@ QUnit.test("shouldBe", function(assert){
 			"1212102",
 			"1121201",
 		   ])
-		 	assert.ok(IA.p4BlockEasy(6,true) != 40);
+		 	expect(IA.p4BlockEasy(6,true)).not.toEqual(40);
 		}); 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"0121100",
@@ -280,9 +284,9 @@ QUnit.test("shouldBe", function(assert){
 			"0121201",
 			"1121202",
 			])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 20);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(20);
 		}); 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"0102000",
@@ -292,9 +296,9 @@ QUnit.test("shouldBe", function(assert){
 			"2122200",
 			"2111201",
 			])
-		 	assert.ok(IA.p4BlockEasy(3,true) != 18);
+		 	expect(IA.p4BlockEasy(3,true)).not.toEqual(18);
 		}); 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"0120200",
@@ -304,10 +308,10 @@ QUnit.test("shouldBe", function(assert){
 			"2212110",
 			"1121211",
 			])
-        	assert.ok(IA.p4BlockEasy(3,true) == 26);
+        	expect(IA.p4BlockEasy(3,true)).toEqual(26);
 		}); 
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
         [
         "0000000",
@@ -318,9 +322,9 @@ QUnit.test("shouldBe", function(assert){
         "0101200",
         ]
 		)
-		assert.ok(IA.p4BlockEasy(0,true) == 24);
+		expect(IA.p4BlockEasy(0,true)).toEqual(24);
 		}); 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0002000",
@@ -330,9 +334,9 @@ QUnit.test("shouldBe", function(assert){
 			"2122200",
 			"2111201",
 			])
-		 	assert.ok(IA.p4BlockEasy(2,true) != 18);
+		 	expect(IA.p4BlockEasy(2,true)).not.toEqual(18);
 		}); 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0000000",
@@ -342,10 +346,10 @@ QUnit.test("shouldBe", function(assert){
 			"0102200",
 			"2101220",
 			])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 33);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(33);
 		}); 
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0000000",
@@ -355,9 +359,9 @@ QUnit.test("shouldBe", function(assert){
 			"0102200",
 			"2101200",
 		   ])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 10);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(10);
 		}); 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0102000",
@@ -367,10 +371,10 @@ QUnit.test("shouldBe", function(assert){
 			"0101210",
 			"0201120",
 			])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 19);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(19);
 		}); 
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 					Modele.setModel(
 					[
         "0020120",
@@ -380,10 +384,10 @@ QUnit.test("shouldBe", function(assert){
         "0010122",
         "2021112",
            ])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 28);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(28);
 		}); 
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 					Modele.setModel(
 					[
 			        "0001000",
@@ -393,10 +397,10 @@ QUnit.test("shouldBe", function(assert){
 			        "0022010",
 			        "0021120",
              		])
-    	 			assert.ok(IA.p4BlockEasy(6,true) == 9);
+    	 			expect(IA.p4BlockEasy(6,true)).toEqual(9);
 		}); 
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 					Modele.setModel(
 					[
 			        "0000000",
@@ -406,11 +410,11 @@ QUnit.test("shouldBe", function(assert){
 			        "0002010",
 			        "0001020",
 			        ])
-		 	assert.ok(IA.p4BlockEasy(6,true) != 19);
+		 	expect(IA.p4BlockEasy(6,true)).not.toEqual(19);
 		 })
 
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 	        "0101122",
@@ -420,11 +424,11 @@ QUnit.test("shouldBe", function(assert){
 	        "2102211",
 	        "1221122",
 	        ])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 14);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(14);
 		});
 
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 		        "0101101",
@@ -435,10 +439,10 @@ QUnit.test("shouldBe", function(assert){
 		        "2221102",
 		        "1121221",
 		        ])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 16);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(16);
 		}); 
 
-			QUnit.test("shouldBe", function(assert){
+			it("shouldBe", function(){
 				Modele.setModel(
 				[
 		        "0022002",
@@ -448,9 +452,9 @@ QUnit.test("shouldBe", function(assert){
 		        "1212101",
 		        "1121221",
 		        ])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 0);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(0);
 		});  
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 		        "0001000",
@@ -460,9 +464,9 @@ QUnit.test("shouldBe", function(assert){
 		        "1212102",
 		        "1121222",
 		 ])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 9);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(9);
 		}); 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 				[
 		        "0000000",
@@ -472,10 +476,10 @@ QUnit.test("shouldBe", function(assert){
 		        "0001210",
 		        "0001222",
 		        ])
-		 	assert.ok(IA.p4BlockEasy(13,true) == 11);
+		 	expect(IA.p4BlockEasy(13,true)).toEqual(11);
 		}); 
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
         "0000000",
@@ -485,9 +489,9 @@ QUnit.test("shouldBe", function(assert){
         "0001210",
         "0001222",
      	 ])
-		 	assert.ok(IA.p4BlockEasy(11,true) == 10);
+		 	expect(IA.p4BlockEasy(11,true)).toEqual(10);
 		}); 
-        QUnit.test("shouldBe", function(assert){
+        it("shouldBe", function(){
 				Modele.setModel(
 				[
 		        "0000000",
@@ -497,10 +501,10 @@ QUnit.test("shouldBe", function(assert){
 		        "0212200",
 		        "1121200",
 		         ])
-		 	assert.ok(IA.p4BlockEasy(2,true) == 3);
+		 	expect(IA.p4BlockEasy(2,true)).toEqual(3);
 		}); 
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 		        "0001000",
@@ -510,10 +514,10 @@ QUnit.test("shouldBe", function(assert){
 		        "1212102",
 		        "1121222",
 		        ])
-		 	assert.ok(IA.p4BlockEasy(6,true) == 21);
+		 	expect(IA.p4BlockEasy(6,true)).toEqual(21);
 		}); 
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 		        "0000000",
@@ -523,10 +527,10 @@ QUnit.test("shouldBe", function(assert){
 		        "0012100",
 		        "0121102",
 		        ])
-		 	assert.ok(IA.p4BlockEasy(4,true) != 25);
+		 	expect(IA.p4BlockEasy(4,true)).not.toEqual(25);
 		}); 
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 		        "0000000",
@@ -536,10 +540,10 @@ QUnit.test("shouldBe", function(assert){
 		        "0012100",
 		        "0021102",
 		     	 ])
-			assert.ok(IA.p4BlockEasy(4,true) == 24);
+			expect(IA.p4BlockEasy(4,true)).toEqual(24);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 					Modele.setModel(
 					[
 			        "0010200",
@@ -549,10 +553,10 @@ QUnit.test("shouldBe", function(assert){
 			        "0012120",
 			        "0021112",
 			       ])
-			assert.ok(IA.p4BlockEasy(2,true) == 24);
+			expect(IA.p4BlockEasy(2,true)).toEqual(24);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 		        "0010200",
@@ -562,10 +566,10 @@ QUnit.test("shouldBe", function(assert){
 		        "0010120",
 		        "0021112",
 				])
-					assert.ok(IA.p4BlockEasy(2,true) == 34);
+					expect(IA.p4BlockEasy(2,true)).toEqual(34);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 					Modele.setModel(
 					[
 		        "0000000",
@@ -575,10 +579,10 @@ QUnit.test("shouldBe", function(assert){
 		        "0010000",
 		        "0021102",
 		      ])
-					assert.ok(IA.p4BlockEasy(2,true) == 32);
+					expect(IA.p4BlockEasy(2,true)).toEqual(32);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 					Modele.setModel(
 					[
 					"0000000",
@@ -588,10 +592,10 @@ QUnit.test("shouldBe", function(assert){
 					"0212200",
 					"1121200",
 					])
-					assert.ok(IA.p4BlockEasy(3,true) != 10);
+					expect(IA.p4BlockEasy(3,true)).not.toEqual(10);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel([
 				"0000000",
 				"0001000",
@@ -600,10 +604,10 @@ QUnit.test("shouldBe", function(assert){
 				"0202100",
 				"0101200",
 			])
-			assert.ok(IA.p4BlockEasy(5,true) == 15);
+			expect(IA.p4BlockEasy(5,true)).toEqual(15);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel([
 			"0000000",
 			"0210000",
@@ -612,10 +616,10 @@ QUnit.test("shouldBe", function(assert){
 			"0212120",
 			"1121210",
 			])
-			assert.ok(IA.p4BlockEasy(5,true) == 19);
+			expect(IA.p4BlockEasy(5,true)).toEqual(19);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel([
 			"0000000",
 			"0000000",
@@ -624,10 +628,10 @@ QUnit.test("shouldBe", function(assert){
 			"0012012",
 			"0121122",
 			])
-			assert.ok(IA.p4BlockEasy(5,true) == 17);
+			expect(IA.p4BlockEasy(5,true)).toEqual(17);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 				"0000000",
@@ -638,10 +642,10 @@ QUnit.test("shouldBe", function(assert){
 				"0021122",
 				]
 			)
-			assert.ok(IA.p4BlockEasy(4,true) == 26);
+			expect(IA.p4BlockEasy(4,true)).toEqual(26);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel([
 		"0000000",
 		"0000020",
@@ -650,10 +654,10 @@ QUnit.test("shouldBe", function(assert){
 		"0000010",
 		"0001122",
   ])
-	      	assert.ok(IA.p4BlockEasy(0,true) == 37);
+	      	expect(IA.p4BlockEasy(0,true)).toEqual(37);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel([
 		        "0000000",
 		        "0000000",
@@ -662,10 +666,10 @@ QUnit.test("shouldBe", function(assert){
 		        "0000000",
 		        "2001000",
 	        ])
-	      	assert.ok(IA.p4BlockEasy(0,true) == 37);
+	      	expect(IA.p4BlockEasy(0,true)).toEqual(37);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 		[
 		"0000000",
@@ -676,10 +680,10 @@ QUnit.test("shouldBe", function(assert){
 		"2101202",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(0,true) == 18);
+		expect(IA.p4BlockEasy(0,true)).toEqual(18);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 		[
 		"0000000",
@@ -690,10 +694,10 @@ QUnit.test("shouldBe", function(assert){
 		"0101202",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(3,true) == 24);
+		expect(IA.p4BlockEasy(3,true)).toEqual(24);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0002000",
@@ -704,10 +708,10 @@ QUnit.test("shouldBe", function(assert){
 				"2101202",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(0,true) == 34);
+				expect(IA.p4BlockEasy(0,true)).toEqual(34);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0000000",
@@ -718,10 +722,10 @@ QUnit.test("shouldBe", function(assert){
 				"2101202",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(5,true) == 10);
+				expect(IA.p4BlockEasy(5,true)).toEqual(10);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0002000",
@@ -732,10 +736,10 @@ QUnit.test("shouldBe", function(assert){
 				"2101202",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(5,true) == 34);
+				expect(IA.p4BlockEasy(5,true)).toEqual(34);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 					[
 					"1201100",
@@ -746,9 +750,9 @@ QUnit.test("shouldBe", function(assert){
 					"2101212",
 					]
 				)
-				assert.ok(IA.p4BlockEasy(5,true) == 19);
+				expect(IA.p4BlockEasy(5,true)).toEqual(19);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0002010",
@@ -759,9 +763,9 @@ QUnit.test("shouldBe", function(assert){
 				"0121120",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(1,true) == 16);
+				expect(IA.p4BlockEasy(1,true)).toEqual(16);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0002010",
@@ -772,10 +776,10 @@ QUnit.test("shouldBe", function(assert){
 				"0121120",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(1,true) == 11);
+				expect(IA.p4BlockEasy(1,true)).toEqual(11);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0002010",
@@ -786,9 +790,9 @@ QUnit.test("shouldBe", function(assert){
 				"0121120",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(2,true) == 29);
+				expect(IA.p4BlockEasy(2,true)).toEqual(29);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0002010",
@@ -799,9 +803,9 @@ QUnit.test("shouldBe", function(assert){
 				"0121120",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(1,true) == 18);
+				expect(IA.p4BlockEasy(1,true)).toEqual(18);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0002010",
@@ -812,10 +816,10 @@ QUnit.test("shouldBe", function(assert){
 				"0001120",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(2,true) == 36);
+				expect(IA.p4BlockEasy(2,true)).toEqual(36);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0000000",
@@ -826,10 +830,10 @@ QUnit.test("shouldBe", function(assert){
 				"0121002",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(2,true) == 35);
+				expect(IA.p4BlockEasy(2,true)).toEqual(35);
 		});
 
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 					[
 					"0000000",
@@ -840,10 +844,10 @@ QUnit.test("shouldBe", function(assert){
 					"0121002"
 					]
 				)
-				assert.ok(IA.p4BlockEasy(1,true) == 23);
+				expect(IA.p4BlockEasy(1,true)).toEqual(23);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 					[
 					"0000000",
@@ -854,9 +858,9 @@ QUnit.test("shouldBe", function(assert){
 					"1121220",
 					]
 				)
-				assert.ok(IA.p4BlockEasy(2,true) == 19);
+				expect(IA.p4BlockEasy(2,true)).toEqual(19);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 					[
 					"0102000",
@@ -867,10 +871,10 @@ QUnit.test("shouldBe", function(assert){
 					"0221120",
 					]
 				)
-				assert.ok(IA.p4BlockEasy(2,true) != 16);
+				expect(IA.p4BlockEasy(2,true)).not.toEqual(16);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 				Modele.setModel(
 				[
 				"0110000",
@@ -881,11 +885,11 @@ QUnit.test("shouldBe", function(assert){
 				"1121200",
 				]
 				)
-				assert.ok(IA.p4BlockEasy(2,true) == 18);
+				expect(IA.p4BlockEasy(2,true)).toEqual(18);
 		});
 			
 	
-	QUnit.test("shouldBe", function(assert){
+	it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"0000000",
@@ -896,9 +900,9 @@ QUnit.test("shouldBe", function(assert){
 			"0201000",
 			]
 		)
-		assert.ok(IA.p4BlockEasy(2,true) == 31);
+		expect(IA.p4BlockEasy(2,true)).toEqual(31);
 	});
-	QUnit.test("shouldBe", function(assert){
+	it("shouldBe", function(){
 		Modele.setModel(
 			[
 				"0102200",
@@ -909,10 +913,10 @@ QUnit.test("shouldBe", function(assert){
 				"0221120",
 			]
 		)
-		assert.ok(IA.p4BlockEasy(2,true) != 31);
+		expect(IA.p4BlockEasy(2,true)).not.toEqual(31);
 	});
 	
-	QUnit.test("shouldBe", function(assert){
+	it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"1102000",
@@ -923,9 +927,9 @@ QUnit.test("shouldBe", function(assert){
 			"2221102",
 			]
 			)
-	assert.ok(IA.p4BlockEasy(2,true) == 34);
+	expect(IA.p4BlockEasy(2,true)).toEqual(34);
 	});
-	QUnit.test("shouldBe", function(assert){
+	it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0000000",
@@ -936,10 +940,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121200",
 			]
 			)
-	assert.ok(IA.p4BlockEasy(2,true) != 22);
+	expect(IA.p4BlockEasy(2,true)).not.toEqual(22);
 	});
 		
-	QUnit.test("shouldBe", function(assert){
+	it("shouldBe", function(){
 		Modele.setModel(
 		[
 		"0000000",
@@ -950,11 +954,11 @@ QUnit.test("shouldBe", function(assert){
 		"1121202",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(2,true) == 34);
+		expect(IA.p4BlockEasy(2,true)).toEqual(34);
 		});
 		
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"0000000",
@@ -965,10 +969,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121200",
 			]
 		)
-		assert.ok(IA.p4BlockEasy(2,true) == 9);
+		expect(IA.p4BlockEasy(2,true)).toEqual(9);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"0002000",
@@ -979,9 +983,9 @@ QUnit.test("shouldBe", function(assert){
 			"0121120",
 			]
 		)
-		assert.ok(IA.p4BlockEasy(4,true) == 16);
+		expect(IA.p4BlockEasy(4,true)).toEqual(16);
 		});
-			QUnit.test("shouldBe", function(assert){
+			it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"0012000",
@@ -992,11 +996,11 @@ QUnit.test("shouldBe", function(assert){
 			"0121120",
 			]
 		)
-		assert.ok(IA.p4BlockEasy(4,true) == 11);
+		expect(IA.p4BlockEasy(4,true)).toEqual(11);
 		});
 		
 	
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 			[
 			"0001000",
@@ -1007,9 +1011,9 @@ QUnit.test("shouldBe", function(assert){
 			"1121221",
 			]
 		)
-		assert.ok(IA.p4BlockEasy(4,true) == 9);
+		expect(IA.p4BlockEasy(4,true)).toEqual(9);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(	
 			[
 			"0000000",
@@ -1020,9 +1024,9 @@ QUnit.test("shouldBe", function(assert){
 			"1121221",
 			]
 		)
-		assert.ok(IA.p4BlockEasy(4,true) == 25);
+		expect(IA.p4BlockEasy(4,true)).toEqual(25);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0002000",
@@ -1033,9 +1037,9 @@ QUnit.test("shouldBe", function(assert){
 			"0121120",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(4,true) == 32);
+			expect(IA.p4BlockEasy(4,true)).toEqual(32);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 				"0021010",
@@ -1046,10 +1050,10 @@ QUnit.test("shouldBe", function(assert){
 				"0021021",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(4,true) != 36);
+			expect(IA.p4BlockEasy(4,true)).not.toEqual(36);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0002000",
@@ -1060,9 +1064,9 @@ QUnit.test("shouldBe", function(assert){
 			"1121200",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(4,true) == 41);
+			expect(IA.p4BlockEasy(4,true)).toEqual(41);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0002000",
@@ -1073,11 +1077,11 @@ QUnit.test("shouldBe", function(assert){
 			"1121201",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(1,true) != 40);
+			expect(IA.p4BlockEasy(1,true)).not.toEqual(40);
 		});
 		
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0120002",
@@ -1088,10 +1092,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121201",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) != 25);
+			expect(IA.p4BlockEasy(2,true)).not.toEqual(25);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0020000",
@@ -1102,11 +1106,11 @@ QUnit.test("shouldBe", function(assert){
 			"1121200",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) != 40);
-			assert.ok(IA.p4BlockEasy(2,true) != 25);
+			expect(IA.p4BlockEasy(2,true)).not.toEqual(40);
+			expect(IA.p4BlockEasy(2,true)).not.toEqual(25);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0000000",
@@ -1117,10 +1121,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121200",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) == 11);
+			expect(IA.p4BlockEasy(2,true)).toEqual(11);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0200000",
@@ -1131,9 +1135,9 @@ QUnit.test("shouldBe", function(assert){
 			"1121200",
 			]	
 			)
-			assert.ok(IA.p4BlockEasy(2,true) == 40);
+			expect(IA.p4BlockEasy(2,true)).toEqual(40);
 		});
-	QUnit.test("shouldBe", function(assert){
+	it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0010000",
@@ -1144,9 +1148,9 @@ QUnit.test("shouldBe", function(assert){
 			"1121221",
 			]	
 			)
-			assert.ok(IA.p4BlockEasy(2,true) == 26);
+			expect(IA.p4BlockEasy(2,true)).toEqual(26);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0012000",
@@ -1157,9 +1161,9 @@ QUnit.test("shouldBe", function(assert){
 			"1121220",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) == 22);
+			expect(IA.p4BlockEasy(2,true)).toEqual(22);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0011220",
@@ -1170,9 +1174,9 @@ QUnit.test("shouldBe", function(assert){
 			"1121220",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) == 14);
+			expect(IA.p4BlockEasy(2,true)).toEqual(14);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0122100",
@@ -1183,10 +1187,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121122",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) == 13);
+			expect(IA.p4BlockEasy(2,true)).toEqual(13);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"2201000",
@@ -1197,10 +1201,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121002",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) != 39);
+			expect(IA.p4BlockEasy(2,true)).not.toEqual(39);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0100000",
@@ -1211,10 +1215,10 @@ QUnit.test("shouldBe", function(assert){
 			"0121002",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) == 34);
+			expect(IA.p4BlockEasy(2,true)).toEqual(34);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0122000",
@@ -1225,10 +1229,10 @@ QUnit.test("shouldBe", function(assert){
 			"0121102",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(2,true) != 20);
+			expect(IA.p4BlockEasy(2,true)).not.toEqual(20);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0000000",
@@ -1239,10 +1243,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121220",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(6,true) == 31);
+			expect(IA.p4BlockEasy(6,true)).toEqual(31);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"1120200",
@@ -1253,10 +1257,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121211",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(4,true) == 34);
+			expect(IA.p4BlockEasy(4,true)).toEqual(34);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 				"0211200",
@@ -1267,9 +1271,9 @@ QUnit.test("shouldBe", function(assert){
 				"1121201",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(6,true) == 40);
+			expect(IA.p4BlockEasy(6,true)).toEqual(40);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0000000",
@@ -1280,9 +1284,9 @@ QUnit.test("shouldBe", function(assert){
 			"1121222",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(6,true) == 11);
+			expect(IA.p4BlockEasy(6,true)).toEqual(11);
 		});
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 		Modele.setModel(
 		[
 		"0000000",
@@ -1293,10 +1297,10 @@ QUnit.test("shouldBe", function(assert){
 		"0121220",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(6,true) != 30);
+		expect(IA.p4BlockEasy(6,true)).not.toEqual(30);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 			[
 			"0000200",
@@ -1307,10 +1311,10 @@ QUnit.test("shouldBe", function(assert){
 			"1121212",
 			]
 			)
-			assert.ok(IA.p4BlockEasy(6,true) != 34);
+			expect(IA.p4BlockEasy(6,true)).not.toEqual(34);
 		});
 		
-		QUnit.test("shouldBe", function(assert){
+		it("shouldBe", function(){
 			Modele.setModel(
 	
 				[
@@ -1322,11 +1326,11 @@ QUnit.test("shouldBe", function(assert){
 				"1121211",
 				]
 			)
-			assert.ok(IA.p4BlockEasy(6,true) == 13);
+			expect(IA.p4BlockEasy(6,true)).toEqual(13);
 		});
 		
 		
-		QUnit.test("shouldBe2", function(assert){
+		it("shouldBe2", function(){
 		Modele.setModel(
 		[
 		"0120000",
@@ -1337,10 +1341,10 @@ QUnit.test("shouldBe", function(assert){
 		"1121202",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(2,true) != 40);
+		expect(IA.p4BlockEasy(2,true)).not.toEqual(40);
 		});
 		
-		QUnit.test("shouldBe2", function(assert){
+		it("shouldBe2", function(){
 		Modele.setModel(
 		[
 		"0000000",
@@ -1351,10 +1355,10 @@ QUnit.test("shouldBe", function(assert){
 		"1121200",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(4,true) == 16);
+		expect(IA.p4BlockEasy(4,true)).toEqual(16);
 		});
 		
-		QUnit.test("shouldBe40", function(assert){
+		it("shouldBe40", function(){
 		Modele.setModel(
 		[
 		"0200000",
@@ -1365,13 +1369,13 @@ QUnit.test("shouldBe", function(assert){
 		"1121200",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(1,true) == 40);
+		expect(IA.p4BlockEasy(1,true)).toEqual(40);
 		});
 		
 	
  
 		
-		QUnit.test("shouldBe2", function(assert){
+		it("shouldBe2", function(){
 		Modele.setModel(
 		[
 		"0202000",
@@ -1382,11 +1386,11 @@ QUnit.test("shouldBe", function(assert){
 		"1121200",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(4,true) == 2);
+		expect(IA.p4BlockEasy(4,true)).toEqual(2);
 		});
 		
 		
-		QUnit.test("shouldBe14", function(assert){
+		it("shouldBe14", function(){
 		Modele.setModel(
 		[
 		"0022122",
@@ -1397,10 +1401,10 @@ QUnit.test("shouldBe", function(assert){
 		"2121211",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(6,true) == 14);
+		expect(IA.p4BlockEasy(6,true)).toEqual(14);
 		});
 		
-		QUnit.test("shouldBe14", function(assert){
+		it("shouldBe14", function(){
 		Modele.setModel(
 		[
 		"0022122",
@@ -1411,10 +1415,10 @@ QUnit.test("shouldBe", function(assert){
 		"2121211",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(6,true) == 14);
+		expect(IA.p4BlockEasy(6,true)).toEqual(14);
 		});
 		
-		QUnit.test("shouldBe14", function(assert){
+		it("shouldBe14", function(){
 		Modele.setModel(
 		[
 		"0000000",
@@ -1425,12 +1429,12 @@ QUnit.test("shouldBe", function(assert){
 		"1121200",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(39,true) == 28);
+		expect(IA.p4BlockEasy(39,true)).toEqual(28);
 		});
 		
 		
 		
-		QUnit.test("shouldBe16", function(assert){
+		it("shouldBe16", function(){
 		Modele.setModel(
 		[
 		"0000000",
@@ -1441,11 +1445,11 @@ QUnit.test("shouldBe", function(assert){
 		"1121200",
 		]
 		)
-		assert.ok(IA.p4BlockEasy(3,true) == 16);
+		expect(IA.p4BlockEasy(3,true)).toEqual(16);
 		});
 
 
-		QUnit.test("shouldBe25", function(assert){
+		it("shouldBe25", function(){
 		Modele.setModel(
 		[
 		"0002000",
@@ -1455,10 +1459,10 @@ QUnit.test("shouldBe", function(assert){
 		"0012220",
 		"1121120",
 		])
-		assert.ok(IA.p4BlockEasy(5,true) == 25);
+		expect(IA.p4BlockEasy(5,true)).toEqual(25);
 		});
 		
-		QUnit.test("PlayAt22", function(assert){
+		it("PlayAt22", function(){
 		Modele.setModel(
 		[
         "0020211",
@@ -1468,10 +1472,10 @@ QUnit.test("shouldBe", function(assert){
         "0210121",
         "2121211",
         ])
-		assert.ok(IA.p4BlockEasy(3,true) == 28);
+		expect(IA.p4BlockEasy(3,true)).toEqual(28);
 		});
 		
-		QUnit.test("PlayAt40", function(assert){
+		it("PlayAt40", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1481,11 +1485,11 @@ QUnit.test("shouldBe", function(assert){
         "0210000",
         "1121200",
         ])
-		assert.ok(IA.p4BlockEasy(3,true) == 32);
+		expect(IA.p4BlockEasy(3,true)).toEqual(32);
 		});
 		
 		
-		QUnit.test("PlayAt26", function(assert){
+		it("PlayAt26", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1495,11 +1499,11 @@ QUnit.test("shouldBe", function(assert){
         "0010120",
         "0021211",
         ])
-		assert.ok(IA.p4BlockEasy(3,true) == 16);
+		expect(IA.p4BlockEasy(3,true)).toEqual(16);
 		});
 		
 	
-		QUnit.test("PlayAt26", function(assert){
+		it("PlayAt26", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1509,10 +1513,10 @@ QUnit.test("shouldBe", function(assert){
         "0012021",
         "1021022",
         ])		
-		assert.ok(IA.p4BlockEasy(1,true) == 26);
+		expect(IA.p4BlockEasy(1,true)).toEqual(26);
 		
 		});
-		QUnit.test("PlayAt27", function(assert){
+		it("PlayAt27", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1522,10 +1526,10 @@ QUnit.test("shouldBe", function(assert){
         "0012001",
         "0021002",
         ])	
-		assert.ok(IA.p4BlockEasy(1,true) == 27);
+		expect(IA.p4BlockEasy(1,true)).toEqual(27);
 		});
 		
-		QUnit.test("PlayAt21", function(assert){
+		it("PlayAt21", function(){
 		Modele.setModel(
 		[
         "0011001",
@@ -1535,10 +1539,10 @@ QUnit.test("shouldBe", function(assert){
         "1212101",
         "1121222",
       ])	
-		assert.ok(IA.p4BlockEasy(1,true) == 21);
+		expect(IA.p4BlockEasy(1,true)).toEqual(21);
 		});
 		
-		QUnit.test("notPlayAt25", function(assert){
+		it("notPlayAt25", function(){
 		Modele.setModel(
 		[
         "0011001",
@@ -1548,10 +1552,10 @@ QUnit.test("shouldBe", function(assert){
         "0012101",
         "1021222",
        ])	
-		assert.ok(IA.p4BlockEasy(16,true) == 36);
+		expect(IA.p4BlockEasy(16,true)).toEqual(36);
 		});
 		
-		QUnit.test("notPlayAt22", function(assert){
+		it("notPlayAt22", function(){
 		Modele.setModel(
 		[
         "0010210",
@@ -1561,10 +1565,10 @@ QUnit.test("shouldBe", function(assert){
         "2210122",
         "1121221",
 	])	
-		assert.ok(IA.p4BlockEasy(15,true) != 22);
+		expect(IA.p4BlockEasy(15,true)).not.toEqual(22);
 		});
 		
-		QUnit.test("jouepasen10", function(assert){
+		it("jouepasen10", function(){
 		Modele.setModel(
 		[
         "0021120",
@@ -1574,10 +1578,10 @@ QUnit.test("shouldBe", function(assert){
         "0211120",
         "1121222",
     ])	
-		assert.ok(IA.p4BlockEasy(0,true) == 15);
+		expect(IA.p4BlockEasy(0,true)).toEqual(15);
 		});
 		
-		QUnit.test("joueEn24", function(assert){
+		it("joueEn24", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1587,7 +1591,7 @@ QUnit.test("shouldBe", function(assert){
         "0210120",
         "1121220",
     ])	
-		assert.ok(IA.p4BlockEasy(0,true) != 26);
+		expect(IA.p4BlockEasy(0,true)).not.toEqual(26);
 		});
 		
 
@@ -1655,7 +1659,7 @@ QUnit.test("shouldBe", function(assert){
         "0001020",
         ],3,"#994");
 		
-		QUnit.test("shouldBeAt19", function(assert){
+		it("shouldBeAt19", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1665,10 +1669,10 @@ QUnit.test("shouldBe", function(assert){
         "0210210",
         "1121211",
       ])	
-		assert.ok(IA.p4BlockEasy(33,true) == 19);
+		expect(IA.p4BlockEasy(33,true)).toEqual(19);
 		});
 		
-		QUnit.test("shouldNotBeAt37", function(assert){
+		it("shouldNotBeAt37", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1678,12 +1682,12 @@ QUnit.test("shouldBe", function(assert){
         "0210210",
         "1121211",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) != 37);
+		expect(IA.p4BlockEasy(33,true)).not.toEqual(37);
 		});
 		
 
 	
-		QUnit.test("shouldBeAt19", function(assert){
+		it("shouldBeAt19", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1693,9 +1697,9 @@ QUnit.test("shouldBe", function(assert){
         "0212221",
         "1121211",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) == 19);
+		expect(IA.p4BlockEasy(33,true)).toEqual(19);
 		});
-		QUnit.test("shouldBeAt27", function(assert){
+		it("shouldBeAt27", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1705,10 +1709,10 @@ QUnit.test("shouldBe", function(assert){
         "0212221",
         "1121211",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) == 27);
+		expect(IA.p4BlockEasy(33,true)).toEqual(27);
 		});
 		
-		QUnit.test("shouldBeAt26", function(assert){
+		it("shouldBeAt26", function(){
 		Modele.setModel(
 		[
         "1000000",
@@ -1718,10 +1722,10 @@ QUnit.test("shouldBe", function(assert){
         "1202112",
         "2101222",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) == 26);
+		expect(IA.p4BlockEasy(33,true)).toEqual(26);
 		});
 		
-		QUnit.test("shouldBeAt26", function(assert){
+		it("shouldBeAt26", function(){
 		Modele.setModel(
 		[
         "1000000",
@@ -1731,10 +1735,10 @@ QUnit.test("shouldBe", function(assert){
         "1202112",
         "2101222",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) == 26);
+		expect(IA.p4BlockEasy(33,true)).toEqual(26);
 		});
 		
-		QUnit.test("shouldNotBeAt33", function(assert){
+		it("shouldNotBeAt33", function(){
 		Modele.setModel(
 		[
         "1000000",
@@ -1744,10 +1748,10 @@ QUnit.test("shouldBe", function(assert){
         "1202102",
         "2101222",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) != 26);
+		expect(IA.p4BlockEasy(33,true)).not.toEqual(26);
 		});
 		
-		QUnit.test("shouldBeAt32", function(assert){
+		it("shouldBeAt32", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1757,11 +1761,11 @@ QUnit.test("shouldBe", function(assert){
         "1202000",
         "2101202"
 		])	
-		assert.ok(IA.p4BlockEasy(33,true) == 32);
+		expect(IA.p4BlockEasy(33,true)).toEqual(32);
 		});
 		
 		
-		QUnit.test("shouldnNotBeAt26", function(assert){
+		it("shouldnNotBeAt26", function(){
 		Modele.setModel(
 		[
         "0002000",
@@ -1771,10 +1775,10 @@ QUnit.test("shouldBe", function(assert){
         "2202122",
         "2101212",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) != 26);
+		expect(IA.p4BlockEasy(33,true)).not.toEqual(26);
 		});
 		
-		QUnit.test("shouldnNotBeAt41", function(assert){
+		it("shouldnNotBeAt41", function(){
 		Modele.setModel(
 		[
         "0012000",
@@ -1784,11 +1788,11 @@ QUnit.test("shouldBe", function(assert){
         "0212020",
         "0121120",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) != 41);
+		expect(IA.p4BlockEasy(33,true)).not.toEqual(41);
 		});
 		
 		
-		QUnit.test("shouldnNotBeAt40", function(assert){
+		it("shouldnNotBeAt40", function(){
 		Modele.setModel(
 		[
 		"0010000",
@@ -1798,10 +1802,10 @@ QUnit.test("shouldBe", function(assert){
 		"0212100",
 		"1121201"
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) != 40);
+		expect(IA.p4BlockEasy(33,true)).not.toEqual(40);
 		});
 		
-		QUnit.test("shouldBeAt32", function(assert){
+		it("shouldBeAt32", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1811,10 +1815,10 @@ QUnit.test("shouldBe", function(assert){
         "0210000",
         "1121201",
        ])	
-		assert.ok(IA.p4BlockEasy(33,true) == 32);
+		expect(IA.p4BlockEasy(33,true)).toEqual(32);
 		});
 		
-		QUnit.test("shouldBeAt32bis", function(assert){
+		it("shouldBeAt32bis", function(){
 		Modele.setModel(
 		[
         "0002000",
@@ -1824,10 +1828,10 @@ QUnit.test("shouldBe", function(assert){
         "0212000",
         "0121120",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) == 32);
+		expect(IA.p4BlockEasy(33,true)).toEqual(32);
 		});
 		
-		QUnit.test("shouldBeAt33", function(assert){
+		it("shouldBeAt33", function(){
 		Modele.setModel(
 		[
         "0221000",
@@ -1837,10 +1841,10 @@ QUnit.test("shouldBe", function(assert){
         "0121002",
         "0121211",
         ])	
-		assert.ok(IA.p4BlockEasy(33,true) == 33);
+		expect(IA.p4BlockEasy(33,true)).toEqual(33);
 		});
 		
-		QUnit.test("shouldBeAt18", function(assert){
+		it("shouldBeAt18", function(){
 		Modele.setModel(
 		[
         "0100000",
@@ -1850,10 +1854,10 @@ QUnit.test("shouldBe", function(assert){
         "0210100",
         "1121200",
         ])	
-		assert.ok(IA.p4BlockEasy(18,true) == 18);
+		expect(IA.p4BlockEasy(18,true)).toEqual(18);
 		});
 		
-		QUnit.test("shouldBeAt11", function(assert){
+		it("shouldBeAt11", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1863,10 +1867,10 @@ QUnit.test("shouldBe", function(assert){
         "2212120",
         "1121221",
         ])	
-		assert.ok(IA.p4BlockEasy(18,true) == 11);
+		expect(IA.p4BlockEasy(18,true)).toEqual(11);
 		});
 		
-		QUnit.test("shouldBeAt31", function(assert){
+		it("shouldBeAt31", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1876,12 +1880,12 @@ QUnit.test("shouldBe", function(assert){
         "0210100",
         "1121200",
         ])	
-		assert.ok(IA.p4BlockEasy(9,true) != 31);
+		expect(IA.p4BlockEasy(9,true)).not.toEqual(31);
 		});
 		
 		  
 		
-		QUnit.test("shouldBe3", function(assert){
+		it("shouldBe3", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1891,9 +1895,9 @@ QUnit.test("shouldBe", function(assert){
         "0102200",
         "2101200",
         ])	
-		assert.ok(IA.p4BlockEasy(0,true) == 3);
+		expect(IA.p4BlockEasy(0,true)).toEqual(3);
 		});
-		QUnit.test("19shouldNotToBeForbiden", function(assert){
+		it("19shouldNotToBeForbiden", function(){
 		Modele.setModel(
         [
         "0201100",
@@ -1903,11 +1907,11 @@ QUnit.test("shouldBe", function(assert){
         "0102210",
         "2101221",
        ])	
-		assert.ok(IA.p4BlockEasy(26,true) == 19);
+		expect(IA.p4BlockEasy(26,true)).toEqual(19);
 		});
 		
 	
-		QUnit.test("shoulBeAt3", function(assert){
+		it("shoulBeAt3", function(){
 		Modele.setModel(
         [
         "0100000",
@@ -1917,10 +1921,10 @@ QUnit.test("shouldBe", function(assert){
         "0212100",
         "1121200",
         ])	
-		assert.ok(IA.p4BlockEasy(8,true) == 3);
+		expect(IA.p4BlockEasy(8,true)).toEqual(3);
 		});
 		
-		QUnit.test("shouldBe21", function(assert){
+		it("shouldBe21", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1930,10 +1934,10 @@ QUnit.test("shouldBe", function(assert){
         "1222100",
         "1121200",
           ])	
-		assert.ok(IA.p4BlockEasy(24,true) == 24);
+		expect(IA.p4BlockEasy(24,true)).toEqual(24);
 		});
 		
-		QUnit.test("shouldBe12", function(assert){
+		it("shouldBe12", function(){
 		Modele.setModel(
 		[
         "0002000",
@@ -1943,10 +1947,10 @@ QUnit.test("shouldBe", function(assert){
         "0212120",
         "1121120",
           ])
-		assert.ok(IA.p4BlockEasy(22,true) == 12);
+		expect(IA.p4BlockEasy(22,true)).toEqual(12);
 		});
 		
-	    QUnit.test("bloquerTroisEnLigneEn41", function(assert){
+	    it("bloquerTroisEnLigneEn41", function(){
 			Modele.setGrille(
 			[0,0,0,0,0,0,0,
 			0,0,0,0,0,0,0,
@@ -1955,11 +1959,11 @@ QUnit.test("shouldBe", function(assert){
 			0,0,0,0,0,0,0,
 			0,0,1,2,2,2,0,
 			]);
-			assert.ok(IA.p4BlockEasy(0,true) == 41);
+			expect(IA.p4BlockEasy(0,true)).toEqual(41);
 		});
 		
 
-		QUnit.test("shouldNotBe2428", function(assert){
+		it("shouldNotBe2428", function(){
 		Modele.setModel(
 		[
         "0100000",
@@ -1969,12 +1973,12 @@ QUnit.test("shouldBe", function(assert){
         "0212220",
         "1121210",
           ])
-		assert.ok(IA.p4BlockEasy(0,true) != 28);
-		assert.ok(IA.p4BlockEasy(3,true) != 24);
+		expect(IA.p4BlockEasy(0,true)).not.toEqual(28);
+		expect(IA.p4BlockEasy(3,true)).not.toEqual(24);
 		});
 		
 		
-		QUnit.test("jouerEn32", function(assert){
+		it("jouerEn32", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1984,11 +1988,11 @@ QUnit.test("shouldBe", function(assert){
         "0012000",
         "0121200",
           ])
-		assert.ok(IA.p4BlockEasy(0,true) == 32);
+		expect(IA.p4BlockEasy(0,true)).toEqual(32);
 		});
 		
 		
-		QUnit.test("jouePasEn21", function(assert){
+		it("jouePasEn21", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -1998,11 +2002,11 @@ QUnit.test("shouldBe", function(assert){
         "1210200",
         "1121220",
           ])
-		assert.ok(IA.p4BlockEasy(0,true) != 21);
+		expect(IA.p4BlockEasy(0,true)).not.toEqual(21);
 		});
 		////
 		
-		QUnit.test("doubleDiagoEn26", function(assert){
+		it("doubleDiagoEn26", function(){
 		Modele.setModel(
 		[
         "0011000",
@@ -2012,10 +2016,10 @@ QUnit.test("shouldBe", function(assert){
         "2212121",
         "1121222",
           ])
-		assert.ok(IA.p4BlockEasy(0,true) == 26);
+		expect(IA.p4BlockEasy(0,true)).toEqual(26);
 		});
 		
-		QUnit.test("doubleDiagoEn26bis", function(assert){
+		it("doubleDiagoEn26bis", function(){
 		Modele.setModel(
 	    [
         "0012000",
@@ -2025,14 +2029,14 @@ QUnit.test("shouldBe", function(assert){
         "1212120",
         "2111210",
           ])
-		assert.ok(IA.p4BlockEasy(0,true) == 26);
+		expect(IA.p4BlockEasy(0,true)).toEqual(26);
 		});
 				
 		
 		
 
 		
-		QUnit.test("gameOver", function(assert){
+		it("gameOver", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -2042,15 +2046,15 @@ QUnit.test("shouldBe", function(assert){
         "4218188",
         "2421888",
        ])
-		assert.ok(Modele.isGameFinish(14)).toBe(true);
-		assert.ok(Modele.isGameFinish(27)).not.toBe(true);
-		assert.ok(Modele.isGameFinish(20)).toBe(true);
-		assert.ok(Modele.isGameFinish(29)).toBe(true);
-		assert.ok(Modele.isGameFinish(29)).toBe(true);
+		expect(Modele.isGameFinish(14)).toBe(true);
+		expect(Modele.isGameFinish(27)).not.toBe(true);
+		expect(Modele.isGameFinish(20)).toBe(true);
+		expect(Modele.isGameFinish(29)).toBe(true);
+		expect(Modele.isGameFinish(29)).toBe(true);
 
 		});
 			
-		QUnit.test("shouldnotBe40", function(assert){
+		it("shouldnotBe40", function(){
 		Modele.setModel(
 		[
         "1201100",
@@ -2060,10 +2064,10 @@ QUnit.test("shouldBe", function(assert){
         "2102200",
         "2121202",
          ])
-		assert.ok(IA.p4BlockEasy(40) != 40);
+		expect(IA.p4BlockEasy(40)).not.toEqual(40);
 		});
 		
-		QUnit.test("winIn2", function(assert){
+		it("winIn2", function(){
 		Modele.setModel(
 		[
         "0000000",
@@ -2073,10 +2077,10 @@ QUnit.test("shouldBe", function(assert){
         "0202100",
         "1121200",
           ])
-		assert.ok(IA.p4BlockEasy(17,true)%7 == 18%7);
+		expect(IA.p4BlockEasy(17,true)%7).toEqual(18%7);
 		});
 		
-		QUnit.test("shoudNotSucideAt32", function(assert){
+		it("shoudNotSucideAt32", function(){
 		Modele.setModel(
 		[
         "0022020",
@@ -2086,11 +2090,11 @@ QUnit.test("shouldBe", function(assert){
         "0012021",
         "0121122",
      ])
-		assert.ok(IA.p4BlockEasy(17,true) != 32);
+		expect(IA.p4BlockEasy(17,true)).not.toEqual(32);
 		});
 		
 
-		QUnit.test("shouldDontHelpAt18", function(assert){
+		it("shouldDontHelpAt18", function(){
 		Modele.setModel(
 		[
         "0011010",
@@ -2100,10 +2104,10 @@ QUnit.test("shouldBe", function(assert){
         "2012210",
         "1021120",
          ])
-		assert.ok(IA.p4BlockEasy(4,true) != 18);
+		expect(IA.p4BlockEasy(4,true)).not.toEqual(18);
 		});
 		
-		QUnit.test("shouldBeAt17", function(assert){
+		it("shouldBeAt17", function(){
 		Modele.setModel(
 		[
         "0000006",
@@ -2113,9 +2117,9 @@ QUnit.test("shouldBe", function(assert){
         "2202100",
         "2101200",
         ])
-		assert.ok(IA.p4BlockEasy(4,true) == 17);
+		expect(IA.p4BlockEasy(4,true)).toEqual(17);
 		});
-		QUnit.test("shouldNotBeAt18", function(assert){
+		it("shouldNotBeAt18", function(){
 		Modele.setModel(
 		[
         "0022000",
@@ -2125,7 +2129,12 @@ QUnit.test("shouldBe", function(assert){
         "2212220",
         "1121210",
         ])
-		assert.ok(IA.p4BlockEasy(4,true) != 18);
+		expect(IA.p4BlockEasy(4,true)).not.toEqual(18);
 		});
 		
+		
+
+
+		
+});
 		

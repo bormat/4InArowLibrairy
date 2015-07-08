@@ -6,32 +6,37 @@
     var prototype = Disc.prototype, constructor = Disc;
     function Disc(pos){
       this.pos = pos;
-      this.color = Modele.grille[this.pos];
+      this.initColorNumber = Modele.grille[this.pos];
     }
     prototype.goToDir = function(dir){
-      var tab;
-      tab = [this.pos];
+      var newPos, pos;
+      newPos = this.pos;
       for (;;) {
-        tab[tab.length] = tab[tab.length - 1] + dir;
-        if (Modele.grille[tab[tab.length - 1]] != this.color) {
-          break;
-        }
-        if (this.distance(tab[tab.length - 2], tab[tab.length - 1]) > 1) {
+        pos = newPos;
+        newPos = pos + dir;
+        if (!(this.distance(pos, newPos) <= 1 && Modele.grille[newPos] == this.initColorNumber)) {
           break;
         }
       }
-      return tab[tab.length - 2];
+      return pos;
     };
-    prototype.distance = function(d1, d2){
-      return Math.abs(d1 % 7 - d2 % 7 || ~(d1 / 7) - ~(d2 / 7));
+    prototype.distance = function(disc1, disc2, xOrY){
+      var x$, y$, distY, z$, ref$, ref1$;
+      x$ = Math;
+      y$ = x$.floor;
+      distY = y$(disc2 / 7) - y$(disc1 / 7);
+      z$ = x$.abs;
+      return (ref$ = z$(disc2 % 7 - disc1 % 7)) > (ref1$ = z$(distY)) ? ref$ : ref1$;
+      return x$;
     };
+    prototype.getLoopIf4InARow = function(dir){};
     return Disc;
   }());
   window.Modele = Modele = {
     isGameFinish: function(){
       var isGameFinish;
       return this.isGameFinish = function(pos){
-        var f;
+        var disc;
         if (pos < 0) {
           return false;
         }
@@ -39,17 +44,17 @@
           if (typeof pos === 'boolean') {
             isGameFinish = pos;
           } else {
-            Modele.grille[-1] = null;
-            f = bind$(new Disc(pos), 'goToDir');
+            disc = new Disc(pos);
             [1, 6, 7, 8].some(function(dir){
-              var res$, i$, to$, ridx$;
+              var x$, res$, i$, to$, i, isGameFinish;
+              x$ = bind$(disc, 'goToDir');
               res$ = [];
-              for (i$ = f(-dir), to$ = f(dir); dir < 0 ? i$ >= to$ : i$ <= to$; i$ += dir) {
-                ridx$ = i$;
-                res$.push(ridx$);
+              for (i$ = x$(-dir), to$ = x$(dir); dir < 0 ? i$ >= to$ : i$ <= to$; i$ += dir) {
+                i = i$;
+                res$.push(i);
               }
-              Modele.winInfo = res$;
-              return isGameFinish = Modele.winInfo.length > 2;
+              Modele.winningPos = res$;
+              return isGameFinish = Modele.winningPos.length > 3;
             });
           }
         }
@@ -68,11 +73,10 @@
       return -1;
     },
     mettrePion: mettrePion = function(position, test){
-      var ref$;
       Modele.grille[position] = Modele.getPlayer();
       if (!test) {
         Modele.nextPlayer();
-        (ref$ = Modele.backup)[ref$.length] = position;
+        Modele.backup.push(position);
       }
       Modele.isGameFinish(position);
       if (test) {
@@ -112,17 +116,18 @@
       return Modele.setGrille(Modele.modelToArray(tab));
     },
     modelToArray: function(tab){
-      var tab2, lengthLine;
+      var tab2, lengthLine, i, o;
       tab2 = [];
       lengthLine = tab[0].length;
-      tab.forEach(function(tabI){
-        var i$, to$, o, results$ = [];
-        for (i$ = 0, to$ = lengthLine; i$ < to$; ++i$) {
-          o = i$;
-          results$.push(tab2.push(tabI[o]));
+      i = 0;
+      while (i < tab.length) {
+        o = 0;
+        while (o < lengthLine) {
+          tab2.push(tab[i][o]);
+          o++;
         }
-        return results$;
-      });
+        i++;
+      }
       return tab2;
     },
     loadTab: function(tab, emplacement){

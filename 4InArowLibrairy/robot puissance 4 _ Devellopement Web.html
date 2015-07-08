@@ -132,7 +132,7 @@
 
 
 <div id="app"   ng-class ="{'fullscreen': fen.disp != 'play', stopselect:1}" ng-app="myApp" ng-controller="myCtrl">
-<div style="width:100%;height:100%;" ng-click="fen.disp = 'play';popup.deplier(true)"></div>
+<div style="width:100%;height:100%;" ng-click="fen.disp = 'play';popup.deplier()"></div>
 <div  ng-click="$event.stopPropagation()" id="applet"  tabindex="0"  ng-class ="{ 'fullscreen': fen.disp != 'play'}" autofocus ng-keydown="keydown($event)">
 
 <input id="undo" 	ng-show="fen.disp != 'play'" ng-click="undo()"			value="annuler" type="button" />

@@ -63,11 +63,15 @@
         9: 'rgb(0,255,221)'
       };
       o.darkWinningPos = function(dark){
-        var colorNumber, i$, ref$, len$, i, results$ = [];
+        var ref$, dir, pion1, pion2, colorNumber, results$ = [];
+        ref$ = Modele.winInfo, dir = ref$.dir, pion1 = ref$.pion1, pion2 = ref$.pion2;
         colorNumber = this.Modele.grille[pion1] * (dark * 4) || 1;
-        for (i$ = 0, len$ = (ref$ = Modele.winInfo).length; i$ < len$; ++i$) {
-          i = ref$[i$];
-          results$.push(this.$grille[i] = colorNumber);
+        for (;;) {
+          this.$grille[pion1] = colorNumber;
+          pion1 += dir;
+          if (pion1 > pion2) {
+            break;
+          }
         }
         return results$;
       };
@@ -149,7 +153,7 @@
               this.$messageF();
             } else {
               if (Modele.grille.indexOf(0) < 0) {
-                this.$messageF('égalité');
+                this.messageF('égalité');
                 this.threadIsntUsed = true;
               }
             }
