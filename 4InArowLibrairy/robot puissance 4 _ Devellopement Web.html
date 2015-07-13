@@ -109,6 +109,7 @@
 <link href='css/index_1.css' 	rel='stylesheet' type='text/css'>
 
 
+<script src="js/jquery.js"></script>
 <script src="js/jqueryCookie.js"></script>
 <script src="js/myRules.js"></script>
 <script src="js/keyboard.js"></script>
@@ -132,7 +133,10 @@
 
 
 <div id="app"   ng-class ="{'fullscreen': fen.disp != 'play', stopselect:1}" ng-app="myApp" ng-controller="myCtrl">
-<div style="width:100%;height:100%;" ng-click="fen.disp = 'play';popup.deplier(true)"></div>
+<span  ng-show="replayIcon()"> 1 </span>
+<span  ng-hide="replayIcon()"> 2 </span>
+
+<div style="width:100%;height:100%;" ng-click="fullscreen(false)"></div>
 <div  ng-click="$event.stopPropagation()" id="applet"  tabindex="0"  ng-class ="{ 'fullscreen': fen.disp != 'play'}" autofocus ng-keydown="keydown($event)">
 
 <input id="undo" 	ng-show="fen.disp != 'play'" ng-click="undo()"			value="annuler" type="button" />
@@ -145,8 +149,8 @@
 		<br ng-if="$index%7==6" />
 	</span>
 	<!-- rejouer -->
-	<span  ng-show="Modele.isGameFinish()&& !whyItIsFinish || fen.disp == 'message'" class ="replay" ng-click="init()"  ></span>
-	<span  ng-show="Modele.isGameFinish() && !whyItIsFinish || fen.disp == 'message'" ng-click="init();" id="white">
+	<span  ng-show="replayIcon()" class ="replay" ng-click="init()"  ></span>
+	<span  ng-show="replayIcon()" ng-click="init();" id="white">
 		<p id="rejouer" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)">rejouer</p>
 		<img  src="file:///C:/Users/matheoBB/Documents/reload.png"/>
 	</span>
