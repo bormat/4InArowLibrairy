@@ -117,10 +117,6 @@
       this.init();
       return this.setPlayer(this.backup.length % 2 ? 1 : 2);
     },
-    saveGame: function(){
-      $.cookie('grille', JSON.stringify(this.backup));
-      return $.cookie('boolSmart', JSON.stringify(IA.boolSmart));
-    },
     init: function(){
       this.grille = repeatArray$([0], 42);
       return this.isGameFinish(false);

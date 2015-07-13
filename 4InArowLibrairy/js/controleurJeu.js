@@ -3,9 +3,11 @@
   window.app = angular.module('myApp', ['uiSlider']);
   window.app.controller('myCtrl', function($scope, $timeout){
     return (function(){
-      var model, DeplierClass, this$ = this;
+      var x$, model, ia, DeplierClass, this$ = this;
       window.o = this;
-      model = borto.modele;
+      x$ = window.borto;
+      model = x$.modele;
+      ia = x$.ia;
       DeplierClass = (function(){
         DeplierClass.displayName = 'DeplierClass';
         var prototype = DeplierClass.prototype, constructor = DeplierClass;
@@ -28,6 +30,8 @@
         };
         return DeplierClass;
       }());
+      this.ia = ia;
+      this.model = model;
       this.threadIsntUsed = true;
       this.stackPosition = [];
       this.isBotActive = true;
@@ -35,14 +39,11 @@
       this.whyItIsFinish = false;
       this.animation2 = true;
       this.popup = new DeplierClass;
-      this.IA = IA;
-      this.model = model;
       this.fen = {
         disp: 'play',
         stayOpen: true
       };
       this.mode = 'normal';
-      this.cost = 100;
       this.grille = [];
       this.message = 'ça va commencer';
       this.endGameMessage = true;
@@ -88,11 +89,7 @@
           this.darkWinningPos(true);
         }
         if (model.isHumanTurn()) {
-          if (IA.boolSmart.indexOf('off') + 1) {
-            this.message = 'bravo vous avez gagné    augmentez un peu le niveau';
-          } else {
-            this.message = 'bravo vous avez gagné   envoyer votre historique par commentaire pour améliorer le jeu';
-          }
+          this.message = 'bravo vous avez gagné' + (in$(false, IA.boolSmart) ? 'augmentez un peu le niveau' : 'envoyer votre historique par commentaire pour améliorer le jeu');
         } else {
           this.message = 'Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents';
         }
@@ -171,7 +168,6 @@
                 return this$.loopThreatAnimation();
               };
               if (this$.isBotActive) {
-                IA.dif = this$.cost;
                 posBot = IA.p4BlockEasy(pos, false);
                 return this$.anim(posBot, 1, callbackBotIfActiveElsePlayer1);
               } else {
@@ -241,6 +237,7 @@
         this.popup.deplier(false);
         this.threadIsntUsed = true;
         model.playAgain();
+        IA.boolSmart.length = 0;
         this.endGameMessage = false;
         this.fen.disp = 'option';
         return this.$grille = model.grille.slice();
@@ -274,10 +271,12 @@
       this.restore = function(){
         var backup;
         backup = $.cookie('backup');
-        return this.loadStory(backup);
+        this.loadStory(backup);
+        return IA.boolSmart = $.cookie('boolSmart');
       };
       this.save = function(){
-        return $.cookie('backup', model.backup);
+        $.cookie('backup', model.backup);
+        return $.cookie('boolSmart', JSON.stringify(IA.boolSmart));
       };
       this.graphique = function(colorNumber){
         return this.tabColor[colorNumber];
@@ -393,4 +392,9 @@
       return this.$grille.safeClone(model.grille);
     }.call($scope));
   });
+  function in$(x, xs){
+    var i = -1, l = xs.length >>> 0;
+    while (++i < l) if (x === xs[i]) return true;
+    return false;
+  }
 }).call(this);

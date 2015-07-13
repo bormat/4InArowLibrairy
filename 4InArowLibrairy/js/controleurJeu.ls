@@ -1,14 +1,19 @@
 window.app = angular.module 'myApp', ['uiSlider']
 window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 	window.o = @
-	model = borto.modele
+	window.borto
+		model = ..modele
+		ia = ..ia
+
 	class DeplierClass
 		-> @0 = it
 		deplier : (it = !@0) ->  @0 = it
 		getClass : -> if @0 then 'optionVisible' else 'optionInvisible'
 		isDisp : -> @0
 
-	@ <<<		
+	@ <<<
+		ia: ia
+		model: model	
 		threadIsntUsed : true
 		stackPosition : []
 		isBotActive: true
@@ -16,13 +21,10 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 		whyItIsFinish: false
 		animation2: true
 		popup: new DeplierClass
-		IA: IA
-		model: model
 		fen: 
 			disp: 'play'
 			stayOpen: true
 		mode: 'normal'
-		cost: 100
 		grille: []
 		message: 'ça va commencer'
 		endGameMessage: true
@@ -59,10 +61,11 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			else 
 				@darkWinningPos true
 			if model.isHumanTurn!
-				if (IA.boolSmart.indexOf 'off') + 1
-					@message = 'bravo vous avez gagné    augmentez un peu le niveau'
+				@message = 'bravo vous avez gagné' +
+				if off in IA.boolSmart 
+					'augmentez un peu le niveau'
 				else
-					@message = 'bravo vous avez gagné   envoyer votre historique par commentaire pour améliorer le jeu'
+					'envoyer votre historique par commentaire pour améliorer le jeu'
 			else
 				@message = 'Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents'
 			@popup.deplier true
@@ -91,40 +94,39 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			pos = void
 			if model.isGameFinish!
 				@stackPosition.length = 0
-				@threadIsntUsed := true
+				@threadIsntUsed := on
 				return 
 			if @stackPosition.length
 				if @threadIsntUsed
-					@threadIsntUsed := false
+					@threadIsntUsed := off
 					@time := if @animation2 then 50 else 0
 					pos = model.play @stackPosition.shift!
-					@threadIsntUsed := true if pos < 0
+					@threadIsntUsed := on if pos < 0
 					if model.isGameFinish!
 						@$messageF!
 					else
 						if (model.grille.indexOf 0) < 0
 							@messageF('égalité')
-							@threadIsntUsed := true
+							@threadIsntUsed := on
 					@anim pos, (model.getPlayer 1),  ~>
 						callbackBotIfActiveElsePlayer1 = ~>
-							@threadIsntUsed := true
+							@threadIsntUsed := on
 							@$messageF! if model.isGameFinish!
 							@loopThreatAnimation!
 
 						if @isBotActive
-							IA.dif = @cost
-							posBot = IA.p4BlockEasy pos, false
+							posBot = IA.p4BlockEasy pos, off
 							@anim posBot, 1, callbackBotIfActiveElsePlayer1
 						else
 							callbackBotIfActiveElsePlayer1!
 		clickOnBlack: ->
 			@fen.disp = 'play'
-			@popup.deplier false
+			@popup.deplier off
 		reverse: (aString) -> ! = o[aString]
 		alert: (text) -> alert text
 		optionDisp: -> if @optionsWidth is optionsWidthInit then 'block' else 'none'
 		loadStory: (grille2) ->
-			return false if not grille2
+			return off if not grille2
 			model.restore grille2
 			if not (model.backup.length % 2) then @undo!
 			@$grille.safeClone model.grille
@@ -142,13 +144,14 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 		goodGrille: -> if @modeCreator then @grilleCreator else @$grille
 		displayOption: ->
 			@popup.deplier! if not (@endGameMessage && @popup.isDisp!)
-			@endGameMessage = false
+			@endGameMessage = off
 			@fen.disp = 'option'
 		init: ->
-			@popup.deplier false
-			@threadIsntUsed := true
+			@popup.deplier off
+			@threadIsntUsed := on
 			model.playAgain!
-			@endGameMessage = false
+			IA.boolSmart.length = 0
+			@endGameMessage = off
 			@fen.disp = 'option'
 			@$grille := model.grille.slice!
 		deplier: (columClass, bool) ->
@@ -157,7 +160,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			else
 				o[columClass] = if o[columClass] is 'optionVisible' then 'optionInvisible' else 'optionVisible'
 		previewF: ($index) ->
-			return false if @modeCreator
+			return off if @modeCreator
 			if @preview isnt void then @endPreview @preview
 			pos = $index %% 7
 			if not isNaN pos
@@ -167,18 +170,21 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 		restore: ->
 			backup = $.cookie 'backup'
 			@loadStory backup
-		save: -> $.cookie 'backup', model.backup
+			IA.boolSmart = $.cookie('boolSmart')
+		save: -> 
+			$.cookie 'backup', model.backup
+			$.cookie('boolSmart', JSON.stringify(IA.boolSmart))
 		graphique: (colorNumber) -> @tabColor[colorNumber]
 		undo: ->
 			if model.isGameFinish!
-				@darkWinningPos false
-				model.isGameFinish false
-			@threadIsntUsed := true
+				@darkWinningPos off
+				model.isGameFinish off
+			@threadIsntUsed := on
 			pos = model.undo!
 			@$grille[pos] = 0
 			IA.boolSmart.pop!
 			if @isBotActive && model.getPlayer! is 1 then if model.backup.length % 2 is 0 then @undo! else model.setPlayer 2
-			@popup.deplier false
+			@popup.deplier off
 		fallenPion: (pos) ~>
 			@grilleCreator[pos] = @$keyCode - 96 if @modeCreator
 			if not model.isGameFinish! then @stackPosition.push pos else @stackPosition := []
@@ -217,19 +223,19 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			return off_ if @popup.isDisp!
 			width = element.P4.width!
 			pos = if event.touches.length >= 1 then event.touches.0.pageX else -1
-			return false if pos < 0 
+			return off if pos < 0 
 			pos = (pos - element.P4.offset!.left) * 7 / width
 			pos = Math.floor pos
 			@previewF pos
 			event.preventDefault!
 		touchEnd: (element) ->
-			return true if @popup.isDisp!
+			return on if @popup.isDisp!
 			event.preventDefault!
 			@fallenPion @preview
 		reverseIsBotActive: ->
 			@reverse 'isBotActive'
 			@undo! if model.backup.length % 2 is 0
 	@init!
-	@popup.deplier true
+	@popup.deplier on
 	@fen.disp = 'message'
 	@$grille.safeClone model.grille

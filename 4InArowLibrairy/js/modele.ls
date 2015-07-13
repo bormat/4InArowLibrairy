@@ -64,9 +64,6 @@ borto.modele =
 	restore: (@backup) ->
 		@init!
 		@setPlayer(if @backup.length % 2 then 1 else 2)
-	saveGame: ->
-		$.cookie('grille', JSON.stringify(@backup))
-		$.cookie('boolSmart', JSON.stringify(IA.boolSmart))
 	init: ->
 		@grille = [0] * 42
 		@isGameFinish false

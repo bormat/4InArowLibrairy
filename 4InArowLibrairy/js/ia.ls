@@ -334,11 +334,10 @@ window.IA = IA = window.borto.ia =
     bottomToTop: (pos, length) ~> pos + ~length * 7
     p4BlockEasy: (posJoueur, retournerPosition) ~>
         IA.posJoueur = posJoueur
-        findAt = void
-        botSmart = void
+        var findAt, botSmart
         return false if borto.modele.isGameFinish!
         if (parseInt IA.dif) / 100 + Math.random! > 1
-            IA.boolSmart.push 'true'
+            IA.boolSmart[*] = on
             borto.modele.setPlayer 1
             IA.fillsWinningPos!
             IA.pos = -1
@@ -362,7 +361,7 @@ window.IA = IA = window.borto.ia =
                 func!
                 ~IA.pos)
         else
-            IA.boolSmart.push 'false'
+            IA.boolSmart[*] = off
             IA.pos = Math.floor Math.random! * 7
         borto.modele.play IA.pos, retournerPosition
     winningRedPairs: []

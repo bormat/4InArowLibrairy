@@ -503,15 +503,13 @@
       return pos + ~length * 7;
     },
     p4BlockEasy: function(posJoueur, retournerPosition){
-      var findAt, botSmart;
+      var findAt, botSmart, ref$;
       IA.posJoueur = posJoueur;
-      findAt = void 8;
-      botSmart = void 8;
       if (borto.modele.isGameFinish()) {
         return false;
       }
       if (parseInt(IA.dif) / 100 + Math.random() > 1) {
-        IA.boolSmart.push('true');
+        (ref$ = IA.boolSmart)[ref$.length] = true;
         borto.modele.setPlayer(1);
         IA.fillsWinningPos();
         IA.pos = -1;
@@ -544,7 +542,7 @@
           return ~IA.pos;
         });
       } else {
-        IA.boolSmart.push('false');
+        (ref$ = IA.boolSmart)[ref$.length] = false;
         IA.pos = Math.floor(Math.random() * 7);
       }
       return borto.modele.play(IA.pos, retournerPosition);
