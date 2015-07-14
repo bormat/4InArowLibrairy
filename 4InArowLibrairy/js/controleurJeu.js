@@ -3,7 +3,7 @@
   window.app = angular.module('myApp', ['uiSlider']);
   window.app.controller('myCtrl', function($scope, $timeout){
     return (function(){
-      var x$, model, ia, DeplierClass, this$ = this;
+      var x$, model, ia, DeplierClass, $, this$ = this;
       window.o = this;
       x$ = window.borto;
       model = x$.modele;
@@ -30,6 +30,7 @@
         };
         return DeplierClass;
       }());
+      $ = jquery;
       this.ia = ia;
       this.model = model;
       this.threadIsntUsed = true;
@@ -64,6 +65,7 @@
         8: 'rgb(140,0,0)',
         9: 'rgb(0,255,221)'
       };
+      this.pathI = './images/';
       this.replayIcon = function(){
         return Modele.isGameFinish() && !this.whyItIsFinish || this.fen.disp === 'message';
       };
@@ -227,9 +229,10 @@
         }
       };
       this.displayOption = function(){
-        if (!(this.endGameMessage && this.popup.isDisp())) {
+        if (!(this.endGameMessage && this.popup.isDisp() || this.replayIcon())) {
           this.popup.deplier();
         }
+        this.whyItIsFinish = true;
         this.endGameMessage = false;
         return this.fen.disp = 'option';
       };
@@ -241,13 +244,6 @@
         this.endGameMessage = false;
         this.fen.disp = 'option';
         return this.$grille = model.grille.slice();
-      };
-      this.deplier = function(columClass, bool){
-        if (bool !== void 8) {
-          return o[columClass] = !bool ? 'optionInvisible' : 'optionVisible';
-        } else {
-          return o[columClass] = o[columClass] === 'optionVisible' ? 'optionInvisible' : 'optionVisible';
-        }
       };
       this.previewF = function($index){
         var pos, ref$;
@@ -269,14 +265,12 @@
         }
       };
       this.restore = function(){
-        var backup;
-        backup = $.cookie('backup');
-        this.loadStory(backup);
-        return IA.boolSmart = $.cookie('boolSmart');
+        this.loadStory(borto.cookies.getTab('backup'));
+        return IA.boolSmart = borto.cookies.getTab('boolSmart');
       };
       this.save = function(){
-        $.cookie('backup', model.backup);
-        return $.cookie('boolSmart', JSON.stringify(IA.boolSmart));
+        borto.cookies.set('backup', model.backup);
+        return borto.cookies.set('boolSmart', IA.boolSmart);
       };
       this.graphique = function(colorNumber){
         return this.tabColor[colorNumber];
@@ -284,8 +278,14 @@
       this.undo = function(){
         var pos;
         if (model.isGameFinish()) {
+          this.fen.disp = '';
+          this.popup.deplier(false);
           this.darkWinningPos(false);
-          model.isGameFinish(false);
+          if (this.whyItIsFinish) {
+            this.whyItIsFinish = false;
+          } else {
+            model.isGameFinish(false);
+          }
         }
         this.threadIsntUsed = true;
         pos = model.undo();
@@ -301,13 +301,19 @@
         return this.popup.deplier(false);
       };
       this.fallenPion = function(pos){
+        var ref$;
+        if (model.isGameFinish()) {
+          this$.whyItIsFinish = false;
+          this$.popup.deplier(true);
+          this$.fen.disp = "";
+        }
         if (this$.modeCreator) {
           this$.grilleCreator[pos] = this$.$keyCode - 96;
         }
-        if (!model.isGameFinish()) {
-          this$.stackPosition.push(pos);
+        if (model.isGameFinish()) {
+          this$.stackPosition.lenght = 0;
         } else {
-          this$.stackPosition = [];
+          (ref$ = this$.stackPosition)[ref$.length] = pos;
         }
         return this$.loopThreatAnimation();
       };
@@ -351,40 +357,38 @@
       this.scrollInPx = function(lg){
         return $(window).scrollTop($(window).scrollTop() - lg);
       };
-      this.touchStart = function(element){
+      this.reverseIsBotActive = function(){
+        this.reverse('isBotActive');
+        if (model.backup.length % 2 === 0) {
+          return this.undo();
+        }
+      };
+      this.touchStart = function(){
         this.displayScroll = 'block';
         this.lastY = event.touches[0].clientY;
-        return this.touchMove(element);
+        return this.touchMove();
       };
-      this.touchMove = function(element){
-        var pos, width;
+      this.touchMove = function(){
+        var pos;
         if (this.popup.isDisp()) {
-          return off_;
+          return false;
         }
-        width = element.P4.width();
         pos = event.touches.length >= 1
           ? event.touches[0].pageX
           : -1;
         if (pos < 0) {
           return false;
         }
-        pos = (pos - element.P4.offset().left) * 7 / width;
-        pos = Math.floor(pos);
+        pos = ~~((pos - $('#p4').offset().left) * 7 / $('#p4').width());
         this.previewF(pos);
         return event.preventDefault();
       };
-      this.touchEnd = function(element){
+      this.touchEnd = function(){
         if (this.popup.isDisp()) {
           return true;
         }
         event.preventDefault();
         return this.fallenPion(this.preview);
-      };
-      this.reverseIsBotActive = function(){
-        this.reverse('isBotActive');
-        if (model.backup.length % 2 === 0) {
-          return this.undo();
-        }
       };
       this.init();
       this.popup.deplier(true);

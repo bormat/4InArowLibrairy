@@ -63,7 +63,10 @@ borto.modele =
 		pos
 	restore: (@backup) ->
 		@init!
-		@setPlayer(if @backup.length % 2 then 1 else 2)
+		c = [1,2]
+		@backup.forEach (elm,i) ~> @grille[elm] = c[i%2]
+		@undo if @backup.length
+		@setPlayer(1)
 	init: ->
 		@grille = [0] * 42
 		@isGameFinish false

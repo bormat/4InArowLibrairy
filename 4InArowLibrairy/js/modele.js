@@ -113,9 +113,17 @@
       return pos;
     },
     restore: function(backup){
+      var c, this$ = this;
       this.backup = backup;
       this.init();
-      return this.setPlayer(this.backup.length % 2 ? 1 : 2);
+      c = [1, 2];
+      this.backup.forEach(function(elm, i){
+        return this$.grille[elm] = c[i % 2];
+      });
+      if (this.backup.length) {
+        this.undo;
+      }
+      return this.setPlayer(1);
     },
     init: function(){
       this.grille = repeatArray$([0], 42);
