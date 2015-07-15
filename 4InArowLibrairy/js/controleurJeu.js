@@ -66,6 +66,36 @@
         9: 'rgb(0,255,221)'
       };
       this.pathI = './images/';
+      this.preview = {
+        pos: 0,
+        add: function(it){
+          var i$, i, ref$;
+          for (i$ = 0; i$ <= 6; ++i$) {
+            i = i$;
+            if (!model.grille[(((this.pos += it) % (ref$ = 7) + ref$) % ref$)]) {
+              return this.on();
+            }
+          }
+        },
+        off: function(){
+          var i$, i, results$ = [];
+          for (i$ = 0; i$ <= 6; ++i$) {
+            i = i$;
+            results$.push(o.grille[i] = model.grille[i]);
+          }
+          return results$;
+        },
+        set: function(it){
+          this.off();
+          this.pos = it;
+          return this.on();
+        },
+        on: function(){
+          var ref$;
+          this.off();
+          return o.grille[(((this.pos) % (ref$ = 7) + ref$) % ref$)] = 2;
+        }
+      };
       this.replayIcon = function(){
         return Modele.isGameFinish() && !this.whyItIsFinish || this.fen.disp === 'message';
       };
@@ -74,7 +104,7 @@
         f = model.winInfo;
         colorNumber = model.grille[f[0]] * (dark ? 4 : 1);
         return f.forEach(function(pos){
-          return this$.$grille[pos] = colorNumber;
+          return this$.grille[pos] = colorNumber;
         });
       };
       this.fullscreen = function(){
@@ -104,12 +134,12 @@
           var clickOnUndo;
           clickOnUndo = void 8;
           if (i > 6) {
-            this$.$grille[i - 7] = 0;
+            this$.grille[i - 7] = 0;
           }
-          this$.$grille[i] = player;
+          this$.grille[i] = player;
           clickOnUndo = +model.grille[pos] === 0;
           if (clickOnUndo) {
-            this$.$grille[i] = 0;
+            this$.grille[i] = 0;
             if (callback) {
               callback();
             }
@@ -128,12 +158,7 @@
           return anim2(pos % 7);
         });
         if (!(pos % 7)) {
-          return this.$grille[0] = model.grille[0];
-        }
-      };
-      this.endPreview = function($index){
-        if (model.grille[$index % 7] === 0) {
-          return this.$grille[$index % 7] = 0;
+          return this.grille[0] = model.grille[0];
         }
       };
       this.loopThreatAnimation = function(){
@@ -150,7 +175,7 @@
             this.time = this.animation2 ? 50 : 0;
             pos = model.play(this.stackPosition.shift());
             if (pos < 0) {
-              this.threadIsntUsed = true;
+              return this.threadIsntUsed = true;
             }
             if (model.isGameFinish()) {
               this.$messageF();
@@ -204,19 +229,18 @@
         if (!(model.backup.length % 2)) {
           this.undo();
         }
-        this.$grille.safeClone(model.grille);
+        this.grille.safeClone(model.grille);
         return model.setPlayer(2);
       };
       this.load = function(grille2){
         model.setModel(grille2);
-        return this.$grille.safeClone(model.grille);
+        return this.grille.safeClone(model.grille);
       };
       this.modeleCreator = function(){
         var ref$;
         if (!this.modeCreator) {
           this.$keyCode = 5 + 96;
-          this.endPreview(this.preview);
-          this.grilleCreator = this.$grille.slice();
+          this.grilleCreator = this.grille.slice();
           this.grilleCreator[(ref$ = model.backup)[ref$.length - 1]] = 0;
         }
         return this.reverse('modeCreator');
@@ -225,7 +249,7 @@
         if (this.modeCreator) {
           return this.grilleCreator;
         } else {
-          return this.$grille;
+          return this.grille;
         }
       };
       this.displayOption = function(){
@@ -243,26 +267,7 @@
         IA.boolSmart.length = 0;
         this.endGameMessage = false;
         this.fen.disp = 'option';
-        return this.$grille = model.grille.slice();
-      };
-      this.previewF = function($index){
-        var pos, ref$;
-        if (this.modeCreator) {
-          return false;
-        }
-        if (this.preview !== void 8) {
-          this.endPreview(this.preview);
-        }
-        pos = ((($index) % (ref$ = 7) + ref$) % ref$);
-        if (!isNaN(pos)) {
-          if (this.$grille[pos] === 0) {
-            this.$grille[pos] = model.getPlayer(0);
-          }
-          this.preview = pos;
-        }
-        if ($index % 7 !== 0) {
-          return this.$grille[0] = model.grille[0];
-        }
+        return this.grille = model.grille.slice();
       };
       this.restore = function(){
         this.loadStory(borto.cookies.getTab('backup'));
@@ -289,7 +294,7 @@
         }
         this.threadIsntUsed = true;
         pos = model.undo();
-        this.$grille[pos] = 0;
+        this.grille[pos] = 0;
         IA.boolSmart.pop();
         if (this.isBotActive && model.getPlayer() === 1) {
           if (model.backup.length % 2 === 0) {
@@ -302,23 +307,20 @@
       };
       this.fallenPion = function(pos){
         var ref$;
-        if (model.isGameFinish()) {
+        if (this$.modeCreator) {
+          return this$.grilleCreator[pos] = this$.$keyCode - 96;
+        } else if (model.isGameFinish()) {
           this$.whyItIsFinish = false;
           this$.popup.deplier(true);
           this$.fen.disp = "";
-        }
-        if (this$.modeCreator) {
-          this$.grilleCreator[pos] = this$.$keyCode - 96;
-        }
-        if (model.isGameFinish()) {
-          this$.stackPosition.lenght = 0;
+          return this$.stackPosition.lenght = 0;
         } else {
           (ref$ = this$.stackPosition)[ref$.length] = pos;
+          return this$.loopThreatAnimation();
         }
-        return this$.loopThreatAnimation();
       };
       this.keydown = function(event){
-        var ref$, inc, nextPos, i;
+        var ref$;
         event.preventDefault();
         this.$keyCode = event.which;
         if (this.modeCreator) {
@@ -333,25 +335,15 @@
           return;
         }
         if (this.$keyCode === 37 || this.$keyCode === 39) {
-          inc = this.$keyCode - 38;
-          nextPos = this.preview;
-          i = 7;
-          for (;;) {
-            nextPos = mod(nextPos + inc, 7);
-            if (!(+model.grille[nextPos] && i--)) {
-              break;
-            }
-          }
-          this.previewF(nextPos);
+          this.preview.add(this.$keyCode - 38);
           return;
         }
         if (this.$keyCode === 38) {
           this.undo();
-          this.previewF();
           return;
         }
         if (this.$keyCode === 40) {
-          return this.previewF(this.fallenPion(this.preview));
+          return this.fallenPion(this.preview.pos);
         }
       };
       this.scrollInPx = function(lg){
@@ -380,7 +372,6 @@
           return false;
         }
         pos = ~~((pos - $('#p4').offset().left) * 7 / $('#p4').width());
-        this.previewF(pos);
         return event.preventDefault();
       };
       this.touchEnd = function(){
@@ -388,12 +379,12 @@
           return true;
         }
         event.preventDefault();
-        return this.fallenPion(this.preview);
+        return this.fallenPion(this.getPrev);
       };
       this.init();
       this.popup.deplier(true);
       this.fen.disp = 'message';
-      return this.$grille.safeClone(model.grille);
+      return this.grille.safeClone(model.grille);
     }.call($scope));
   });
   function in$(x, xs){

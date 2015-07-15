@@ -32,6 +32,7 @@ borto.modele =
 			if @grille[pos + 7] !~= 0 && @grille[pos] == 0
 				@mettrePion pos, test
 				return pos
+		@isGameFinish(off)
 		-1
 	mettrePion: (position, test) ->
 		@grille[position] = @getPlayer!

@@ -9,6 +9,59 @@
     dif: 100,
     boolSmart: [],
     found: false,
+    winningRedPairs: [],
+    winningYellowOdds: [],
+    winningRedOdds: [],
+    winningYellowPairs: [],
+    forbids: [],
+    inadvisables: [],
+    pos: -1,
+    modelId: 0,
+    p4BlockEasy: function(posJoueur, retournerPosition){
+      var findAt, botSmart, ref$;
+      IA.posJoueur = posJoueur;
+      if (borto.modele.isGameFinish()) {
+        return false;
+      }
+      if (parseInt(IA.dif) / 100 + Math.random() > 1) {
+        (ref$ = IA.boolSmart)[ref$.length] = true;
+        borto.modele.setPlayer(1);
+        IA.fillsWinningPos();
+        IA.pos = -1;
+        IA.modelId = 0;
+        findAt = {
+          modelID: 0
+        };
+        IA.posModBot = 48;
+        [
+          function(){
+            return IA.gagnerDirect();
+          }, function(){
+            return IA.bloquerDirect();
+          }, function(){
+            return IA.findForbiddenAndNotRecommandedPosition();
+          }, function(){
+            return IA.winInTwoTurn(1);
+          }, function(){
+            IA.modelId = 0;
+            return IA.modeledetectorAndAnswer(perfectModele);
+          }, function(){
+            IA.modelId = 0;
+            IA.posModBot = 48;
+            return IA.playWithModel();
+          }, function(){
+            return IA.playWithoutModel(posJoueur);
+          }
+        ].some(function(func, i){
+          func();
+          return ~IA.pos;
+        });
+      } else {
+        (ref$ = IA.boolSmart)[ref$.length] = false;
+        IA.pos = Math.floor(Math.random() * 7);
+      }
+      return borto.modele.play(IA.pos, retournerPosition);
+    },
     playWithModel: function(){
       var j, pos2, rec;
       j = 0;
@@ -501,60 +554,7 @@
     },
     bottomToTop: function(pos, length){
       return pos + ~length * 7;
-    },
-    p4BlockEasy: function(posJoueur, retournerPosition){
-      var findAt, botSmart, ref$;
-      IA.posJoueur = posJoueur;
-      if (borto.modele.isGameFinish()) {
-        return false;
-      }
-      if (parseInt(IA.dif) / 100 + Math.random() > 1) {
-        (ref$ = IA.boolSmart)[ref$.length] = true;
-        borto.modele.setPlayer(1);
-        IA.fillsWinningPos();
-        IA.pos = -1;
-        IA.modelId = 0;
-        findAt = {
-          modelID: 0
-        };
-        IA.posModBot = 48;
-        [
-          function(){
-            return IA.gagnerDirect();
-          }, function(){
-            return IA.bloquerDirect();
-          }, function(){
-            return IA.findForbiddenAndNotRecommandedPosition();
-          }, function(){
-            return IA.winInTwoTurn(1);
-          }, function(){
-            IA.modelId = 0;
-            return IA.modeledetectorAndAnswer(perfectModele);
-          }, function(){
-            IA.modelId = 0;
-            IA.posModBot = 48;
-            return IA.playWithModel();
-          }, function(){
-            return IA.playWithoutModel(posJoueur);
-          }
-        ].some(function(func, i){
-          func();
-          return ~IA.pos;
-        });
-      } else {
-        (ref$ = IA.boolSmart)[ref$.length] = false;
-        IA.pos = Math.floor(Math.random() * 7);
-      }
-      return borto.modele.play(IA.pos, retournerPosition);
-    },
-    winningRedPairs: [],
-    winningYellowOdds: [],
-    winningRedOdds: [],
-    winningYellowPairs: [],
-    forbids: [],
-    inadvisables: [],
-    pos: -1,
-    modelId: 0
+    }
   };
   IA.comparerCaractere = function(a, car, impaire){
     car = +car;

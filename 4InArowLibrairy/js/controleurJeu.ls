@@ -10,7 +10,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 		deplier : (it = !@0) ->  @0 = it
 		getClass : -> if @0 then 'optionVisible' else 'optionInvisible'
 		isDisp : -> @0
-	$ = jquery
+	$ = jquery 
 	@ <<<
 		ia: ia
 		model: model	
@@ -45,11 +45,24 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			8: 'rgb(140,0,0)'
 			9: 'rgb(0,255,221)'
 		pathI: './images/'
+		preview: 
+			pos : 0				
+			add: ->	[return @on! if not model.grille[(@pos+= it)%%7] for i to 6]
+			off: ->
+				for i to 6 then o.grille[i] = model.grille[i]
+			set: -> 
+				@off!
+				@pos =  it
+				@on!
+			on: -> 
+				@off!
+				o.grille[@pos%%7] = 2
+				
 		replayIcon: -> Modele.isGameFinish() && !@whyItIsFinish || @fen.disp == 'message'
 		darkWinningPos : (dark) ->
 			f = model.winInfo
 			colorNumber = model.grille[f.0] * (if dark then 4 else 1)
-			f.forEach (pos) ~> @$grille[pos] = colorNumber
+			f.forEach (pos) ~> @grille[pos] = colorNumber
 		fullscreen: ->
 			@fen.disp = 'play';
 			@popup.deplier(true);
@@ -75,11 +88,11 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 		anim : (pos, player, callback) ->
 			anim2 = (i) ~>
 				clickOnUndo = void
-				@$grille[i - 7] = 0 if i > 6
-				@$grille[i] = player
+				@grille[i - 7] = 0 if i > 6
+				@grille[i] = player
 				clickOnUndo = +model.grille[pos] is 0
 				if clickOnUndo
-					@$grille[i] = 0
+					@grille[i] = 0
 					callback! if callback
 					@$digest!
 					return 
@@ -88,10 +101,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 				else if callback
 					$timeout callback, @time + 1 
 			$timeout (-> anim2 pos % 7)
-			@$grille.0 = model.grille.0 if not (pos % 7)
-		endPreview : ($index) ->  
-			if model.grille[$index % 7] is 0
-				@$grille[$index % 7] = 0		
+			@grille.0 = model.grille.0 if not (pos % 7)	
 		loopThreatAnimation : ->
 			pos = void
 			if model.isGameFinish!
@@ -100,10 +110,10 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 				return 
 			if @stackPosition.length
 				if @threadIsntUsed
-					@threadIsntUsed := off
-					@time := if @animation2 then 50 else 0
+					@threadIsntUsed = off
+					@time = if @animation2 then 50 else 0
 					pos = model.play @stackPosition.shift!
-					@threadIsntUsed := on if pos < 0
+					return @threadIsntUsed = on if pos < 0
 					if model.isGameFinish!
 						@$messageF!
 					else
@@ -131,19 +141,19 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			return off if not grille2
 			model.restore grille2
 			if not (model.backup.length % 2) then @undo!
-			@$grille.safeClone model.grille
+			@grille.safeClone model.grille
 			model.setPlayer 2
 		load: (grille2) ->
 			model.setModel grille2
-			@$grille.safeClone model.grille
+			@grille.safeClone model.grille
 		modeleCreator: ->
 			if not @modeCreator
 				@$keyCode = 5 + 96
-				@endPreview @preview
-				@grilleCreator = @$grille.slice!
+				#@endPreview @getPrev!
+				@grilleCreator = @grille.slice!
 				@grilleCreator[model.backup[*-1]] = 0
 			@reverse 'modeCreator'
-		goodGrille: -> if @modeCreator then @grilleCreator else @$grille
+		goodGrille: -> if @modeCreator then @grilleCreator else @grille
 		displayOption: ->
 			@popup.deplier! if not (@endGameMessage && @popup.isDisp! or @replayIcon! )
 			@whyItIsFinish = on
@@ -156,15 +166,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			IA.boolSmart.length = 0
 			@endGameMessage = off
 			@fen.disp = 'option'
-			@$grille := model.grille.slice!
-		previewF: ($index) ->
-			return off if @modeCreator
-			if @preview isnt void then @endPreview @preview
-			pos = $index %% 7
-			if not isNaN pos
-				@$grille[pos] = model.getPlayer 0 if @$grille[pos] is 0
-				@preview := pos
-			if $index % 7 isnt 0 then @$grille.0 = model.grille.0
+			@grille := model.grille.slice!
 		restore: ->
 			@loadStory borto.cookies.getTab(\backup)
 			IA.boolSmart = borto.cookies.getTab(\boolSmart)
@@ -184,7 +186,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 				#@fen.disp = "option"
 			@threadIsntUsed := on
 			pos = model.undo!
-			@$grille[pos] = 0
+			@grille[pos] = 0
 			IA.boolSmart.pop!
 			if @isBotActive && model.getPlayer! is 1 
 				if model.backup.length % 2 is 0 
@@ -193,16 +195,16 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 					model.setPlayer 2
 			@popup.deplier off
 		fallenPion: (pos) ~>
-			if model.isGameFinish()
+			if @modeCreator
+				@grilleCreator[pos] = @$keyCode - 96
+			else if model.isGameFinish()
 				@whyItIsFinish = off 
 				@popup.deplier(on)
-				@fen.disp = "" 
-			@grilleCreator[pos] = @$keyCode - 96 if @modeCreator
-			if model.isGameFinish!
+				@fen.disp = "" 			
 				@stackPosition.lenght = 0 
 			else 
 				@stackPosition[*] = pos
-			@loopThreatAnimation!
+				@loopThreatAnimation!
 		keydown: (event) ->
 			event.preventDefault!
 			@$keyCode := event.which
@@ -214,19 +216,12 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 				@undo!
 				return 
 			if @$keyCode is 37 || @$keyCode is 39
-				inc = @$keyCode - 38
-				nextPos = @preview
-				i = 7
-				loop
-					nextPos = mod nextPos + inc, 7
-					break if not (+model.grille[nextPos] && i--)
-				@previewF nextPos
+				@preview.add(@$keyCode - 38)
 				return 
 			if @$keyCode is 38
 				@undo!
-				@previewF()
 				return 
-			if @$keyCode is 40 then @previewF(@fallenPion @preview)
+			if @$keyCode is 40 then @fallenPion @preview.pos
 		scrollInPx: (lg) -> ($ window).scrollTop ($ window).scrollTop! - lg
 		reverseIsBotActive: ->
 			@reverse 'isBotActive'
@@ -240,13 +235,12 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			pos = if event.touches.length >= 1 then event.touches.0.pageX else -1
 			return off if pos < 0 
 			pos = ~~( (pos - $(\#p4).offset!.left) * 7 / $(\#p4).width! )
-			@previewF pos
 			event.preventDefault!
 		touchEnd: ->
 			return on if @popup.isDisp!
 			event.preventDefault!
-			@fallenPion @preview
+			@fallenPion @getPrev
 	@init!
 	@popup.deplier on
 	@fen.disp = 'message'
-	@$grille.safeClone model.grille
+	@grille.safeClone model.grille

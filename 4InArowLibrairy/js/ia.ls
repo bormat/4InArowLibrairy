@@ -13,6 +13,46 @@ window.IA = IA = window.borto.ia =
     dif: 100
     boolSmart: []
     found: false
+    winningRedPairs: []
+    winningYellowOdds: []
+    winningRedOdds: []
+    winningYellowPairs: []
+    forbids: []
+    inadvisables: []
+    pos: -1
+    modelId: 0
+    p4BlockEasy: (posJoueur, retournerPosition) ~>
+        IA.posJoueur = posJoueur
+        var findAt, botSmart
+        return false if borto.modele.isGameFinish!
+        if (parseInt IA.dif) / 100 + Math.random! > 1
+            IA.boolSmart[*] = on
+            borto.modele.setPlayer 1
+            IA.fillsWinningPos!
+            IA.pos = -1
+            IA.modelId = 0
+            findAt = {modelID: 0}
+            IA.posModBot = 48
+            [
+                ->IA.gagnerDirect!
+                ->IA.bloquerDirect!
+                ->IA.findForbiddenAndNotRecommandedPosition!
+                ->IA.winInTwoTurn 1
+                ->
+                    IA.modelId = 0
+                    IA.modeledetectorAndAnswer perfectModele
+                ->
+                    IA.modelId = 0
+                    IA.posModBot = 48
+                    IA.playWithModel!
+                ->IA.playWithoutModel posJoueur
+            ].some ((func, i) ->
+                func!
+                ~IA.pos)
+        else
+            IA.boolSmart[*] = off
+            IA.pos = Math.floor Math.random! * 7
+        borto.modele.play IA.pos, retournerPosition
     playWithModel: ~>
         j = 0
         IA.posModBot = 48
@@ -332,48 +372,6 @@ window.IA = IA = window.borto.ia =
             isModelfound: true
     topToBottom: (pos, length) ~> pos + length * 7 - 7
     bottomToTop: (pos, length) ~> pos + ~length * 7
-    p4BlockEasy: (posJoueur, retournerPosition) ~>
-        IA.posJoueur = posJoueur
-        var findAt, botSmart
-        return false if borto.modele.isGameFinish!
-        if (parseInt IA.dif) / 100 + Math.random! > 1
-            IA.boolSmart[*] = on
-            borto.modele.setPlayer 1
-            IA.fillsWinningPos!
-            IA.pos = -1
-            IA.modelId = 0
-            findAt = {modelID: 0}
-            IA.posModBot = 48
-            [
-                ->IA.gagnerDirect!
-                ->IA.bloquerDirect!
-                ->IA.findForbiddenAndNotRecommandedPosition!
-                ->IA.winInTwoTurn 1
-                ->
-                    IA.modelId = 0
-                    IA.modeledetectorAndAnswer perfectModele
-                ->
-                    IA.modelId = 0
-                    IA.posModBot = 48
-                    IA.playWithModel!
-                ->IA.playWithoutModel posJoueur
-            ].some ((func, i) ->
-                func!
-                ~IA.pos)
-        else
-            IA.boolSmart[*] = off
-            IA.pos = Math.floor Math.random! * 7
-        borto.modele.play IA.pos, retournerPosition
-    winningRedPairs: []
-    winningYellowOdds: []
-    winningRedOdds: []
-    winningYellowPairs: []
-    forbids: []
-    inadvisables: []
-    pos: -1
-    modelId: 0
-
-
 IA.comparerCaractere = (a, +car, impaire) ->
     if isNaN a
         a ~= 'a' or a ~= 'y' and car isnt 2 or a ~= 'z' and car isnt 1

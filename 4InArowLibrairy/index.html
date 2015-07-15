@@ -128,7 +128,7 @@
 <link href='http://fonts.googleapis.com/css?family=Ubuntu:700' rel='stylesheet' type='text/css'>
 
 
-<div id="app"   ng-class ="{'fullscreen': fen.disp != 'play', stopselect:1}" ng-app="myApp" ng-controller="myCtrl">
+<div id="app"   ng-class ="{'fullscreen': fen.disp != 'play', stopselect: !modeCreator}" ng-app="myApp" ng-controller="myCtrl">
 <div style="width:100%;height:100%;" ng-click="fullscreen(false)"></div>
 <div  ng-click="$event.stopPropagation()" id="applet"  tabindex="0"  ng-class ="{ 'fullscreen': fen.disp != 'play'}" autofocus ng-keydown="keydown($event)">
 
@@ -137,8 +137,9 @@
 
 <div  myt-ouchstart="touchStart(this)"  myt-ouchmove="touchMove(this)" myt-ouchend="touchEnd(this)" id="p4" >
 	<!-- 42 pions-->
-	<span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in goodGrille() track by $index" ng-mouseover="previewF($index)" ng-mouseleave="endPreview($index);" my-touchstart="alert('start')"  >
+	<span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in goodGrille() track by $index" ng-mouseover="preview.set($index)" my-touchstart="alert('start')"  >
 		<img   ng-style="{'backgroundColor':graphique(pion)}" ng-src="{{pathI + '1px.png' }}"/>
+		<p  ng-show='modeCreator' style="position:absolute;margin-top: -8%;margin-left: 6%;">{{pion}}</p>
 		<br ng-if="$index%7==6" />
 	</span>
 	<!-- rejouer -->

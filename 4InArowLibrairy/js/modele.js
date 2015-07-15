@@ -64,6 +64,7 @@
           return pos;
         }
       }
+      this.isGameFinish(false);
       return -1;
     },
     mettrePion: function(position, test){
