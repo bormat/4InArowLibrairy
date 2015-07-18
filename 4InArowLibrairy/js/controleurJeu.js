@@ -65,7 +65,6 @@
         8: 'rgb(140,0,0)',
         9: 'rgb(0,255,221)'
       };
-      this.pathI = './images/';
       this.preview = {
         pos: 0,
         add: function(it){
@@ -88,12 +87,14 @@
         set: function(it){
           this.off();
           this.pos = it;
-          return this.on();
+          if (model.grille[it % 7] == 0) {
+            return this.on();
+          }
         },
         on: function(){
           var ref$;
           this.off();
-          return o.grille[(((this.pos) % (ref$ = 7) + ref$) % ref$)] = 2;
+          return o.grille[(((this.pos) % (ref$ = 7) + ref$) % ref$)] = model.getPlayer();
         }
       };
       this.replayIcon = function(){
@@ -112,46 +113,32 @@
         this.popup.deplier(true);
         return this.whyItIsFinish = false;
       };
-      this.$messageF = function(egality){
+      this.messageF = function(egality){
         this.fen.disp = 'message';
         this.whyItIsFinish = false;
-        if (egality) {
-          this.message = 'ceci est une égalité mais pas une victoire';
-        } else {
-          this.darkWinningPos(true);
-        }
-        if (model.isHumanTurn()) {
-          this.message = 'bravo vous avez gagné' + (in$(false, IA.boolSmart) ? 'augmentez un peu le niveau' : 'envoyer votre historique par commentaire pour améliorer le jeu');
-        } else {
-          this.message = 'Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents';
-        }
+        this.message = egality
+          ? 'ceci est une égalité mais pas une victoire'
+          : (this.darkWinningPos(true), model.isHumanTurn() ? 'bravo vous avez gagné' + (IA.boolSmart !== 2 * model.backup.length
+            ? 'augmentez un peu le niveau'
+            : ($(document).trigger('historiqueJeu', [model.backup]), 'envoyer votre historique par commentaire pour améliorer le jeu')) : 'Le robot gagne cette fois vous pouvez baisser le niveau de difficulté de quelques pourcents');
         this.popup.deplier(true);
         return this.$digest();
       };
       this.anim = function(pos, player, callback){
         var anim2, this$ = this;
         anim2 = function(i){
-          var clickOnUndo;
-          clickOnUndo = void 8;
           if (i > 6) {
             this$.grille[i - 7] = 0;
           }
           this$.grille[i] = player;
-          clickOnUndo = +model.grille[pos] === 0;
-          if (clickOnUndo) {
-            this$.grille[i] = 0;
-            if (callback) {
-              callback();
-            }
-            this$.$digest();
-            return;
-          }
           if (i < pos) {
             return $timeout(function(){
               return anim2(i + 7);
             }, this$.time);
           } else if (callback) {
             return $timeout(callback, this$.time + 1);
+          } else {
+            return alert('end');
           }
         };
         $timeout(function(){
@@ -178,7 +165,7 @@
               return this.threadIsntUsed = true;
             }
             if (model.isGameFinish()) {
-              this.$messageF();
+              this.messageF();
             } else {
               if (model.grille.indexOf(0) < 0) {
                 this.messageF('égalité');
@@ -188,17 +175,30 @@
             return this.anim(pos, model.getPlayer(1), function(){
               var callbackBotIfActiveElsePlayer1, posBot;
               callbackBotIfActiveElsePlayer1 = function(){
+                var ref$;
                 this$.threadIsntUsed = true;
                 if (model.isGameFinish()) {
-                  this$.$messageF();
+                  this$.messageF();
                 }
+                this$.grille = [(ref$ = model.grille)[0], ref$[1], ref$[2], ref$[3], ref$[4], ref$[5], ref$[6], ref$[7], ref$[8], ref$[9], ref$[10], ref$[11], ref$[12], ref$[13], ref$[14], ref$[15], ref$[16], ref$[17], ref$[18], ref$[19], ref$[20], ref$[21], ref$[22], ref$[23], ref$[24], ref$[25], ref$[26], ref$[27], ref$[28], ref$[29], ref$[30], ref$[31], ref$[32], ref$[33], ref$[34], ref$[35], ref$[36], ref$[37], ref$[38], ref$[39], ref$[40], ref$[41]];
                 return this$.loopThreatAnimation();
               };
-              if (this$.isBotActive) {
-                posBot = IA.p4BlockEasy(pos, false);
-                return this$.anim(posBot, 1, callbackBotIfActiveElsePlayer1);
+              if (model.backup.length % 2 === 0) {
+                if (this$.isBotActive) {
+                  posBot = IA.p4BlockEasy(pos, false);
+                  return this$.anim(posBot, 1, callbackBotIfActiveElsePlayer1);
+                } else {
+                  return callbackBotIfActiveElsePlayer1();
+                }
               } else {
-                return callbackBotIfActiveElsePlayer1();
+                return this$.grille = (function(){
+                  var i$, x$, ref$, len$, results$ = [];
+                  for (i$ = 0, len$ = (ref$ = model.grille).length; i$ < len$; ++i$) {
+                    x$ = ref$[i$];
+                    results$.push(x$);
+                  }
+                  return results$;
+                }());
               }
             });
           }
@@ -239,7 +239,7 @@
       this.modeleCreator = function(){
         var ref$;
         if (!this.modeCreator) {
-          this.$keyCode = 5 + 96;
+          this.keyCode = 5 + 96;
           this.grilleCreator = this.grille.slice();
           this.grilleCreator[(ref$ = model.backup)[ref$.length - 1]] = 0;
         }
@@ -264,7 +264,7 @@
         this.popup.deplier(false);
         this.threadIsntUsed = true;
         model.playAgain();
-        IA.boolSmart.length = 0;
+        IA.boolSmart = 1;
         this.endGameMessage = false;
         this.fen.disp = 'option';
         return this.grille = model.grille.slice();
@@ -295,20 +295,25 @@
         this.threadIsntUsed = true;
         pos = model.undo();
         this.grille[pos] = 0;
-        IA.boolSmart.pop();
         if (this.isBotActive && model.getPlayer() === 1) {
           if (model.backup.length % 2 === 0) {
             this.undo();
           } else {
             model.setPlayer(2);
           }
+        } else {
+          if (IA.boolSmart > 1) {
+            IA.boolSmart--;
+          }
         }
         return this.popup.deplier(false);
       };
       this.fallenPion = function(pos){
-        var ref$;
+        var ref$, n;
         if (this$.modeCreator) {
-          return this$.grilleCreator[pos] = this$.$keyCode - 96;
+          return this$.grilleCreator[pos] = 0 <= (ref$ = n = this$.keyCode % 48) && ref$ < 10
+            ? n
+            : String.fromCharCode(this$.keyCode).toLowerCase();
         } else if (model.isGameFinish()) {
           this$.whyItIsFinish = false;
           this$.popup.deplier(true);
@@ -319,35 +324,26 @@
           return this$.loopThreatAnimation();
         }
       };
-      this.keydown = function(event){
-        var ref$;
-        event.preventDefault();
-        this.$keyCode = event.which;
-        if (this.modeCreator) {
-          return;
+      this.keydown = function(e){
+        var that, ref$, n;
+        e.preventDefault();
+        this.keyCode = e.which;
+        if (!this.modeCreator) {
+          switch (that = e.which) {
+          case 37:
+          case 39:
+            return this.preview.add(that - 38);
+          case 38:
+          case 90:
+            return this.undo();
+          case 40:
+            return this.fallenPion(this.preview.pos);
+          default:
+            if (0 <= (ref$ = n = that % 48) && ref$ < 10) {
+              return this.fallenPion(n);
+            }
+          }
         }
-        if (47 < (ref$ = this.$keyCode) && ref$ < 58) {
-          this.fallenPion(this.$keyCode - 48);
-          return;
-        }
-        if (event.which === 90 && event.ctrlKey) {
-          this.undo();
-          return;
-        }
-        if (this.$keyCode === 37 || this.$keyCode === 39) {
-          this.preview.add(this.$keyCode - 38);
-          return;
-        }
-        if (this.$keyCode === 38) {
-          this.undo();
-          return;
-        }
-        if (this.$keyCode === 40) {
-          return this.fallenPion(this.preview.pos);
-        }
-      };
-      this.scrollInPx = function(lg){
-        return $(window).scrollTop($(window).scrollTop() - lg);
       };
       this.reverseIsBotActive = function(){
         this.reverse('isBotActive');
@@ -387,9 +383,4 @@
       return this.grille.safeClone(model.grille);
     }.call($scope));
   });
-  function in$(x, xs){
-    var i = -1, l = xs.length >>> 0;
-    while (++i < l) if (x === xs[i]) return true;
-    return false;
-  }
 }).call(this);

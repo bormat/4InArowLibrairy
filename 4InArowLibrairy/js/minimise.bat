@@ -1,0 +1,1 @@
+uglifyjs  ia.js bortoNamespace.js cookie.js myRules.js tableauDeModele.js modele.js ia.js angular.js slider.js controleurJeu.js directive.js -o jsMin.js

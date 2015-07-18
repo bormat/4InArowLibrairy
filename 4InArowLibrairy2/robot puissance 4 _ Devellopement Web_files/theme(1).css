@@ -1,0 +1,164 @@
+*
+{
+	margin:0px;
+	padding:0px;
+	position:relative;
+}
+
+html,body{
+	height:100%;
+	width:100%;
+}
+.tache{
+	color: white;
+}
+
+.base-class {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.base-class.my-class {
+  color: blue;
+  font-size:3em;
+}
+#undo{
+	width:49%;
+}
+
+#paramP4{
+	width:49%;
+}
+
+
+#applet{
+	width:100%;
+	position:relative;
+	max-width:700px;
+	max-height:100%;
+		background:transparent;
+
+}
+
+#p4 {
+	text-align:left;
+	position:relative;
+	z-index:0;
+	width:100%;
+	margin-bottom:20px;
+	background:blue;
+	padding:1%;
+}/*
+#p4>*{
+font-size:0;
+}*/
+#p4 img   {
+	width:100%; 
+	background:white;
+	border-radius:1000px
+}
+#p4 span{
+	vertical-align:bottom;
+	display:inline-block;
+	width:14.27%;
+	padding:0.5%;
+}
+	
+
+
+.colum {
+	position:absolute;
+	z-index:1;
+	width:100%;
+	background:white;
+	background:rgba(255,255,255,0.6);
+	top:0;
+	bottom:0;
+	left:0;
+	text-align:center;
+}
+
+#message {
+	font-family: 'Ubuntu', sans-serif;
+	font-size:50px;
+	font-size: 5vmin;
+	height:	100% !important;
+	width:	100% !important;
+
+}
+
+.colum2 {
+	margin:auto;
+	top:0;
+	bottom:0;
+	left:0;
+	right:0;
+	height:280px;
+	width:200px;
+	position:absolute;
+}
+.optionInvisible {
+	transition: display 0.5s linear;
+	margin-left:-9000px;
+	opacity:0;
+	transition: margin-left 0s 0.5s,opacity 0.5s linear;
+}
+.optionVisible{
+	transition: margin-left 0s 0s,opacity 0.5s linear;
+	margin-top: 0px;
+	margin-left:0px;
+	opacity:1;
+
+}
+
+.optionVisible,.optionInvisible{
+	float:left;
+}
+
+.pion ,.mode
+{
+	margin-top:	0px;
+	margin-left:0px;
+
+}
+
+#red{
+	margin-bottom:0px;
+	margin-top:0px;
+	margin-right:100%;
+	display:block;
+}
+input[type="button"]
+{
+	margin-top:10px;
+	padding:0px 10px  !important;
+	//height:20px;
+}
+button, html input[type="button"], input[type="reset"], input[type="submit"] {
+    cursor: pointer;
+}
+input[type="button"] {
+    margin-top: 10px;
+    padding: 10px !important;
+}
+button, .button, input[type="button"], input[type="reset"], input[type="submit"] {
+    background-color: #24890D;
+    border: 0px none;
+    border-radius: 2px;
+    color: #FFF;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 30px 11px;
+    text-transform: uppercase;
+    vertical-align: bottom;
+}
+#sliderID{
+
+width:calc(100% - 10px);
+}
+#scroll{
+	width:100%;
+}
+.colum2 input[type="button"]{
+	width:200px;
+}

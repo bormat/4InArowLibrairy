@@ -1,1 +1,1 @@
-window.borto = {}
+window.borto = {} || window.borto 

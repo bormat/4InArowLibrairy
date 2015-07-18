@@ -44,7 +44,6 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			7: 'rgb(255,128,128)'
 			8: 'rgb(140,0,0)'
 			9: 'rgb(0,255,221)'
-		pathI: './images/'
 		preview: 
 			pos : 0				
 			add: ->	[return @on! if not model.grille[(@pos+= it)%%7] for i to 6]
@@ -53,10 +52,10 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			set: -> 
 				@off!
 				@pos =  it
-				@on!
+				@on! if model.grille[it%7] ~= 0
 			on: -> 
 				@off!
-				o.grille[@pos%%7] = 2
+				o.grille[@pos%%7] = model.getPlayer()
 				
 		replayIcon: -> Modele.isGameFinish() && !@whyItIsFinish || @fen.disp == 'message'
 		darkWinningPos : (dark) ->
@@ -67,41 +66,37 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			@fen.disp = 'play';
 			@popup.deplier(true);
 			@whyItIsFinish = false
-		$messageF : (egality) ->
+		messageF : (egality) ->
 			@fen.disp = 'message'
 			@whyItIsFinish = false
-			if egality 
-				@message = 'ceci est une égalité mais pas une victoire' 
+			@message = if egality 
+				'ceci est une égalité mais pas une victoire' 
 			else 
 				@darkWinningPos true
-			if model.isHumanTurn!
-				@message = 'bravo vous avez gagné' +
-				if off in IA.boolSmart 
-					'augmentez un peu le niveau'
+				if model.isHumanTurn!
+					'bravo vous avez gagné' + if  IA.boolSmart isnt 2 * model.backup.length
+						'augmentez un peu le niveau'
+					else
+						$(document).trigger(\historiqueJeu,[model.backup])
+						'envoyer votre historique par commentaire pour améliorer le jeu'
 				else
-					'envoyer votre historique par commentaire pour améliorer le jeu'
-			else
-				@message = 'Le robot gagne cette fois vous pouvez baisser le 
-				niveau de difficulté de quelques pourcents'
+					'Le robot gagne cette fois vous pouvez baisser le 
+					niveau de difficulté de quelques pourcents'
 			@popup.deplier true
 			@$digest!
 		anim : (pos, player, callback) ->
 			anim2 = (i) ~>
-				clickOnUndo = void
 				@grille[i - 7] = 0 if i > 6
 				@grille[i] = player
-				clickOnUndo = +model.grille[pos] is 0
-				if clickOnUndo
-					@grille[i] = 0
-					callback! if callback
-					@$digest!
-					return 
 				if i < pos then 
 					$timeout (-> anim2 i + 7), @time 
 				else if callback
-					$timeout callback, @time + 1 
+					$timeout callback, @time + 1
+				else
+					alert('end')
 			$timeout (-> anim2 pos % 7)
 			@grille.0 = model.grille.0 if not (pos % 7)	
+
 		loopThreatAnimation : ->
 			pos = void
 			if model.isGameFinish!
@@ -115,7 +110,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 					pos = model.play @stackPosition.shift!
 					return @threadIsntUsed = on if pos < 0
 					if model.isGameFinish!
-						@$messageF!
+						@messageF!
 					else
 						if (model.grille.indexOf 0) < 0
 							@messageF('égalité')
@@ -123,14 +118,19 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 					@anim pos, (model.getPlayer 1),  ~>
 						callbackBotIfActiveElsePlayer1 = ~>
 							@threadIsntUsed := on
-							@$messageF! if model.isGameFinish!
+							@messageF! if model.isGameFinish!
+							@grille = model.grille[0 to 41]
 							@loopThreatAnimation!
 
-						if @isBotActive
-							posBot = IA.p4BlockEasy pos, off
-							@anim posBot, 1, callbackBotIfActiveElsePlayer1
+						if  model.backup.length%2 is 0
+							if @isBotActive
+								posBot = IA.p4BlockEasy pos, off
+								@anim posBot, 1, callbackBotIfActiveElsePlayer1
+							else
+								callbackBotIfActiveElsePlayer1!
 						else
-							callbackBotIfActiveElsePlayer1!
+							@grille = [.. for  model.grille]
+
 		clickOnBlack: ->
 			@fen.disp = 'play'
 			@popup.deplier off
@@ -148,7 +148,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			@grille.safeClone model.grille
 		modeleCreator: ->
 			if not @modeCreator
-				@$keyCode = 5 + 96
+				@keyCode = 5 + 96
 				#@endPreview @getPrev!
 				@grilleCreator = @grille.slice!
 				@grilleCreator[model.backup[*-1]] = 0
@@ -163,7 +163,7 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			@popup.deplier off
 			@threadIsntUsed := on
 			model.playAgain!
-			IA.boolSmart.length = 0
+			IA.boolSmart = 1
 			@endGameMessage = off
 			@fen.disp = 'option'
 			@grille := model.grille.slice!
@@ -187,16 +187,18 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			@threadIsntUsed := on
 			pos = model.undo!
 			@grille[pos] = 0
-			IA.boolSmart.pop!
 			if @isBotActive && model.getPlayer! is 1 
 				if model.backup.length % 2 is 0 
 					@undo!
 				else 
 					model.setPlayer 2
+			else
+				IA.boolSmart -- if IA.boolSmart > 1
 			@popup.deplier off
 		fallenPion: (pos) ~>
 			if @modeCreator
-				@grilleCreator[pos] = @$keyCode - 96
+				@grilleCreator[pos] = if 0 <= (n = @keyCode%48) < 10 then n
+				else String.fromCharCode(@keyCode)toLowerCase!
 			else if model.isGameFinish()
 				@whyItIsFinish = off 
 				@popup.deplier(on)
@@ -205,24 +207,15 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			else 
 				@stackPosition[*] = pos
 				@loopThreatAnimation!
-		keydown: (event) ->
-			event.preventDefault!
-			@$keyCode := event.which
-			return  if @modeCreator
-			if  47 < @$keyCode < 58
-				@fallenPion @$keyCode - 48
-				return 
-			if event.which is 90 && event.ctrlKey
-				@undo!
-				return 
-			if @$keyCode is 37 || @$keyCode is 39
-				@preview.add(@$keyCode - 38)
-				return 
-			if @$keyCode is 38
-				@undo!
-				return 
-			if @$keyCode is 40 then @fallenPion @preview.pos
-		scrollInPx: (lg) -> ($ window).scrollTop ($ window).scrollTop! - lg
+		keydown: (e) ->
+			e.preventDefault!
+			@keyCode = e.which
+			if !@modeCreator
+				switch e.which
+				| 37,39 => @preview.add(that - 38)# left right arrow
+				| 38,90 => @undo! #if event.ctrlKey useless because i don't use the touch z alone
+				| 40 => @fallenPion @preview.pos
+				| _ => @fallenPion n if 0 <= (n = that%48) < 10 # play at the column chosen
 		reverseIsBotActive: ->
 			@reverse 'isBotActive'
 			@undo! if model.backup.length % 2 is 0

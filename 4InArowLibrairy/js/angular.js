@@ -26415,8 +26415,8 @@ var minlengthDirective = function() {
 
   publishExternalAPI(angular);
 
-  jqLite(document).ready(function() {
-    angularInit(document, bootstrap);
+  jqLite(document).on('loadAngular',function() {
+      angularInit(document, bootstrap);
   });
 
 })(window, document);

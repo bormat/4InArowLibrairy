@@ -7,11 +7,11 @@ borto = window.borto = window.borto || {}
 #             we begin to 48 and not 41 because some model have a ligne of '9'
 #             to tell the model is flat
 
-Modele = window.borto.modele
+model = window.borto.modele
 window.IA = IA = window.borto.ia = 
     playAt: -1
     dif: 100
-    boolSmart: []
+    boolSmart: 1#number of turn where you play at 100% + 1
     found: false
     winningRedPairs: []
     winningYellowOdds: []
@@ -26,7 +26,7 @@ window.IA = IA = window.borto.ia =
         var findAt, botSmart
         return false if borto.modele.isGameFinish!
         if (parseInt IA.dif) / 100 + Math.random! > 1
-            IA.boolSmart[*] = on
+            IA.boolSmart++
             borto.modele.setPlayer 1
             IA.fillsWinningPos!
             IA.pos = -1
@@ -50,8 +50,9 @@ window.IA = IA = window.borto.ia =
                 func!
                 ~IA.pos)
         else
-            IA.boolSmart[*] = off
-            IA.pos = Math.floor Math.random! * 7
+            for i to 6
+                IA.pos = ~~(Math.random! * 7)
+                break if (!model.grille[IA.pos])
         borto.modele.play IA.pos, retournerPosition
     playWithModel: ~>
         j = 0
