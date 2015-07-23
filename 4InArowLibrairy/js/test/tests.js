@@ -5,7 +5,7 @@
 			});
 		}
 		QUnit.test("joueEn24", function(assert){
-			Modele.isGameFinish(false)
+			Modele.weHaveAWinner(false)
 			Modele.setModel([
 			"0000000",
 			"0000000",
@@ -2042,11 +2042,11 @@ QUnit.test("shouldBe", function(assert){
         "4218188",
         "2421888",
        ])
-		assert.ok(Modele.isGameFinish(14)).toBe(true);
-		assert.ok(Modele.isGameFinish(27)).not.toBe(true);
-		assert.ok(Modele.isGameFinish(20)).toBe(true);
-		assert.ok(Modele.isGameFinish(29)).toBe(true);
-		assert.ok(Modele.isGameFinish(29)).toBe(true);
+		assert.ok(Modele.weHaveAWinner(14)).toBe(true);
+		assert.ok(Modele.weHaveAWinner(27)).not.toBe(true);
+		assert.ok(Modele.weHaveAWinner(20)).toBe(true);
+		assert.ok(Modele.weHaveAWinner(29)).toBe(true);
+		assert.ok(Modele.weHaveAWinner(29)).toBe(true);
 
 		});
 			

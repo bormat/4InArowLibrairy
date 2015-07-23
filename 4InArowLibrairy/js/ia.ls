@@ -24,7 +24,7 @@ window.IA = IA = window.borto.ia =
     p4BlockEasy: (posJoueur, retournerPosition) ~>
         IA.posJoueur = posJoueur
         var findAt, botSmart
-        return false if borto.modele.isGameFinish!
+        return false if borto.modele.weHaveAWinner!
         if (parseInt IA.dif) / 100 + Math.random! > 1
             IA.boolSmart++
             borto.modele.setPlayer 1
@@ -58,27 +58,26 @@ window.IA = IA = window.borto.ia =
         j = 0
         IA.posModBot = 48
         IA.modelId = 0
-        pos2 =  
-            do rec = ->
-                TabOfTab = [ attaque, defense, miniDef, mesModele ]
-                while j < TabOfTab.length
-                    loop
-                        break unless IA.modelId < TabOfTab[j].length
-                        position3 = IA.modeledetectorAndAnswer(TabOfTab[j])
-                        IA.modelId 
-                        if ~position3
-                            IA.ifPlayHereGiveMeExactPos position3
-                            if ~IA.pos
-                                IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
-                                rec() if !IA.found
-                                return IA.pos
-                            IA.posModBot--
-                        IA.modelId++
-                    IA.modelId =  0
-                    IA.posModBot = 48
-                    j++
-                IA.posModBot = "notFound"
-                -1
+        do rec = ->
+            TabOfTab = [ attaque, defense, miniDef, mesModele ]
+            while j < TabOfTab.length
+                loop
+                    break unless IA.modelId < TabOfTab[j].length
+                    position3 = IA.modeledetectorAndAnswer(TabOfTab[j])
+                    IA.modelId 
+                    if ~position3
+                        IA.ifPlayHereGiveMeExactPos position3
+                        if ~IA.pos
+                            IA.wontBecomeLikeThisModel(TabWontBecomeLikeThisModelPlayerTurn, 1, IA.pos)
+                            rec() if !IA.found
+                            return IA.pos
+                        IA.posModBot--
+                    IA.modelId++
+                IA.modelId =  0
+                IA.posModBot = 48
+                j++
+            IA.posModBot = "notFound"
+            -1
     notUnderMe: (inadvisables) ~># don't play under positions we can win  add these positions in inadvisables
         for i to 6
             borto.modele.nextPlayer!
@@ -87,7 +86,7 @@ window.IA = IA = window.borto.ia =
             borto.modele.nextPlayer!
             borto.modele.play i, true
             borto.modele.grille[position] = 0
-            if borto.modele.isGameFinish!
+            if borto.modele.weHaveAWinner!
                 if position isnt inadvisables.at -1 and position >= 0 then if position >= 0 then inadvisables.push position
     ifPlayHereGiveMeExactPos: (+posJoueur) ~>
         IA.pos = borto.modele.play posJoueur, true
@@ -108,15 +107,15 @@ window.IA = IA = window.borto.ia =
                 trouveBotPaire = IA.winningRedPairs[o % 7]
                 trouvePlayerPaire = IA.winningYellowPairs[o % 7]
                 trouveBotImpaire = IA.winningRedOdds[o % 7]
-                if (Math.floor o / 7) % 2 ~= 1 and trouvePlayerImpaire ~= -1 and borto.modele.isGameFinish o
+                if (Math.floor o / 7) % 2 ~= 1 and trouvePlayerImpaire ~= -1 and borto.modele.weHaveAWinner o
                     IA.winningYellowOdds[o % 7] = o
                 else
-                    if (Math.floor o / 7) % 2 ~= 0 and trouvePlayerPaire ~= -1 and borto.modele.isGameFinish o then IA.winningYellowPairs[o % 7] = o
+                    if (Math.floor o / 7) % 2 ~= 0 and trouvePlayerPaire ~= -1 and borto.modele.weHaveAWinner o then IA.winningYellowPairs[o % 7] = o
                 borto.modele.grille[o] = 2
-                if (Math.floor o / 7) % 2 ~= 0 and trouveBotPaire ~= -1 and borto.modele.isGameFinish o
+                if (Math.floor o / 7) % 2 ~= 0 and trouveBotPaire ~= -1 and borto.modele.weHaveAWinner o
                     IA.winningRedPairs[o % 7] = o
                 else
-                    if (Math.floor o / 7) % 2 ~= 1 and trouveBotImpaire ~= -1 and borto.modele.isGameFinish o then IA.winningRedOdds[o % 7] = o
+                    if (Math.floor o / 7) % 2 ~= 1 and trouveBotImpaire ~= -1 and borto.modele.weHaveAWinner o then IA.winningRedOdds[o % 7] = o
                 borto.modele.grille[o] = 0 
             null
     playAllPos: (u) ~>
@@ -147,7 +146,7 @@ window.IA = IA = window.borto.ia =
                 cptGagnerDirect = 0
                 for o to 6
                     IA.pos = borto.modele.play(o, true)
-                    if borto.modele.isGameFinish() and ~IA.pos
+                    if borto.modele.weHaveAWinner() and ~IA.pos
                         cptGagnerDirect++                        
                         #si il y a une position gagnante au dessus d'une autre 
                         WinnerPos = (if borto.modele.getPlayer() ~= 1 then "g" else "i")
@@ -162,8 +161,8 @@ window.IA = IA = window.borto.ia =
     gagnerDirect: ~>
         for i to 7
             IA.pos = borto.modele.play i, true
-            if borto.modele.isGameFinish!
-                borto.modele.isGameFinish false
+            if borto.modele.weHaveAWinner!
+                borto.modele.weHaveAWinner false
                 return true
         IA.pos = -1
     wontBecomeLikeThisModel: (TabWontBecomeLikeThisModel, player, posBot) ~>
@@ -251,7 +250,7 @@ window.IA = IA = window.borto.ia =
         borto.modele.nextPlayer!
         for i to 6
             IA.pos = borto.modele.play i, true
-            if borto.modele.isGameFinish!
+            if borto.modele.weHaveAWinner!
                 borto.modele.nextPlayer!
                 return IA.pos = borto.modele.play IA.pos, true
         borto.modele.nextPlayer!
@@ -264,7 +263,7 @@ window.IA = IA = window.borto.ia =
             borto.modele.play i, true
             borto.modele.nextPlayer!
             borto.modele.grille[position] = 0
-            $forbids.push position if borto.modele.isGameFinish! and position isnt $forbids[$forbids.length - 1] and position >= 0
+            $forbids.push position if borto.modele.weHaveAWinner! and position isnt $forbids[$forbids.length - 1] and position >= 0
            
     detectBadPositionAlgorythme: ~>
         for i to 6
@@ -410,23 +409,23 @@ IA.comparerLigne = (modligne, o) ->
                     cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] or IA.winningYellowOdds[i % 7] ~= -1
                     cont &&= IA.winningRedPairs[i % 7] <= i
                     borto.modele.grille[i] = 1
-                    cont &&= borto.modele.isGameFinish(i)
+                    cont &&= borto.modele.weHaveAWinner(i)
                 | a in \f. 
                     borto.modele.grille[i] = 1
-                    cont = borto.modele.isGameFinish(i)
+                    cont = borto.modele.weHaveAWinner(i)
                     ! = cont if \f ~= a
                     if !cont
                         borto.modele.grille[i] = 2
-                        cont = borto.modele.isGameFinish(i)                   
+                        cont = borto.modele.weHaveAWinner(i)                   
                 | a in \erw
                     cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] or IA.winningYellowOdds[i % 7] ~= -1
                     cont = cont and IA.winningRedPairs[i % 7] <= i
                 | a in \gj
                     borto.modele.grille[i] = 1
-                    cont = borto.modele.isGameFinish(i)
+                    cont = borto.modele.weHaveAWinner(i)
                 | a in \hi 
                     borto.modele.grille[i] = 2
-                    cont = borto.modele.isGameFinish(i)                
+                    cont = borto.modele.weHaveAWinner(i)                
                 ! = cont if a in \hpwfj                            
                 borto.modele.grille[i] = 0
             cont ?= IA.comparerCaractere(a, b, impaire) 

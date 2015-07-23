@@ -1,6 +1,5 @@
 <link href='http://fonts.googleapis.com/css?family=Ubuntu:700' rel='stylesheet' type='text/css'>
 <script src='js/jquery.js'></script>
-<script> jquery = $</script>
 <script src='js/bortoNamespace.js'></script>
 <script src='js/cookie.js'></script>
 <script src='js/myRules.js'></script>
@@ -22,16 +21,16 @@
 <input id="undo"  ng-show="fen.disp != 'play'" ng-click="undo()"      value="annuler" type="button" />
 <input id="paramP4" ng-show="fen.disp != 'play'" ng-click="displayOption()" value="option"  type="button" />
 
-<div  myt-ouchstart="touchStart(this)"  myt-ouchmove="touchMove(this)" myt-ouchend="touchEnd(this)" id="p4" >
+<div  my-touchstart="touchStart(this)"  my-touchmove="touchMove(this)" my-touchend="touchEnd(this)" id="p4" >
   <!-- 42 pions-->
-  <span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in goodGrille() track by $index" ng-mouseover="preview.set($index)" my-touchstart="alert('start')"  >
+  <span ondragstart="return false" ng-click="fallenPion($index)" ng-repeat="pion in goodGrille() track by $index" ng-mouseover="preview.set($index)"  >
     <img   ng-style="{'backgroundColor':graphique(pion)}" ng-src="images/1px.png"/>
-    <p  ng-show='modeCreator' style="position:absolute;margin-top: -8%;margin-left: 6%;">{{pion}}</p>
+    <p  ng-show='modeCreator' style="position:absolute;margin-top: -8%;margin-left: 6%;">{{pion}},</p>
     <br ng-if="$index%7==6" />
   </span>
   <!-- rejouer -->
-  <span  ng-show="replayIcon()" class ="replay" ng-click="init()"  ></span>
-  <span  ng-show="replayIcon()" ng-click="init();" id="white">
+  <span  ng-class="replayIconPop.getClassF()" class ="replay" ng-click="init()"  ></span>
+  <span  ng-class="replayIconPop.getClassF()" ng-click="init();" id="white">
     <p id="rejouer" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)">rejouer</p>
     <img src="images/reload.png"/>
   </span>
@@ -53,7 +52,7 @@
     </div>
   </div>
 </div>    
-  <div  ng-click="fen.stayOpen = !0"  ng-show="fen.disp != 'play'" id="sliderID">
+  <div   ng-show="fen.disp != 'play'" id="sliderID"><!--ng-click="fen.stayOpen = true"-->
       <slider ng-mousedown="fen.clic=false" floor="0" ceiling="100" step="1" precision="2" ng-model="ia.dif"></slider>
   </div>
   
@@ -116,10 +115,15 @@
       width:40%;
       width: 90vmin;
       width: 90vm;
+      -webkit-transform: translate(-50%,-50%);
+      -ms-transform: translate(-50%,-50%);
       transform: translate(-50%,-50%);
     } 
   </style>
-</div>
+</div>{#path#}
+{#path#}
 <script>
+
+document.body.innerHTML = document.body.innerHTML.replace(/{#path#}/g,'./')
 $(document).trigger('loadAngular');
 </script>

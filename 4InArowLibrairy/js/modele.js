@@ -27,7 +27,7 @@
   };
   f = bind$(borto.disc, 'goToDir');
   borto.modele = {
-    isGameFinish: function(pos){
+    weHaveAWinner: function(pos){
       var i$, ref$, len$, dir, res$, j$, to$, ridx$;
       if (pos < 0) {
         return false;
@@ -54,6 +54,13 @@
           }
         }
       }
+      return false;
+    },
+    isGameFull: function(){
+      return this.backup.length === 42;
+    },
+    isGameOver: function(){
+      return this.isGameFull() || this.weHaveAWinner();
     },
     play: function(pos, test){
       var i$;
@@ -64,7 +71,7 @@
           return pos;
         }
       }
-      this.isGameFinish(false);
+      this.weHaveAWinner(false);
       return -1;
     },
     mettrePion: function(position, test){
@@ -74,14 +81,14 @@
         this.nextPlayer();
         (ref$ = this.backup)[ref$.length] = position;
       }
-      this.isGameFinish(position);
+      this.weHaveAWinner(position);
       if (test) {
         this.grille[position] = 0;
       }
-      return this.isGameFinish();
+      return this.weHaveAWinner();
     },
     playAgain: function(){
-      this.isGameFinish(false);
+      this.weHaveAWinner(false);
       this.init();
       this.setPlayer(1);
       this.play(3);
@@ -105,7 +112,7 @@
     },
     undo: function(){
       var ref$, pos;
-      this.isGameFinish(false);
+      this.weHaveAWinner(false);
       if ((ref$ = this.backup)[ref$.length - 1] != 38) {
         pos = this.backup.pop();
         this.grille[pos] = 0;
@@ -128,7 +135,7 @@
     },
     init: function(){
       this.grille = repeatArray$([0], 42);
-      return this.isGameFinish(false);
+      return this.weHaveAWinner(false);
     },
     loadTab: function(tab, emplacement){
       return this.grille = this.modelToArray(tab);

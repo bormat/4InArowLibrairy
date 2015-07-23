@@ -20,7 +20,7 @@
     p4BlockEasy: function(posJoueur, retournerPosition){
       var findAt, botSmart, i$, i;
       IA.posJoueur = posJoueur;
-      if (borto.modele.isGameFinish()) {
+      if (borto.modele.weHaveAWinner()) {
         return false;
       }
       if (parseInt(IA.dif) / 100 + Math.random() > 1) {
@@ -68,11 +68,11 @@
       return borto.modele.play(IA.pos, retournerPosition);
     },
     playWithModel: function(){
-      var j, pos2, rec;
+      var j, rec;
       j = 0;
       IA.posModBot = 48;
       IA.modelId = 0;
-      return pos2 = (rec = function(){
+      return (rec = function(){
         var TabOfTab, position3;
         TabOfTab = [attaque, defense, miniDef, mesModele];
         while (j < TabOfTab.length) {
@@ -113,7 +113,7 @@
         borto.modele.nextPlayer();
         borto.modele.play(i, true);
         borto.modele.grille[position] = 0;
-        if (borto.modele.isGameFinish()) {
+        if (borto.modele.weHaveAWinner()) {
           if (position !== inadvisables.at(-1) && position >= 0) {
             if (position >= 0) {
               results$.push(inadvisables.push(position));
@@ -158,18 +158,18 @@
           trouveBotPaire = IA.winningRedPairs[o % 7];
           trouvePlayerPaire = IA.winningYellowPairs[o % 7];
           trouveBotImpaire = IA.winningRedOdds[o % 7];
-          if (Math.floor(o / 7) % 2 == 1 && trouvePlayerImpaire == -1 && borto.modele.isGameFinish(o)) {
+          if (Math.floor(o / 7) % 2 == 1 && trouvePlayerImpaire == -1 && borto.modele.weHaveAWinner(o)) {
             IA.winningYellowOdds[o % 7] = o;
           } else {
-            if (Math.floor(o / 7) % 2 == 0 && trouvePlayerPaire == -1 && borto.modele.isGameFinish(o)) {
+            if (Math.floor(o / 7) % 2 == 0 && trouvePlayerPaire == -1 && borto.modele.weHaveAWinner(o)) {
               IA.winningYellowPairs[o % 7] = o;
             }
           }
           borto.modele.grille[o] = 2;
-          if (Math.floor(o / 7) % 2 == 0 && trouveBotPaire == -1 && borto.modele.isGameFinish(o)) {
+          if (Math.floor(o / 7) % 2 == 0 && trouveBotPaire == -1 && borto.modele.weHaveAWinner(o)) {
             IA.winningRedPairs[o % 7] = o;
           } else {
-            if (Math.floor(o / 7) % 2 == 1 && trouveBotImpaire == -1 && borto.modele.isGameFinish(o)) {
+            if (Math.floor(o / 7) % 2 == 1 && trouveBotImpaire == -1 && borto.modele.weHaveAWinner(o)) {
               IA.winningRedOdds[o % 7] = o;
             }
           }
@@ -223,7 +223,7 @@
           for (j$ = 0; j$ <= 6; ++j$) {
             o = j$;
             IA.pos = borto.modele.play(o, true);
-            if (borto.modele.isGameFinish() && ~IA.pos) {
+            if (borto.modele.weHaveAWinner() && ~IA.pos) {
               cptGagnerDirect++;
               WinnerPos = borto.modele.getPlayer() == 1 ? "g" : "i";
               otherPlayerWinOnMe = borto.modele.getPlayer() == 1
@@ -246,8 +246,8 @@
       for (i$ = 0; i$ <= 7; ++i$) {
         i = i$;
         IA.pos = borto.modele.play(i, true);
-        if (borto.modele.isGameFinish()) {
-          borto.modele.isGameFinish(false);
+        if (borto.modele.weHaveAWinner()) {
+          borto.modele.weHaveAWinner(false);
           return true;
         }
       }
@@ -379,7 +379,7 @@
       for (i$ = 0; i$ <= 6; ++i$) {
         i = i$;
         IA.pos = borto.modele.play(i, true);
-        if (borto.modele.isGameFinish()) {
+        if (borto.modele.weHaveAWinner()) {
           borto.modele.nextPlayer();
           return IA.pos = borto.modele.play(IA.pos, true);
         }
@@ -397,7 +397,7 @@
         borto.modele.play(i, true);
         borto.modele.nextPlayer();
         borto.modele.grille[position] = 0;
-        if (borto.modele.isGameFinish() && position !== $forbids[$forbids.length - 1] && position >= 0) {
+        if (borto.modele.weHaveAWinner() && position !== $forbids[$forbids.length - 1] && position >= 0) {
           results$.push($forbids.push(position));
         }
       }
@@ -599,17 +599,17 @@
           cont = IA.winningRedPairs[i % 7] < IA.winningYellowOdds[i % 7] || IA.winningYellowOdds[i % 7] == -1;
           cont && (cont = IA.winningRedPairs[i % 7] <= i);
           borto.modele.grille[i] = 1;
-          cont && (cont = borto.modele.isGameFinish(i));
+          cont && (cont = borto.modele.weHaveAWinner(i));
           break;
         case !in$(a, 'f.'):
           borto.modele.grille[i] = 1;
-          cont = borto.modele.isGameFinish(i);
+          cont = borto.modele.weHaveAWinner(i);
           if ('f' == a) {
             cont = !cont;
           }
           if (!cont) {
             borto.modele.grille[i] = 2;
-            cont = borto.modele.isGameFinish(i);
+            cont = borto.modele.weHaveAWinner(i);
           }
           break;
         case !in$(a, 'erw'):
@@ -618,11 +618,11 @@
           break;
         case !in$(a, 'gj'):
           borto.modele.grille[i] = 1;
-          cont = borto.modele.isGameFinish(i);
+          cont = borto.modele.weHaveAWinner(i);
           break;
         case !in$(a, 'hi'):
           borto.modele.grille[i] = 2;
-          cont = borto.modele.isGameFinish(i);
+          cont = borto.modele.weHaveAWinner(i);
         }
         if (in$(a, 'hpwfj')) {
           cont = !cont;

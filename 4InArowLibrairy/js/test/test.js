@@ -1,6 +1,6 @@
 describe("myFunction", function() {
 		afterEach(function() {
-			Modele.isGameFinish(false);
+			Modele.weHaveAWinner(false);
 		});
 		function testor(tab,pos,identifier){
 			it(identifier+"shouldBeAt"+pos, function(){
@@ -8,6 +8,19 @@ describe("myFunction", function() {
 				expect(IA.p4BlockEasy(pos-1,true)).toEqual(pos);
 			});
 		}
+
+		it("joueEn24", function(){
+			Modele.setGrille([
+				0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 2, 2, 0, 0,
+				0, 0, 2, 1, 1, 0, 0,
+				0, 0, 1, 2, 1, 0, 0,
+				0, 0, 2, 1, 1, 0, 2
+			])
+			expect(IA.p4BlockEasy(5,true)).toEqual(16);
+		});
+				
 		it("joueEn24", function(){
 					Modele.setGrille([
 					0, 0, 2, 1, 0, 0, 0,
@@ -2056,11 +2069,11 @@ it("shouldBe", function(){
         "4218188",
         "2421888",
        ])
-		expect(Modele.isGameFinish(14)).toBe(true);
-		expect(Modele.isGameFinish(27)).not.toBe(true);
-		expect(Modele.isGameFinish(20)).toBe(true);
-		expect(Modele.isGameFinish(29)).toBe(true);
-		expect(Modele.isGameFinish(29)).toBe(true);
+		expect(Modele.weHaveAWinner(14)).toBe(true);
+		expect(Modele.weHaveAWinner(27)).not.toBe(true);
+		expect(Modele.weHaveAWinner(20)).toBe(true);
+		expect(Modele.weHaveAWinner(29)).toBe(true);
+		expect(Modele.weHaveAWinner(29)).toBe(true);
 
 		});
 			

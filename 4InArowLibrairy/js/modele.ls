@@ -15,7 +15,7 @@ borto.disc =
 f = borto.disc~goToDir
 
 borto.modele =
-	isGameFinish: (pos) -># setteur if boolean,getteur if no args and calcule if number
+	weHaveAWinner: (pos) -># setteur if boolean,getteur if no args and calcule if number
 		return off if pos < 0
 		return @isGameEnd if pos ~= null
 		if typeof pos is \boolean
@@ -27,23 +27,26 @@ borto.modele =
 				@winInfo = [f(-dir) to f(dir) by dir]
 				@isGameEnd := @winInfo.length > 3 #4-1-1
 				return on if @isGameEnd
+		off
+	isGameFull:->@backup.length is 42 #no winner but game is finished
+	isGameOver:->@isGameFull! || @weHaveAWinner!
 	play: ( pos , test) ->
 		for pos from pos % 7 to 42 by 7
 			if @grille[pos + 7] !~= 0 && @grille[pos] == 0
 				@mettrePion pos, test
 				return pos
-		@isGameFinish(off)
+		@weHaveAWinner(off)
 		-1
 	mettrePion: (position, test) ->
 		@grille[position] = @getPlayer!
 		if not test
 			@nextPlayer!
 			@backup.* = position
-		@isGameFinish position
+		@weHaveAWinner position
 		if test then @grille[position] = 0
-		@isGameFinish!
+		@weHaveAWinner!
 	playAgain: ->
-		@isGameFinish false
+		@weHaveAWinner false
 		@init!
 		@setPlayer 1
 		@play 3
@@ -56,7 +59,7 @@ borto.modele =
 	setPlayer: (number) -> @player = number
 	isHumanTurn: -> @player ~= 1
 	undo: ->
-		@isGameFinish false		
+		@weHaveAWinner false		
 		if @backup[*-1] !~= 38
 			pos = @backup.pop!
 			@grille[pos] = 0
@@ -70,10 +73,12 @@ borto.modele =
 		@setPlayer(1)
 	init: ->
 		@grille = [0] * 42
-		@isGameFinish false
+		@weHaveAWinner false
 	loadTab: (tab, emplacement) -> @grille = @modelToArray tab
 	setGrille: (tab) -> @grille = tab
 	setModel: (tab) -> @setGrille(@modelToArray tab)
 	modelToArray: (tab) -> [disc for line in tab for disc in line]
 borto.modele.init!
+
+
 window.Modele = borto.modele

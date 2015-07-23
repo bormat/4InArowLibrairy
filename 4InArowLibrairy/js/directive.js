@@ -1,32 +1,29 @@
-	app.directive('mytOuchstart', function() {
+	app.directive('myTouchstart', function() {
 		return function(scope, element, attr) {
 			scope.P4 = element;
 			element.on('touchstart', function(event) { 
-				scope.$apply(function() { 
-					scope.$eval(attr.mytOuchstart); 
-				});
+				scope.$apply()
+				scope.$eval(attr.myTouchstart); 
 			});
 		}			
 	})
 
-	app.directive('mytOuchmove', function() {
+	app.directive('myTouchmove', function() {
 		return function(scope, element, attr) {
 			scope.P4 = element
 			element.on('touchmove', function(event) { 
-				scope.$apply(function() { 
-					scope.$eval(attr.mytOuchmove); 
-				});
+				scope.$apply()
+				scope.$eval(attr.myTouchmove); 
 			});
 		}
 	})
 
-	app.directive('mytOuchend', function() {
+	app.directive('myTouchend', function() {
 		return function(scope, element, attr) {
 			scope.P4 = element
 			element.on('touchend ', function(event) {
-				scope.$apply(function() { 
-					scope.$eval(attr.mytOuchend); 
-				});
+					scope.$apply()
+					scope.$eval(attr.myTouchend); 
 			});
 		};
 	})

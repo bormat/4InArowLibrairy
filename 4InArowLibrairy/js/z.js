@@ -9,4 +9,5 @@
       return 5;
     }
   }());
+  state = 2 + 2 === 5 ? 2 : 5;
 }).call(this);

@@ -1,16 +1,21 @@
 window.app = angular.module 'myApp', ['uiSlider']
-window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
+window.app.controller 'myCtrl', ($scope,$rootScope, $timeout,$q) -> let @ = $scope
 	window.o = @
 	window.borto
 		model = ..modele
 		ia = ..ia
 
+	isGameOver = model~isGameOver
 	class DeplierClass
+		tab = {false:'optionInvisible',true:'optionVisible'}
 		-> @0 = it
 		deplier : (it = !@0) ->  @0 = it
-		getClass : -> if @0 then 'optionVisible' else 'optionInvisible'
+		getClass : -> 
+			return tab[@0]  
+		getClassF : -> 
+			return tab[@0()]  		  
 		isDisp : -> @0
-	$ = jquery 
+	$ = jQuery 
 	@ <<<
 		ia: ia
 		model: model	
@@ -22,10 +27,8 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 		animation2: true
 		popup: new DeplierClass
 		fen: 
-			disp: 'play'
 			stayOpen: true
 		mode: 'normal'
-		grille: []
 		message: 'ça va commencer'
 		endGameMessage: true
 		minLine: 0
@@ -33,7 +36,14 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 		minCol: 0
 		maxCol: 6
 		tabColor :
-			'-30': 'rgb(255,0,234)'
+			'a': 'rgb(255,50,234)'
+			'e': 'rgb(21,90,22)'
+			'f': 'rgb(97,1,234)'
+			'h': 'rgb(0,200,180)'
+			'i': 'rgb(97,28,34)'
+			'n': 'rgb(97,234,0)' # '.'equivalent
+			'g': 'rgb(200,200,234)'
+			'j': 'rgb(12,20,234)'
 			0: 'white'
 			1: 'rgb(255,251,0)'
 			2: 'rgb(255,0,0)'
@@ -53,11 +63,13 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 				@off!
 				@pos =  it
 				@on! if model.grille[it%7] ~= 0
+				it
 			on: -> 
+				return off if o.animRun
 				@off!
 				o.grille[@pos%%7] = model.getPlayer()
 				
-		replayIcon: -> Modele.isGameFinish() && !@whyItIsFinish || @fen.disp == 'message'
+		replayIcon: -> (isGameOver! && !@whyItIsFinish || @fen.disp == 'message')
 		darkWinningPos : (dark) ->
 			f = model.winInfo
 			colorNumber = model.grille[f.0] * (if dark then 4 else 1)
@@ -66,71 +78,77 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			@fen.disp = 'play';
 			@popup.deplier(true);
 			@whyItIsFinish = false
-		messageF : (egality) ->
-			@fen.disp = 'message'
-			@whyItIsFinish = false
-			@message = if egality 
-				'ceci est une égalité mais pas une victoire' 
-			else 
+		messageIfEndGame : ->
+			if model.weHaveAWinner!			
 				@darkWinningPos true
-				if model.isHumanTurn!
-					'bravo vous avez gagné' + if  IA.boolSmart isnt 2 * model.backup.length
-						'augmentez un peu le niveau'
-					else
+				@message = if model.isHumanTurn!
+					'bravo vous avez gagné' + if  2 * IA.boolSmart is model.backup.length
 						$(document).trigger(\historiqueJeu,[model.backup])
 						'envoyer votre historique par commentaire pour améliorer le jeu'
+					else
+						'augmentez un peu le niveau'
 				else
 					'Le robot gagne cette fois vous pouvez baisser le 
 					niveau de difficulté de quelques pourcents'
+			else if model.isGameFull!
+				@message = 'ceci est une égalité mais pas une victoire'
+			else 
+				return off
+			@fen.disp = 'message'
+			@whyItIsFinish = false
 			@popup.deplier true
-			@$digest!
-		anim : (pos, player, callback) ->
-			anim2 = (i) ~>
-				@grille[i - 7] = 0 if i > 6
-				@grille[i] = player
-				if i < pos then 
-					$timeout (-> anim2 i + 7), @time 
-				else if callback
-					$timeout callback, @time + 1
+			on 
+			#@$digest!
+		anim : (To, player)~>$q((resolve)~>			
+			@animRun = on 
+			i = To%7
+			do asyncronousFor = ~>  
+				$timeout(if i <= To then ~>
+					@grille[i-7] = 0 if i > 6
+					@grille[i] = player
+					i+=7
+					asyncronousFor!
 				else
-					alert('end')
-			$timeout (-> anim2 pos % 7)
-			@grille.0 = model.grille.0 if not (pos % 7)	
-
-		loopThreatAnimation : ->
-			pos = void
-			if model.isGameFinish!
+					resolve
+				,@time)
+		)
+		fallenPion: (pos) ~>
+			if @modeCreator
+				n = @keyCode%48
+				@grilleCreator[pos] = 
+					|-1 < n < 10 	=> n
+					|_ 	=> String.fromCharCode(@keyCode)toLowerCase!
+			else if isGameOver!
+				@whyItIsFinish = off 
+				@popup.deplier(on)
+				@fen.disp = "" 			
 				@stackPosition.length = 0
-				@threadIsntUsed := on
+			else 
+				@stackPosition[*] = pos
+				@loopThreatAnimation!
+		loopThreatAnimation : ->
+			return if not (@stackPosition.length && @threadIsntUsed)
+			if isGameOver!
+				@stackPosition.length = 0
+				@threadIsntUsed = on
 				return 
-			if @stackPosition.length
-				if @threadIsntUsed
-					@threadIsntUsed = off
-					@time = if @animation2 then 50 else 0
-					pos = model.play @stackPosition.shift!
-					return @threadIsntUsed = on if pos < 0
-					if model.isGameFinish!
-						@messageF!
-					else
-						if (model.grille.indexOf 0) < 0
-							@messageF('égalité')
-							@threadIsntUsed := on
-					@anim pos, (model.getPlayer 1),  ~>
-						callbackBotIfActiveElsePlayer1 = ~>
-							@threadIsntUsed := on
-							@messageF! if model.isGameFinish!
-							@grille = model.grille[0 to 41]
-							@loopThreatAnimation!
-
-						if  model.backup.length%2 is 0
-							if @isBotActive
-								posBot = IA.p4BlockEasy pos, off
-								@anim posBot, 1, callbackBotIfActiveElsePlayer1
-							else
-								callbackBotIfActiveElsePlayer1!
-						else
-							@grille = [.. for  model.grille]
-
+			@threadIsntUsed = off
+			@time = if @animation2 then 50 else 0
+			pos = model.play @stackPosition.shift!
+			return @threadIsntUsed = on if pos < 0			
+			@anim(pos,model.getPlayer(1))then(~>
+				@animRun = off
+				return if @messageIfEndGame!
+				if @isBotActive && model.backup.length%2 is 0#bot don't play if we undo during anim
+					posBot = IA.p4BlockEasy pos, off
+					return @anim(posBot, 1)#promise
+			)then(~>
+				@grille = model.grille[0 to 41] #in case of undo action during anim
+				@threadIsntUsed = on
+				@messageIfEndGame! if @isBotActive
+				@animRun = off
+				@loopThreatAnimation!
+			)
 		clickOnBlack: ->
 			@fen.disp = 'play'
 			@popup.deplier off
@@ -166,7 +184,8 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			IA.boolSmart = 1
 			@endGameMessage = off
 			@fen.disp = 'option'
-			@grille := model.grille.slice!
+			@grille = model.grille.slice!
+			@replayIconPop = new DeplierClass(~>@replayIcon!)
 		restore: ->
 			@loadStory borto.cookies.getTab(\backup)
 			IA.boolSmart = borto.cookies.getTab(\boolSmart)
@@ -175,14 +194,14 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			borto.cookies.set \boolSmart, IA.boolSmart
 		graphique: (colorNumber) -> @tabColor[colorNumber]
 		undo: ->
-			if model.isGameFinish!
+			if isGameOver!
 				@fen.disp = ''; 
 				@popup.deplier(false);
 				@darkWinningPos off
 				if @whyItIsFinish 
 					@whyItIsFinish = off
 				else
-					model.isGameFinish off
+					model.weHaveAWinner off
 				#@fen.disp = "option"
 			@threadIsntUsed := on
 			pos = model.undo!
@@ -192,21 +211,8 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 					@undo!
 				else 
 					model.setPlayer 2
-			else
 				IA.boolSmart -- if IA.boolSmart > 1
 			@popup.deplier off
-		fallenPion: (pos) ~>
-			if @modeCreator
-				@grilleCreator[pos] = if 0 <= (n = @keyCode%48) < 10 then n
-				else String.fromCharCode(@keyCode)toLowerCase!
-			else if model.isGameFinish()
-				@whyItIsFinish = off 
-				@popup.deplier(on)
-				@fen.disp = "" 			
-				@stackPosition.lenght = 0 
-			else 
-				@stackPosition[*] = pos
-				@loopThreatAnimation!
 		keydown: (e) ->
 			e.preventDefault!
 			@keyCode = e.which
@@ -227,13 +233,12 @@ window.app.controller 'myCtrl', ($scope, $timeout) -> let @ = $scope
 			return off if @popup.isDisp!
 			pos = if event.touches.length >= 1 then event.touches.0.pageX else -1
 			return off if pos < 0 
-			pos = ~~( (pos - $(\#p4).offset!.left) * 7 / $(\#p4).width! )
+			@preview.set ~~( (pos - $(\#p4).offset!.left) * 7 / $(\#p4).width! )
 			event.preventDefault!
 		touchEnd: ->
 			return on if @popup.isDisp!
 			event.preventDefault!
-			@fallenPion @getPrev
+			@fallenPion @preview.pos
 	@init!
 	@popup.deplier on
 	@fen.disp = 'message'
-	@grille.safeClone model.grille
