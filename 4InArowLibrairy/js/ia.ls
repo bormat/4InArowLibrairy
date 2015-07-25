@@ -22,6 +22,7 @@ window.IA = IA = window.borto.ia =
     pos: -1
     modelId: 0
     p4BlockEasy: (posJoueur, retournerPosition) ~>
+        window.break2 = window.break = 0
         IA.posJoueur = posJoueur
         var findAt, botSmart
         return false if borto.modele.weHaveAWinner!
@@ -224,7 +225,10 @@ window.IA = IA = window.borto.ia =
 
     #playAt < 0  is model not found but on terminal call it is the position relative to model 
     structModelDetector2: (ModelInStruct, pos) ~>
+        window.break = window.break || 0;
+        window.break ++;
         IA.playAt = -1
+
         IA.found = IA.findModel2 ModelInStruct, pos
         if ModelInStruct.mode ~= 'futur'
             if IA.found
@@ -361,6 +365,8 @@ window.IA = IA = window.borto.ia =
         isModelfound
     #pos is the position bottom left of wher our model is found in the real game
     modeleDectector1: (oneModele, posOneModele, sym) ~>
+        window.break2 = window.break2 || 0;
+        window.break2 ++;
         for i from 1 to oneModele.length 
             line = oneModele.[*-i]
             line = line.reverse! if sym

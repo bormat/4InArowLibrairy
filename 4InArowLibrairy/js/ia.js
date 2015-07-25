@@ -19,6 +19,7 @@
     modelId: 0,
     p4BlockEasy: function(posJoueur, retournerPosition){
       var findAt, botSmart, i$, i;
+      window.break2 = window['break'] = 0;
       IA.posJoueur = posJoueur;
       if (borto.modele.weHaveAWinner()) {
         return false;
@@ -345,6 +346,8 @@
     },
     structModelDetector2: function(ModelInStruct, pos){
       var posMod, exept;
+      window['break'] = window['break'] || 0;
+      window['break']++;
       IA.playAt = -1;
       IA.found = IA.findModel2(ModelInStruct, pos);
       if (ModelInStruct.mode == 'futur') {
@@ -537,6 +540,8 @@
     },
     modeleDectector1: function(oneModele, posOneModele, sym){
       var i$, to$, i, line;
+      window.break2 = window.break2 || 0;
+      window.break2++;
       for (i$ = 1, to$ = oneModele.length; i$ <= to$; ++i$) {
         i = i$;
         line = oneModele[oneModele.length - i];

@@ -8,6 +8,99 @@ describe("myFunction", function() {
 				expect(IA.p4BlockEasy(pos-1,true)).toEqual(pos);
 			});
 		}
+		it("joueEn24", function(){
+		Modele.setGrille([
+		 0, 0, 0, 0, 0, 0, 0,
+		 0, 1, 0, 2, 2, 0, 0,
+		 0, 2, 0, 1, 2, 0, 0,
+		 0, 2, 0, 1, 1, 0, 0,
+		 0, 2, 0, 2, 1, 0, 0,
+		 0, 1, 0, 1, 2, 0, 1
+		])
+		expect(IA.p4BlockEasy(5,true)).toEqual(4);
+		});
+		it("joueEn24", function(){
+			Modele.setGrille(
+			[0, 0, 0, 0, 0, 0, 0,
+			0, 1, 0, 2, 0, 0, 0,
+			0, 2, 0, 1, 2, 0, 0,
+			0, 2, 0, 1, 1, 0, 0,
+			0, 2, 0, 2, 1, 0, 0,
+			0, 1, 0, 1, 2, 0, 0
+			])
+			expect(IA.p4BlockEasy(5,true)).toEqual(41);
+		});
+		it("joueEn24", function(){
+				Modele.setGrille([
+				0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0,
+				0, 1, 0, 2, 2, 0, 0,
+				0, 2, 0, 1, 1, 0, 0,
+				0, 2, 0, 2, 1, 0, 0,
+				0, 1, 0, 1, 2, 0, 0
+			])
+			expect(IA.p4BlockEasy(5,true)).toEqual(10);
+		});
+		it("joueEn24", function(){
+			Modele.setGrille([
+			0, 1, 0, 0, 0, 0, 0,
+			0, 1, 0, 2, 0, 0, 0,
+			0, 2, 0, 1, 2, 0, 0,
+			0, 2, 0, 1, 1, 0, 0,
+			0, 2, 0, 2, 1, 0, 0,
+			2, 1, 0, 1, 2, 0, 0,
+			])
+			expect(IA.p4BlockEasy(5,true)).toEqual(28);
+		});
+
+		it("joueEn24", function(){
+			Modele.setGrille([
+				0, 0, 0, 0, 0, 0, 0,
+				0, 1, 0, 0, 0, 0, 0,
+				0, 2, 0, 2, 0, 0, 0,
+				0, 2, 0, 1, 1, 0, 0,
+				0, 2, 0, 2, 1, 0, 0,
+				0, 1, 0, 1, 2, 0, 0
+			])
+			expect(IA.p4BlockEasy(5,true)).toEqual(18);
+		});
+
+		it("joueEn24", function(){
+			Modele.setGrille([
+				0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 1, 0, 0, 0,
+				0, 0, 0, 2, 2, 0, 0,
+				0, 1, 0, 1, 2, 0, 0
+			])
+			expect(IA.p4BlockEasy(5,true)).toEqual(29);
+		});
+
+		it("joueEn24", function(){
+			Modele.setGrille([
+				0, 1, 0, 2, 0, 0, 1,
+				0, 2, 0, 1, 0, 0, 2,
+				0, 2, 0, 2, 0, 0, 1,
+				0, 2, 1, 1, 0, 0, 2,
+				0, 1, 1, 1, 2, 0, 1,
+				0, 1, 2, 1, 2, 2, 2
+			])
+			expect(IA.p4BlockEasy(5,true)).not.toEqual(33);
+		});
+
+		
+		it("joueEn24", function(){
+			Modele.setGrille([
+				0, 0, 0, 0, 1, 0, 0,
+				0, 0, 0, 2, 2, 0, 0,
+				0, 0, 1, 2, 2, 0, 0,
+				0, 0, 2, 1, 1, 0, 0,
+				0, 0, 1, 2, 1, 0, 0,
+				1, 0, 2, 1, 1, 2, 2
+			])
+			expect(IA.p4BlockEasy(5,true)).toEqual(9);
+		});
 
 		it("joueEn24", function(){
 			Modele.setGrille([
