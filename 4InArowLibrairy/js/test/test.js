@@ -9,6 +9,17 @@ describe("myFunction", function() {
 			});
 		}
 		it("joueEn24", function(){
+		Modele.setGrille(
+			[0, 1, 0, 0, 0, 0, 0,
+			0, 1, 0, 2, 2, 0, 0,
+			0, 2, 0, 1, 1, 0, 0,
+			0, 2, 0, 2, 2, 0, 0,
+			0, 1, 0, 1, 2, 0, 0,
+			0, 1, 0, 1, 2, 0, 0]
+		)
+		expect(IA.p4BlockEasy(4,true)).toEqual(35);
+		});
+		it("joueEn24", function(){
 		Modele.setGrille([
 		 0, 0, 0, 0, 0, 0, 0,
 		 0, 1, 0, 2, 2, 0, 0,
@@ -19,7 +30,7 @@ describe("myFunction", function() {
 		])
 		expect(IA.p4BlockEasy(5,true)).toEqual(4);
 		});
-		it("joueEn24", function(){
+				it("joueEn24", function(){
 			Modele.setGrille(
 			[0, 0, 0, 0, 0, 0, 0,
 			0, 1, 0, 2, 0, 0, 0,
