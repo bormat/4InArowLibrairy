@@ -8,6 +8,19 @@ describe("myFunction", function() {
 				expect(IA.p4BlockEasy(pos-1,true)).toEqual(pos);
 			});
 		}
+
+
+		it("joueEn24", function(){
+			Modele.setGrille([
+			0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0,
+			0, 2, 0, 0, 0, 0, 0,
+			0, 1, 0, 0, 0, 0, 0,
+			0, 1, 0, 2, 2, 0, 0,
+			0, 1, 0, 1, 2, 0, 0]
+			)
+			expect(IA.p4BlockEasy(4,true)).toEqual(35);
+		});
 		it("joueEn24", function(){
 		Modele.setGrille(
 			[0, 1, 0, 0, 0, 0, 0,
